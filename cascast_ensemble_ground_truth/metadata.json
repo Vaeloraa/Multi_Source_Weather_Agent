@@ -1,0 +1,66 @@
+{
+  "format_version": 1,
+  "source_dataset": "SEVIR VIL test split",
+  "sample_indices": [
+    7588,
+    8873,
+    52,
+    4206,
+    8573,
+    7818,
+    2721,
+    700,
+    1356,
+    5455
+  ],
+  "dimensions": {
+    "samples": 10,
+    "forecast_frames": 12,
+    "height": 384,
+    "width": 384
+  },
+  "time": {
+    "frame_interval_minutes": 5,
+    "forecast_minutes": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60
+    ]
+  },
+  "datasets": {
+    "sample_index": {
+      "shape": [
+        10
+      ],
+      "dtype": "int64",
+      "axes": [
+        "sample"
+      ]
+    },
+    "ground_truth": {
+      "shape": [
+        10,
+        12,
+        384,
+        384
+      ],
+      "dtype": "uint8",
+      "axes": [
+        "sample",
+        "forecast_time",
+        "y",
+        "x"
+      ],
+      "content": "observed SEVIR VIL future frames"
+    }
+  }
+}

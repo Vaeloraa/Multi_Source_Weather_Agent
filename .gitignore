@@ -1,0 +1,25 @@
+.env
+__pycache__/
+*.pyc
+
+# Local runtime output
+*.log
+data/artifacts/*
+!data/artifacts/.gitkeep
+data/executions/*
+!data/executions/.gitkeep
+data/agent_evaluations/*
+!data/agent_evaluations/.gitkeep
+data/uploads/*
+!data/uploads/.gitkeep
+
+# Large local datasets and model outputs
+data/cascast_ensemble_cache/*.npz
+data/sevir_complete/
+cascast_ensemble_uncertainty/*.h5
+cascast_ensemble_ground_truth/*.h5
+earthformer_example/**/*.npy
+
+# Reproducible dependencies and generated workspace artifacts
+vendor/
+outputs/

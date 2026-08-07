@@ -1,0 +1,44 @@
+[
+  {
+    "id": "forecast_location",
+    "event_id": "R19100105107994",
+    "question": "未来60分钟最强回波对象位于哪里？请给出州和县，并说明持续时间。",
+    "expected_api_fragments": ["forecaster", "geolocator"],
+    "minimum_tool_calls": 2
+  },
+  {
+    "id": "forecast_uncertainty",
+    "event_id": "R19112017408062",
+    "question": "分析未来60分钟VIL超过133区域，并比较像素不确定性和跨ensemble风暴对象共识。",
+    "expected_api_fragments": ["forecaster", "uncertainty"],
+    "minimum_tool_calls": 2
+  },
+  {
+    "id": "forecast_verification",
+    "event_id": "R19070401047360",
+    "question": "比较CasCast与Persistence在VIL阈值74、133、181下的CSI、HSS和FSS，并说明随时效的变化。",
+    "expected_api_fragments": ["metrics"],
+    "minimum_tool_calls": 1
+  },
+  {
+    "id": "history_comparison",
+    "event_id": "R19112416537912",
+    "question": "查询这个事件的metadata，再把它和同storm type历史事件及其他storm type进行比较。",
+    "expected_api_fragments": ["data", "statistics"],
+    "minimum_tool_calls": 2
+  },
+  {
+    "id": "object_tracks",
+    "event_id": "R19110322307134",
+    "question": "追踪ensemble mean中VIL超过133的风暴对象，并与10个成员的共识对象比较路径、面积和持续时间。",
+    "expected_api_fragments": ["uncertainty.track_objects", "uncertainty.match_ensemble_objects"],
+    "minimum_tool_calls": 2
+  },
+  {
+    "id": "analysis_chart",
+    "event_id": "R19112904197535",
+    "question": "评估该事件在VIL 133下逐时效HSS，并生成一张CasCast与Persistence对比图。",
+    "expected_api_fragments": ["metrics", "visualizer"],
+    "minimum_tool_calls": 2
+  }
+]
