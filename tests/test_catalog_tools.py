@@ -6,7 +6,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import sevir_tools as tools
+from sevir_world.backends import geospatial, statistics
+from sevir_world.repositories import catalog as tools
+from sevir_world.repositories import uploads
 import h5py
 import numpy as np
 
@@ -103,9 +105,9 @@ class CatalogToolsTest(unittest.TestCase):
         self.assertEqual(result["frame_statistics"][-1]["max_vil"], 14)
 
     def test_projection_and_noaa_linkage(self) -> None:
-        location = tools.geolocate_sevir_event("R_TEST", row=2, column=2)["pixel_location"]
+        location = geospatial.geolocate_sevir_event("R_TEST", row=2, column=2)["pixel_location"]
         self.assertEqual(location["pixel_resolution_m"], [96000.0, 96000.0])
-        reference = tools.get_noaa_storm_reference("S_TEST")
+        reference = statistics.get_noaa_storm_reference("S_TEST")
         self.assertTrue(reference["noaa_linked"])
         self.assertEqual(reference["noaa_event_id"], 696651)
         self.assertIn("id=696651", reference["noaa_event_url"])
@@ -114,20 +116,20 @@ class CatalogToolsTest(unittest.TestCase):
 class UploadPersistenceTest(unittest.TestCase):
     def setUp(self) -> None:
         self.temp = tempfile.TemporaryDirectory()
-        self.original_upload_dir = tools.UPLOAD_STORAGE_DIR
-        tools.UPLOAD_STORAGE_DIR = Path(self.temp.name) / "uploads"
-        tools.UPLOADED_VIL.clear()
-        tools.UPLOADED_VIL_SEQUENCES.clear()
+        self.original_upload_dir = uploads.UPLOAD_STORAGE_DIR
+        uploads.UPLOAD_STORAGE_DIR = Path(self.temp.name) / "uploads"
+        uploads.UPLOADED_VIL.clear()
+        uploads.UPLOADED_VIL_SEQUENCES.clear()
 
     def tearDown(self) -> None:
-        tools.UPLOAD_STORAGE_DIR = self.original_upload_dir
-        tools.UPLOADED_VIL.clear()
-        tools.UPLOADED_VIL_SEQUENCES.clear()
+        uploads.UPLOAD_STORAGE_DIR = self.original_upload_dir
+        uploads.UPLOADED_VIL.clear()
+        uploads.UPLOADED_VIL_SEQUENCES.clear()
         self.temp.cleanup()
 
     def test_single_upload_survives_memory_clear(self) -> None:
         frame = np.arange(384 * 384, dtype=np.uint32).astype(np.uint8).reshape(384, 384)
-        result = tools.register_uploaded_vil(
+        result = uploads.register_uploaded_vil(
             filename="sample.png",
             width=384,
             height=384,
@@ -135,12 +137,12 @@ class UploadPersistenceTest(unittest.TestCase):
             grayscale_source=True,
         )
         upload_id = result["upload_id"]
-        tools.UPLOADED_VIL.clear()
+        uploads.UPLOADED_VIL.clear()
 
-        restored, metadata = tools._load_uploaded_vil(upload_id)
+        restored, metadata = uploads._load_uploaded_vil(upload_id)
         self.assertTrue(np.array_equal(restored, frame))
         self.assertEqual(metadata["filename"], "sample.png")
-        records = tools.list_uploaded_records()
+        records = uploads.list_uploaded_records()
         self.assertEqual(records["record_count"], 1)
         self.assertEqual(records["records"][0]["upload_id"], upload_id)
 
@@ -155,8 +157,8 @@ class UploadPersistenceTest(unittest.TestCase):
             "dtype": "uint8",
             "created_at_utc": "2026-08-07T00:00:00+00:00",
         }
-        tools._persist_uploaded_array(upload_id, sequence, metadata)
-        restored, restored_metadata = tools._load_uploaded_vil_sequence(upload_id)
+        uploads._persist_uploaded_array(upload_id, sequence, metadata)
+        restored, restored_metadata = uploads._load_uploaded_vil_sequence(upload_id)
         self.assertEqual(restored.shape, (13, 384, 384))
         self.assertEqual(restored_metadata["kind"], "sequence")
 

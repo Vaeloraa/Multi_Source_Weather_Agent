@@ -6,9 +6,9 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree
 
-import sevir_tools
+from .backends import geospatial
 
-from .base import WorldComponent
+from .base import WorldComponent, resolve_event_id
 
 
 BOUNDARY_ROOT = Path(__file__).resolve().parents[1] / "data" / "boundaries"
@@ -87,13 +87,14 @@ class SevirGeolocator(WorldComponent):
     """
 
     def locate(
-        self, event_id: str, row: int | None = None, column: int | None = None
+        self, event_id: Any, row: int | None = None, column: int | None = None
     ) -> dict[str, Any]:
         """Return event bounds, center, and optional projected pixel location."""
+        event_id = resolve_event_id(event_id)
         arguments = {"event_id": event_id, "row": row, "column": column}
-        return self._call("geolocator.locate", arguments, sevir_tools.geolocate_sevir_event)
+        return self._call("geolocator.locate", arguments, geospatial.geolocate_sevir_event)
 
-    def pixel_to_latlon(self, event_id: str, row: int, column: int) -> dict[str, Any]:
+    def pixel_to_latlon(self, event_id: Any, row: int, column: int) -> dict[str, Any]:
         """Convert a zero-based raster row/column to projected WGS84 lat/lon."""
         location = self.locate(event_id, row=row, column=column)
         return location["pixel_location"]
@@ -137,8 +138,9 @@ class SevirGeolocator(WorldComponent):
         )
         return result
 
-    def locate_admin(self, event_id: str, row: int = 192, column: int = 192) -> dict[str, Any]:
+    def locate_admin(self, event_id: Any, row: int = 192, column: int = 192) -> dict[str, Any]:
         """Resolve an event pixel to WGS84 and offline state/county."""
+        event_id = resolve_event_id(event_id)
         pixel = self.pixel_to_latlon(event_id, row, column)
         admin = self.reverse_geocode(pixel["latitude"], pixel["longitude"])
         return {"event_id": event_id, "pixel_location": pixel, "administrative_area": admin}

@@ -4,9 +4,10 @@ from typing import Any
 
 import numpy as np
 
-import sevir_tools
+from .backends import statistics
+from .repositories import catalog
 
-from .base import WorldComponent
+from .base import WorldComponent, resolve_event_id
 
 
 class SevirStatistics(WorldComponent):
@@ -16,15 +17,16 @@ class SevirStatistics(WorldComponent):
         """Summarize catalog rows; results are not per-frame rainfall trends."""
         arguments = {"year": year, "event_type": event_type}
         return self._call(
-            "statistics.historical", arguments, sevir_tools.historical_sevir_statistics
+            "statistics.historical", arguments, statistics.historical_sevir_statistics
         )
 
-    def compare_event(self, event_id: str) -> dict[str, Any]:
-        """Compare one catalog data_max with its historical reference group."""
+    def compare_event(self, event_id: Any) -> dict[str, Any]:
+        """Compare an event ID or loaded ds with its historical reference group."""
+        event_id = resolve_event_id(event_id)
         return self._call(
             "statistics.compare_event",
             {"event_id": event_id},
-            sevir_tools.compare_event_with_history,
+            statistics.compare_event_with_history,
         )
 
     def compare_storm_types(
@@ -37,7 +39,7 @@ class SevirStatistics(WorldComponent):
         """
         requested = {item.strip().lower() for item in (event_types or []) if item.strip()}
         groups: dict[str, list[dict[str, Any]]] = {}
-        for record in sevir_tools._catalog_vil_records():
+        for record in catalog._catalog_vil_records():
             if year is not None and record["year"] != int(year):
                 continue
             label = str(record["event_type"] or "Unlabeled")

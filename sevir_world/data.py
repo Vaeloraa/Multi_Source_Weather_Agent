@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import sevir_tools
+from .repositories import catalog, ensemble, uploads
 
 from .base import WorldComponent
 
@@ -19,7 +19,7 @@ class SevirDataIndexer(WorldComponent):
     def event(self, event_id: str) -> dict[str, Any]:
         """Return exact catalog metadata and the 49-frame UTC time axis."""
         return self._call(
-            "data.event", {"event_id": event_id}, sevir_tools.get_sevir_event_metadata
+            "data.event", {"event_id": event_id}, catalog.get_sevir_event_metadata
         )
 
     def search(
@@ -38,7 +38,7 @@ class SevirDataIndexer(WorldComponent):
             "event_type": event_type,
             "limit": limit,
         }
-        return self._call("data.search", arguments, sevir_tools.search_sevir_catalog)
+        return self._call("data.search", arguments, catalog.search_sevir_catalog)
 
     def load_hdf5(
         self, event_id: str, start_frame: int = 0, end_frame: int = 49
@@ -53,11 +53,11 @@ class SevirDataIndexer(WorldComponent):
             "start_frame": start_frame,
             "end_frame": end_frame,
         }
-        return self._call("data.load_hdf5", arguments, sevir_tools.load_sevir_vil_event)
+        return self._call("data.load_hdf5", arguments, catalog.load_sevir_vil_event)
 
     def cascast_cache(self, event_id: str) -> dict[str, Any]:
         """Describe one cached CasCast event without returning full arrays."""
-        arrays, metadata = sevir_tools._load_cascast_ensemble(event_id)
+        arrays, metadata = ensemble._load_cascast_ensemble(event_id)
         result = {
             "status": "ok",
             "event_id": metadata["event_id"],
@@ -73,4 +73,4 @@ class SevirDataIndexer(WorldComponent):
 
     def uploads(self) -> dict[str, Any]:
         """List persisted single-frame and 13-frame uploads."""
-        return self._call("data.uploads", {}, sevir_tools.list_uploaded_records)
+        return self._call("data.uploads", {}, uploads.list_uploaded_records)

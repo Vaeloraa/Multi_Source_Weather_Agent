@@ -4,16 +4,19 @@ import json
 import re
 from typing import Any, Callable
 
+from .contracts import ExecutionRequest, data_descs_from_context
 from .execution import SafeExecutionClient
-from .world import API_REFERENCE
+from .runtime import TOOL_CLASSES
+from .tool_docs import selected_api_reference
 
 
-DIRECT_SYSTEM_PROMPT = """You are a SEVIRWorld data-analysis agent.
-Generate a short Python analysis program that calls only the approved world API.
+DIRECT_SYSTEM_PROMPT = """You are a SEVIR data-analysis code agent.
+Generate a short Python program containing exactly one run() function.
+Its arguments must exactly match the supplied signature and it must return the final result.
 Do not import modules, access files, use network/system commands, or invent values.
-The final analysis must be assigned to `result`. Return JSON only:
+Return JSON only:
 {"plan":"one short sentence","code":"..."}
-No chain-of-thought is needed. Use the supplied context values when relevant.
+No chain-of-thought is needed. Use ds and only the supplied tool arguments.
 """
 
 
@@ -60,6 +63,8 @@ def run_direct_agent(
     complete: Callable[[dict[str, Any], list[dict[str, Any]]], dict[str, Any]],
     executor: SafeExecutionClient | None = None,
     max_attempts: int = 3,
+    data_descs: list[dict[str, Any]] | None = None,
+    selected_tools: list[str] | tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
     """Generate, execute, repair, and synthesize a Direct-mode analysis.
 
@@ -70,15 +75,29 @@ def run_direct_agent(
     if not provider.get("api_key"):
         raise RuntimeError(f"{provider.get('label', 'model')} API key is not configured")
     executor = executor or SafeExecutionClient()
+    request = ExecutionRequest.from_payload(
+        data_descs if data_descs is not None else data_descs_from_context(context),
+        selected_tools,
+    )
     context_json = _compact(context, 8_000)
+    signature = f"def run({', '.join(request.selected_tools)}):"
+    api_reference = selected_api_reference(request.selected_tools, TOOL_CLASSES)
     messages: list[dict[str, Any]] = [
         {
             "role": "system",
-            "content": DIRECT_SYSTEM_PROMPT + "\n\nApproved API:\n" + API_REFERENCE,
+            "content": (
+                DIRECT_SYSTEM_PROMPT
+                + f"\nRequired signature:\n{signature}\n\nSelected API:\n"
+                + api_reference
+            ),
         },
         {
             "role": "user",
-            "content": f"Question: {question}\nBound context JSON: {context_json}",
+            "content": (
+                f"Question: {question}\n"
+                f"data_descs JSON: {_compact(request.data_descs, 8_000)}\n"
+                f"Request settings JSON: {context_json}"
+            ),
         },
     ]
     trace: list[dict[str, Any]] = []
@@ -89,7 +108,12 @@ def run_direct_agent(
         content = response.get("choices", [{}])[0].get("message", {}).get("content", "")
         try:
             program = _parse_program(content)
-            execution = executor.execute(program["code"], context)
+            execution = executor.execute(
+                program["code"],
+                context,
+                data_descs=list(request.data_descs),
+                selected_tools=request.selected_tools,
+            )
         except Exception as error:
             execution = {
                 "status": "error",
@@ -169,4 +193,6 @@ def run_direct_agent(
         ],
         "execution_limits": execution.get("limits", {}),
         "execution_id": execution.get("execution_id"),
+        "data_descs": list(request.data_descs),
+        "selected_tools": list(request.selected_tools),
     }

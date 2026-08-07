@@ -15,17 +15,16 @@ from urllib.parse import parse_qs, urlparse
 import numpy as np
 from PIL import Image
 
-from sevir_tools import (
-    TOOLS,
-    execute_tool,
-    get_cascast_display_frame,
+from sevir_world.repositories.ensemble import get_cascast_display_frame
+from sevir_world.repositories.uploads import (
     get_uploaded_display_frame,
     get_uploaded_sequence_display_frame,
     list_uploaded_records,
     register_uploaded_vil,
     register_uploaded_vil_sequence,
-    runtime_status,
 )
+from sevir_world.services.status import runtime_status
+from sevir_world.services.tool_gateway import TOOLS, execute_tool
 from sevir_world.direct_agent import run_direct_agent
 
 
@@ -748,11 +747,26 @@ def run_direct_mode(
         "upload_id": str(payload.get("upload_id", "")).strip(),
         "sequence_upload_id": str(payload.get("sequence_upload_id", "")).strip(),
     }
+    data_descs = payload.get("data_descs")
+    if data_descs is not None and not isinstance(data_descs, list):
+        raise ValueError("data_descs must be a list")
+    selected_tools = payload.get("selected_tools")
+    if selected_tools is not None and not isinstance(selected_tools, list):
+        raise ValueError("selected_tools must be a list")
 
     def complete(current_provider: dict[str, str], current_model: str, messages: list[dict[str, Any]]) -> dict[str, Any]:
         return post_chat_completion(current_provider, current_model, messages)
 
-    result = run_direct_agent(provider, model, question, context, complete, max_attempts=max_attempts)
+    result = run_direct_agent(
+        provider,
+        model,
+        question,
+        context,
+        complete,
+        max_attempts=max_attempts,
+        data_descs=data_descs,
+        selected_tools=selected_tools,
+    )
     result["route_mode"] = "zephyrus_reflective" if max_attempts > 1 else "zephyrus_direct"
     return result
 

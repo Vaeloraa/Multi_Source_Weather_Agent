@@ -4,7 +4,7 @@ from typing import Any
 
 import numpy as np
 
-import sevir_tools
+from .repositories import ensemble
 
 from .base import WorldComponent
 
@@ -94,7 +94,7 @@ class VerificationMetrics(WorldComponent):
         fss_scales: list[int] | None = None,
     ) -> dict[str, Any]:
         """Evaluate CasCast ensemble mean and Persistence for one cached event."""
-        arrays, _ = sevir_tools._load_cascast_ensemble(event_id)
+        arrays, _ = ensemble._load_cascast_ensemble(event_id)
         target = arrays["ground_truth"].astype(np.float32)
         predictions = {
             "cascast_ensemble_mean": arrays["ensemble_mean"].astype(np.float32),
@@ -166,10 +166,10 @@ class VerificationMetrics(WorldComponent):
             for model in model_names
         }
         event_ids = [
-            item["event_id"] for item in sevir_tools._ensemble_manifest()["events"]
+            item["event_id"] for item in ensemble._ensemble_manifest()["events"]
         ]
         for event_id in event_ids:
-            arrays, _ = sevir_tools._load_cascast_ensemble(event_id)
+            arrays, _ = ensemble._load_cascast_ensemble(event_id)
             target = arrays["ground_truth"].astype(np.float32)
             predictions = {
                 "cascast_ensemble_mean": arrays["ensemble_mean"].astype(np.float32),

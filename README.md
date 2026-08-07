@@ -1,5 +1,31 @@
 # SEVIR Hazard Agent
 
+## Zephyrus-aligned execution contract
+
+Direct execution accepts `data_descs` and `selected_tools`. The server-side
+`DataIndexer` resolves `data_descs` into `ds`, then injects only the selected
+resources in canonical order:
+
+```python
+def run(ds, geolocator, forecaster, statistics, uncertainty, metrics, visualizer):
+    forecast = forecaster.hazards(ds, threshold=133)
+    location = geolocator.locate_admin(ds)
+    history = statistics.compare_event(ds)
+    return {"forecast": forecast, "location": location, "history": history}
+```
+
+`extract_function_docstrings()` parses public tool methods with AST. The Direct
+prompt receives an API manual generated only from the requested tools, so method
+signatures and documentation stay synchronized with the implementation. Generated
+code runs in a separate restricted process with AST validation, time, memory and
+output limits. Every call and result or error is retained in the execution audit.
+
+The implementation is split by responsibility: persistent access lives in
+`sevir_world/repositories`, numerical domain code in `sevir_world/backends`,
+HTTP compatibility in `sevir_world/services`, and Agent assembly in
+`sevir_world/runtime.py`. The former `sevir_tools.py` monolith and `world` facade
+are no longer part of the runtime.
+
 ## SEVIRWorld 与 Zephyrus-Direct
 
 当前版本已加入可组合的 `sevir_world` 高层 API，包括数据索引、地理定位、

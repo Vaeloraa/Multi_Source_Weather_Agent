@@ -13,6 +13,7 @@ from typing import Any
 
 import psutil
 
+from .contracts import ExecutionRequest, data_descs_from_context
 from .safety import UnsafeCodeError, validate_code
 
 
@@ -23,7 +24,7 @@ EXECUTION_LOG_ROOT = ROOT / "data" / "executions"
 
 def _persist_execution(
     code: str,
-    context: dict[str, Any],
+    request: ExecutionRequest,
     result: dict[str, Any],
 ) -> str:
     """Persist one bounded execution record and return its opaque ID."""
@@ -33,7 +34,8 @@ def _persist_execution(
         "execution_id": execution_id,
         "created_at_epoch_seconds": round(time.time(), 3),
         "code": code,
-        "context": context,
+        "data_descs": request.data_descs,
+        "selected_tools": request.selected_tools,
         "execution": result,
     }
     path = EXECUTION_LOG_ROOT / f"{execution_id}.json"
@@ -57,12 +59,22 @@ class SafeExecutionClient:
         self.timeout_seconds = float(timeout_seconds)
         self.memory_limit_mb = int(memory_limit_mb)
 
-    def execute(self, code: str, context: dict[str, Any] | None = None) -> dict[str, Any]:
+    def execute(
+        self,
+        code: str,
+        context: dict[str, Any] | None = None,
+        *,
+        data_descs: list[dict[str, Any]] | None = None,
+        selected_tools: list[str] | tuple[str, ...] | None = None,
+    ) -> dict[str, Any]:
         """Validate, execute, and return structured result/error/provenance."""
         started = time.perf_counter()
-        bound_context = dict(context or {})
+        request = ExecutionRequest.from_payload(
+            data_descs if data_descs is not None else data_descs_from_context(context),
+            selected_tools,
+        )
         try:
-            validate_code(code)
+            validate_code(code, request.selected_tools)
         except UnsafeCodeError as error:
             result = {
                 "status": "error",
@@ -70,10 +82,17 @@ class SafeExecutionClient:
                 "error": str(error),
                 "elapsed_ms": round((time.perf_counter() - started) * 1000),
             }
-            result["execution_id"] = _persist_execution(code, bound_context, result)
+            result["execution_id"] = _persist_execution(code, request, result)
             return result
 
-        payload = json.dumps({"code": code, "context": bound_context}, ensure_ascii=False)
+        payload = json.dumps(
+            {
+                "code": code,
+                "data_descs": request.data_descs,
+                "selected_tools": request.selected_tools,
+            },
+            ensure_ascii=False,
+        )
         environment = {
             key: value
             for key, value in os.environ.items()
@@ -125,7 +144,7 @@ class SafeExecutionClient:
                     "error": f"execution exceeded {self.timeout_seconds:g} seconds",
                     "elapsed_ms": round((time.perf_counter() - started) * 1000),
                 }
-                result["execution_id"] = _persist_execution(code, bound_context, result)
+                result["execution_id"] = _persist_execution(code, request, result)
                 return result
             finally:
                 stop_monitor.set()
@@ -137,7 +156,7 @@ class SafeExecutionClient:
                 "error": f"execution exceeded {self.memory_limit_mb} MiB",
                 "elapsed_ms": round((time.perf_counter() - started) * 1000),
             }
-            result["execution_id"] = _persist_execution(code, bound_context, result)
+            result["execution_id"] = _persist_execution(code, request, result)
             return result
         if process.returncode != 0:
             result = {
@@ -146,7 +165,7 @@ class SafeExecutionClient:
                 "error": stderr.strip()[:4_000] or f"worker exited with code {process.returncode}",
                 "elapsed_ms": round((time.perf_counter() - started) * 1000),
             }
-            result["execution_id"] = _persist_execution(code, bound_context, result)
+            result["execution_id"] = _persist_execution(code, request, result)
             return result
         try:
             result = json.loads(stdout)
@@ -165,5 +184,5 @@ class SafeExecutionClient:
             "filesystem": "not exposed; approved artifact API only",
             "imports": "disabled",
         }
-        result["execution_id"] = _persist_execution(code, bound_context, result)
+        result["execution_id"] = _persist_execution(code, request, result)
         return result

@@ -13,27 +13,43 @@ from sevir_world.execution import SafeExecutionClient
 from sevir_world.geolocation import SevirGeolocator
 from sevir_world.metrics import _contingency, _fss_terms, _scores
 from sevir_world.safety import UnsafeCodeError, validate_code
+from sevir_world.runtime import TOOL_CLASSES
+from sevir_world.tool_docs import extract_function_docstrings, selected_api_reference
 from sevir_world.uncertainty import track_fields
 
 
 class SafetyValidatorTest(unittest.TestCase):
     def test_rejects_import_file_network_and_private_access(self) -> None:
         programs = (
-            "import os\nresult = world.data.uploads()",
-            "result = open('secret.txt').read()\nworld.data.uploads()",
-            "result = world.__dict__",
-            "result = context.__class__\nworld.data.uploads()",
+            "import os\ndef run(ds, statistics):\n    return {}",
+            "def run(ds, statistics):\n    return open('secret.txt').read()",
+            "def run(ds, statistics):\n    return statistics.__dict__",
+            "def run(ds, statistics):\n    return ds.__class__",
         )
         for program in programs:
             with self.subTest(program=program):
                 with self.assertRaises(UnsafeCodeError):
-                    validate_code(program)
+                    validate_code(program, ("ds", "statistics"))
 
-    def test_requires_world_call_and_result_assignment(self) -> None:
-        with self.assertRaisesRegex(UnsafeCodeError, "approved world API"):
-            validate_code("result = {'value': 1}")
-        with self.assertRaisesRegex(UnsafeCodeError, "assign.*result"):
-            validate_code("events = world.data.search(limit=1)")
+    def test_requires_exact_run_signature_tool_call_and_return(self) -> None:
+        with self.assertRaisesRegex(UnsafeCodeError, "exactly one top-level run"):
+            validate_code("result = {'value': 1}", ("ds", "statistics"))
+        with self.assertRaisesRegex(UnsafeCodeError, "exactly match"):
+            validate_code("def run(ds):\n    return ds", ("ds", "statistics"))
+        with self.assertRaisesRegex(UnsafeCodeError, "selected tool"):
+            validate_code(
+                "def run(ds, statistics):\n    return {'count': len(ds)}",
+                ("ds", "statistics"),
+            )
+
+    def test_dynamic_docs_include_only_selected_tools(self) -> None:
+        documentation = selected_api_reference(("ds", "statistics"), TOOL_CLASSES)
+        self.assertIn("statistics.compare_event", documentation)
+        self.assertNotIn("forecaster.hazards", documentation)
+        self.assertNotIn("world.", documentation)
+        module = __import__(TOOL_CLASSES["statistics"].__module__, fromlist=["x"])
+        _, methods = extract_function_docstrings(module.__file__, "SevirStatistics")
+        self.assertIn("compare_event", {method["name"] for method in methods})
 
 
 class WeatherAnalysisTest(unittest.TestCase):
@@ -76,39 +92,58 @@ class WeatherAnalysisTest(unittest.TestCase):
 
 
 class SafeExecutionIntegrationTest(unittest.TestCase):
-    def test_executes_multiple_world_tools_and_records_provenance(self) -> None:
+    def test_executes_selected_tools_and_records_provenance(self) -> None:
         code = """
-events = world.data.search(query='', limit=1)
-stats = world.statistics.historical()
-result = {
-    'returned_events': len(events.get('records', [])),
-    'catalog_records': stats.get('record_count', 0),
-}
+def run(ds, statistics):
+    stats = statistics.historical()
+    return {
+        'loaded_datasets': len(ds),
+        'catalog_records': stats.get('record_count', 0),
+    }
 """
         with tempfile.TemporaryDirectory() as directory, patch(
             "sevir_world.execution.EXECUTION_LOG_ROOT", Path(directory)
         ):
-            execution = SafeExecutionClient(timeout_seconds=30).execute(code)
+            execution = SafeExecutionClient(timeout_seconds=30).execute(
+                code, data_descs=[], selected_tools=["ds", "statistics"]
+            )
             audit_path = Path(directory) / f"{execution['execution_id']}.json"
             audit = json.loads(audit_path.read_text(encoding="utf-8"))
 
         self.assertEqual(execution["status"], "ok", execution)
-        self.assertEqual(execution["result"]["returned_events"], 1)
+        self.assertEqual(execution["result"]["loaded_datasets"], 0)
         self.assertGreater(execution["result"]["catalog_records"], 0)
         self.assertEqual(
-            [call["api"] for call in execution["calls"]],
-            ["data.search", "statistics.historical"],
+            [call["api"] for call in execution["calls"]], ["statistics.historical"],
         )
         self.assertEqual(execution["limits"]["imports"], "disabled")
         self.assertEqual(audit["code"].strip(), code.strip())
+        self.assertEqual(audit["selected_tools"], ["ds", "statistics"])
         self.assertEqual(audit["execution"]["status"], "ok")
+
+    def test_data_indexer_loads_ds_before_run_and_tools_accept_it(self) -> None:
+        code = """def run(ds, geolocator):
+    location = geolocator.locate(ds)
+    return {'event_id': ds[0].get('event_id'), 'center': location.get('center')}
+"""
+        with tempfile.TemporaryDirectory() as directory, patch(
+            "sevir_world.execution.EXECUTION_LOG_ROOT", Path(directory)
+        ):
+            execution = SafeExecutionClient(timeout_seconds=30).execute(
+                code,
+                data_descs=[{"source": "sevir", "event_id": "R19100105107994"}],
+                selected_tools=["ds", "geolocator"],
+            )
+        self.assertEqual(execution["status"], "ok", execution)
+        self.assertEqual(execution["result"]["event_id"], "R19100105107994")
+        self.assertEqual(execution["calls"][0]["api"], "geolocator.locate")
 
 
 class _RepairingExecutor:
     def __init__(self) -> None:
         self.codes: list[str] = []
 
-    def execute(self, code: str, context: dict) -> dict:
+    def execute(self, code: str, context: dict, **request: object) -> dict:
         self.codes.append(code)
         if len(self.codes) == 1:
             return {"status": "error", "error": "bad argument", "elapsed_ms": 1}
@@ -144,8 +179,8 @@ class DirectAgentTest(unittest.TestCase):
                 {
                     "plan": "combine metadata and history",
                     "code": (
-                        "event = world.data.event(context.get('event_id'))\n"
-                        "result = world.statistics.compare_event(context.get('event_id'))"
+                        "def run(ds, geolocator, forecaster, statistics, uncertainty, metrics, visualizer):\n"
+                        "    return statistics.compare_event(ds[0].get('event_id'))"
                     ),
                 },
             )

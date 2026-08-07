@@ -5,7 +5,8 @@ from typing import Any
 
 import numpy as np
 
-import sevir_tools
+from .backends import forecast
+from .repositories import ensemble
 
 from .base import WorldComponent
 
@@ -236,7 +237,7 @@ class UncertaintyAnalyzer(WorldComponent):
             "minimum_region_pixels": minimum_region_pixels,
         }
         return self._call(
-            "uncertainty.analyze", arguments, sevir_tools.analyze_ensemble_uncertainty
+            "uncertainty.analyze", arguments, forecast.analyze_ensemble_uncertainty
         )
 
     def track_objects(
@@ -252,7 +253,7 @@ class UncertaintyAnalyzer(WorldComponent):
         Member numbering is one-based. Distances assume the native VIL grid is
         approximately 1 km per pixel.
         """
-        arrays, _ = sevir_tools._load_cascast_ensemble(event_id)
+        arrays, _ = ensemble._load_cascast_ensemble(event_id)
         if source == "ensemble_mean":
             fields = arrays["ensemble_mean"]
         elif source == "ground_truth":
@@ -297,7 +298,7 @@ class UncertaintyAnalyzer(WorldComponent):
         consensus prototypes using temporal overlap and mean-path distance.
         Member support is an ensemble fraction, not a calibrated hazard probability.
         """
-        arrays, _ = sevir_tools._load_cascast_ensemble(event_id)
+        arrays, _ = ensemble._load_cascast_ensemble(event_id)
         member_tracks = [
             track_fields(member, threshold, minimum_region_pixels)["tracks"]
             for member in arrays["ensemble_members"]

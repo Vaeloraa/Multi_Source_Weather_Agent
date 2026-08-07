@@ -12,7 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from sevir_world.safety import UnsafeCodeError, validate_code  # noqa: E402
-from sevir_world.world import SevirWorld  # noqa: E402
+from sevir_world.contracts import ExecutionRequest  # noqa: E402
+from sevir_world.runtime import ExecutionEnvironment  # noqa: E402
 
 
 class BoundedOutput(io.StringIO):
@@ -47,17 +48,29 @@ def _json_safe(value: Any) -> Any:
     raise TypeError(f"result contains unsupported type: {type(value).__name__}")
 
 
+def _primary_result(calls: list[dict[str, Any]], result: Any) -> Any:
+    successful = [item.get("result") for item in calls if item.get("status") == "ok"]
+    dictionaries = [item for item in successful if isinstance(item, dict)]
+    if dictionaries:
+        return dictionaries[-1]
+    return result
+
+
 def main() -> None:
     output: dict[str, Any]
+    environment: ExecutionEnvironment | None = None
     try:
         raw = sys.stdin.read(65_537)
         if len(raw) > 65_536:
             raise ValueError("execution request exceeds 64 KiB")
         payload = json.loads(raw)
         code = str(payload.get("code", ""))
-        context = dict(payload.get("context") or {})
-        tree = validate_code(code)
-        world = SevirWorld(context)
+        request = ExecutionRequest.from_payload(
+            list(payload.get("data_descs") or []),
+            list(payload.get("selected_tools") or []),
+        )
+        tree = validate_code(code, request.selected_tools)
+        environment = ExecutionEnvironment(request)
         captured = BoundedOutput()
 
         def safe_print(*values: Any, sep: str = " ", end: str = "\n") -> None:
@@ -65,8 +78,6 @@ def main() -> None:
 
         globals_dict = {
             "__builtins__": {},
-            "world": world,
-            "context": context,
             "len": len,
             "min": min,
             "max": max,
@@ -91,12 +102,16 @@ def main() -> None:
         }
         locals_dict: dict[str, Any] = {}
         exec(compile(tree, "<sevir-direct>", "exec"), globals_dict, locals_dict)
-        result = _json_safe(locals_dict.get("result"))
+        run_function = locals_dict.get("run")
+        if not callable(run_function):
+            raise RuntimeError("validated program did not define run")
+        result = _json_safe(environment.invoke(run_function))
+        calls = _json_safe(environment.recorder.calls)
         output = {
             "status": "ok",
             "result": result,
-            "primary_result": _json_safe(world.primary_result()),
-            "calls": _json_safe(world.call_trace()),
+            "primary_result": _json_safe(_primary_result(calls, result)),
+            "calls": calls,
             "stdout": captured.getvalue(),
         }
     except Exception as error:
@@ -105,6 +120,7 @@ def main() -> None:
             "error_type": type(error).__name__,
             "error": str(error),
             "traceback": "".join(traceback.format_exception_only(type(error), error)).strip(),
+            "calls": _json_safe(environment.recorder.calls) if environment else [],
         }
     # ASCII transport avoids Windows redirected-console code-page ambiguity.
     encoded = json.dumps(output, ensure_ascii=True)
