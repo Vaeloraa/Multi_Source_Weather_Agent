@@ -8,7 +8,12 @@ import numpy as np
 
 
 def main() -> int:
-    package_dir = Path(__file__).resolve().parents[1] / "cascast_ensemble_uncertainty"
+    package_dir = (
+        Path(__file__).resolve().parents[1]
+        / "data"
+        / "source_packages"
+        / "cascast_uncertainty"
+    )
     h5_path = package_dir / "cascast_ensemble_10samples_384.h5"
 
     with h5py.File(h5_path, "r") as handle:

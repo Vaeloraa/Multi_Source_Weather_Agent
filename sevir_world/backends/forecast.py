@@ -11,8 +11,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from ..repositories.config import *
-from ..repositories.ensemble import (
+from ..data_access.config import *
+from ..data_access.ensemble import (
     _cascast_source,
     _ensemble_manifest,
     _event,
@@ -20,7 +20,7 @@ from ..repositories.ensemble import (
     _source,
     _vil_display_values,
 )
-from ..repositories.uploads import _load_uploaded_vil, _load_uploaded_vil_sequence
+from ..data_access.uploads import _load_uploaded_vil, _load_uploaded_vil_sequence
 
 import h5py
 import numpy as np

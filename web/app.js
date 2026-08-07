@@ -798,10 +798,12 @@ function renderDirectTrace(data) {
     const summary = document.createElement("summary");
     summary.textContent = `第${item.attempt}轮 · ${item.status}${item.plan ? ` · ${item.plan}` : ""}`;
     block.appendChild(summary);
-    const code = document.createElement("pre");
-    code.className = "direct-code";
-    code.textContent = item.code || "";
-    block.appendChild(code);
+    if (item.code) {
+      const code = document.createElement("pre");
+      code.className = "direct-code";
+      code.textContent = item.code;
+      block.appendChild(code);
+    }
     if (item.error) {
       const error = document.createElement("pre");
       error.className = "direct-error";

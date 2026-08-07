@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .backends import evaluation, forecast
+from ..backends import evaluation, forecast
 
 from .base import WorldComponent, resolve_event_id
 

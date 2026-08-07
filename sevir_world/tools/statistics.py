@@ -4,8 +4,8 @@ from typing import Any
 
 import numpy as np
 
-from .backends import statistics
-from .repositories import catalog
+from ..backends import statistics
+from ..data_access import catalog
 
 from .base import WorldComponent, resolve_event_id
 

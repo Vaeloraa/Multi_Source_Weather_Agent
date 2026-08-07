@@ -78,7 +78,7 @@
             <div class="advanced-content">
               <div class="agent-mode">
                 <div><strong>执行方式</strong><small id="provider-state">正在检查API配置…</small></div>
-                <select id="mode" aria-label="运行模式"><option value="reflective" selected>Reflective</option><option value="direct">Direct</option><option value="api">Tool Agent</option><option value="local">Local baseline</option></select>
+                <select id="mode" aria-label="运行模式"><option value="reflective" selected>Reflective</option><option value="direct">Direct</option></select>
               </div>
               <div class="api-fields hidden" id="api-fields">
                 <label>大模型<select id="provider"><option value="qwen">Qwen</option><option value="deepseek">DeepSeek</option><option value="kimi">Kimi</option></select></label>
@@ -232,7 +232,7 @@
                 <small>调用参数</small><pre id="tool-arguments"></pre>
                 <small>完整工具返回</small><pre id="tool-result"></pre>
                 <div id="direct-analysis" class="hidden">
-                  <small>Direct代码执行记录</small>
+                  <small>Agent代码执行记录</small>
                   <div id="direct-trace"></div>
                 </div>
                 <div id="agent-artifacts" class="hidden">

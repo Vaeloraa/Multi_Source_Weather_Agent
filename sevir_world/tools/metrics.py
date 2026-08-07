@@ -4,7 +4,7 @@ from typing import Any
 
 import numpy as np
 
-from .repositories import ensemble
+from ..data_access import ensemble
 
 from .base import WorldComponent
 

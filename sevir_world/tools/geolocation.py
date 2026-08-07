@@ -6,12 +6,12 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree
 
-from .backends import geospatial
+from ..backends import geospatial
 
 from .base import WorldComponent, resolve_event_id
 
 
-BOUNDARY_ROOT = Path(__file__).resolve().parents[1] / "data" / "boundaries"
+BOUNDARY_ROOT = Path(__file__).resolve().parents[2] / "data" / "boundaries"
 
 
 def _point_in_ring(longitude: float, latitude: float, ring: list[tuple[float, float]]) -> bool:

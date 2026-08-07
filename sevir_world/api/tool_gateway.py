@@ -21,7 +21,7 @@ from ..backends.statistics import (
     get_noaa_storm_reference,
     historical_sevir_statistics,
 )
-from ..repositories.catalog import (
+from ..data_access.catalog import (
     get_sevir_event_metadata,
     load_sevir_vil_event,
     search_sevir_catalog,

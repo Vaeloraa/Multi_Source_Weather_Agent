@@ -3,7 +3,7 @@ from __future__ import annotations
 import ast
 from typing import Any
 
-from .contracts import CANONICAL_ARGUMENTS
+from ..agent.contracts import CANONICAL_ARGUMENTS
 
 
 SAFE_FUNCTIONS = {

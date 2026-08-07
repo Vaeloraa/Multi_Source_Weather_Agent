@@ -10,12 +10,16 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 PREDICTION_H5 = (
     ROOT
-    / "cascast_ensemble_uncertainty"
+    / "data"
+    / "source_packages"
+    / "cascast_uncertainty"
     / "cascast_ensemble_10samples_384.h5"
 )
 GROUND_TRUTH_H5 = (
     ROOT
-    / "cascast_ensemble_ground_truth"
+    / "data"
+    / "source_packages"
+    / "cascast_ground_truth"
     / "cascast_ground_truth_10samples_384.h5"
 )
 

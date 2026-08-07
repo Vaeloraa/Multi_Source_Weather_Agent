@@ -16,10 +16,10 @@ data/uploads/*
 # Large local datasets and model outputs
 data/cascast_ensemble_cache/*.npz
 data/sevir_complete/
-cascast_ensemble_uncertainty/*.h5
-cascast_ensemble_ground_truth/*.h5
-earthformer_example/**/*.npy
+data/source_packages/cascast_uncertainty/*.h5
+data/source_packages/cascast_ground_truth/*.h5
+data/model_inputs/earthformer/**/*.npy
+data/generated_exports/
 
 # Reproducible dependencies and generated workspace artifacts
 vendor/
-outputs/

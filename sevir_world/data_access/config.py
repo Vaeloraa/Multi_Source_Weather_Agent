@@ -20,7 +20,10 @@ SAMPLE_NPZ = SAMPLE_DIR / "sevir_vil_event.npz"
 SAMPLE_METADATA = SAMPLE_DIR / "metadata.json"
 CASCAST_ROOT = Path(os.getenv("CASCAST_ROOT", str(ROOT.parent / "CasCast")))
 EARTHFORMER_LATENT_ROOT = Path(
-    os.getenv("EARTHFORMER_LATENT_ROOT", str(ROOT / "earthformer_example"))
+    os.getenv(
+        "EARTHFORMER_LATENT_ROOT",
+        str(ROOT / "data" / "model_inputs" / "earthformer"),
+    )
 )
 CASCAST_EVENT_ID = "R19100105107994"
 CASCAST_LEGACY_EVENT_ID = "R19082500047459"

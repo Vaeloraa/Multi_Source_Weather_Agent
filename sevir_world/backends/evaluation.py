@@ -11,8 +11,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from ..repositories.config import *
-from ..repositories.ensemble import _ensemble_manifest, _load_cascast_ensemble
+from ..data_access.config import *
+from ..data_access.ensemble import _ensemble_manifest, _load_cascast_ensemble
 from .forecast import (
     _deterministic_metrics,
     _storm_object_verification,

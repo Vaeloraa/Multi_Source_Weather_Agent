@@ -13,12 +13,12 @@ from typing import Any
 
 import psutil
 
-from .contracts import ExecutionRequest, data_descs_from_context
+from ..agent.contracts import ExecutionRequest, data_descs_from_context
 from .safety import UnsafeCodeError, validate_code
 
 
-ROOT = Path(__file__).resolve().parents[1]
-WORKER = Path(__file__).resolve().with_name("safe_worker.py")
+ROOT = Path(__file__).resolve().parents[2]
+WORKER = Path(__file__).resolve().with_name("worker.py")
 EXECUTION_LOG_ROOT = ROOT / "data" / "executions"
 
 

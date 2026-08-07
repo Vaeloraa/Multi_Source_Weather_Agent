@@ -5,7 +5,7 @@ import re
 from typing import Any, Callable
 
 from .contracts import ExecutionRequest, data_descs_from_context
-from .execution import SafeExecutionClient
+from ..code_execution.client import SafeExecutionClient
 from .runtime import TOOL_CLASSES
 from .tool_docs import selected_api_reference
 

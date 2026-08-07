@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .repositories import catalog, ensemble, uploads
+from ..data_access import catalog, ensemble, uploads
 
 from .base import WorldComponent
 

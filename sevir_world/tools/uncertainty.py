@@ -5,8 +5,8 @@ from typing import Any
 
 import numpy as np
 
-from .backends import forecast
-from .repositories import ensemble
+from ..backends import forecast
+from ..data_access import ensemble
 
 from .base import WorldComponent
 

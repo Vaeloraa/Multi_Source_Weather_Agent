@@ -11,8 +11,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from ..repositories.config import *
-from ..repositories.catalog import (
+from ..data_access.config import *
+from ..data_access.catalog import (
     _catalog_public_record,
     _catalog_vil_event,
     _catalog_vil_records,

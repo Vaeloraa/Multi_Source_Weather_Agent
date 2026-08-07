@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from .base import WorldComponent
 
 
-ARTIFACT_ROOT = Path(__file__).resolve().parents[1] / "data" / "artifacts"
+ARTIFACT_ROOT = Path(__file__).resolve().parents[2] / "data" / "artifacts"
 
 
 class Visualizer(WorldComponent):

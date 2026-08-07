@@ -7,8 +7,8 @@ import unittest
 from pathlib import Path
 
 from sevir_world.backends import geospatial, statistics
-from sevir_world.repositories import catalog as tools
-from sevir_world.repositories import uploads
+from sevir_world.data_access import catalog as tools
+from sevir_world.data_access import uploads
 import h5py
 import numpy as np
 

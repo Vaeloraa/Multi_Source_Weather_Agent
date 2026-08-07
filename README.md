@@ -20,11 +20,17 @@ signatures and documentation stay synchronized with the implementation. Generate
 code runs in a separate restricted process with AST validation, time, memory and
 output limits. Every call and result or error is retained in the execution audit.
 
-The implementation is split by responsibility: persistent access lives in
-`sevir_world/repositories`, numerical domain code in `sevir_world/backends`,
-HTTP compatibility in `sevir_world/services`, and Agent assembly in
-`sevir_world/runtime.py`. The former `sevir_tools.py` monolith and `world` facade
-are no longer part of the runtime.
+The implementation is split by responsibility: Agent orchestration lives in
+`sevir_world/agent`, restricted execution in `sevir_world/code_execution`, public
+resources in `sevir_world/tools`, persistent access in `sevir_world/data_access`,
+numerical domain code in `sevir_world/backends`, and HTTP transport in
+`sevir_world/api`. The former `sevir_tools.py` monolith and `world` facade are no
+longer part of the runtime.
+
+See [`docs/architecture.md`](docs/architecture.md) for the complete directory map
+and Zephyrus responsibility mapping. Upload fixtures live under
+`data/examples/uploads`; retained generated exports live under the ignored
+`data/generated_exports` directory.
 
 ## SEVIRWorld 与 Zephyrus-Direct
 
@@ -32,6 +38,13 @@ are no longer part of the runtime.
 CasCast 缓存预测、历史统计、不确定性分析、多阈值验证和图表生成。网页的
 `Direct` 模式会让 Qwen 生成只调用这些 API 的短 Python 程序，并在独立子进程
 中执行；执行失败时最多自动修复 3 次，最终回答只根据真实执行结果生成。
+
+`Reflective` 模式参考 Zephyrus 的 execute-observe-refine 控制循环单独实现：
+每次代码执行结果会作为 observation 返回模型，模型可以基于它继续生成一段
+不同的分析代码，或在至少一次成功执行后结束并回答。默认最多 8 个 Agent 步骤、
+连续错误最多 3 次；可通过 `SEVIR_REFLECTIVE_MAX_STEPS` 和
+`SEVIR_REFLECTIVE_MAX_ERROR_RETRIES` 调整。网页只展示 Direct 和 Reflective，
+固定 Tool Agent 与 Local baseline 仍保留为后端评测基线。
 
 代码执行边界禁止导入模块、文件访问、网络和系统命令，并限制 AST 大小、
 运行时间、内存、标准输出和结果长度。每次执行会返回生成代码、工具调用链、

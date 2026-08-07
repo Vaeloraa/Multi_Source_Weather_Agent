@@ -8,12 +8,12 @@ from pathlib import Path
 from typing import Any
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from sevir_world.safety import UnsafeCodeError, validate_code  # noqa: E402
-from sevir_world.contracts import ExecutionRequest  # noqa: E402
-from sevir_world.runtime import ExecutionEnvironment  # noqa: E402
+from sevir_world.code_execution.safety import UnsafeCodeError, validate_code  # noqa: E402
+from sevir_world.agent.contracts import ExecutionRequest  # noqa: E402
+from sevir_world.agent.runtime import ExecutionEnvironment  # noqa: E402
 
 
 class BoundedOutput(io.StringIO):

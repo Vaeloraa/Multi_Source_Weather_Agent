@@ -8,14 +8,15 @@ from unittest.mock import patch
 
 import numpy as np
 
-from sevir_world.direct_agent import run_direct_agent
-from sevir_world.execution import SafeExecutionClient
-from sevir_world.geolocation import SevirGeolocator
-from sevir_world.metrics import _contingency, _fss_terms, _scores
-from sevir_world.safety import UnsafeCodeError, validate_code
-from sevir_world.runtime import TOOL_CLASSES
-from sevir_world.tool_docs import extract_function_docstrings, selected_api_reference
-from sevir_world.uncertainty import track_fields
+from sevir_world.agent.direct import run_direct_agent
+from sevir_world.agent.reflective import run_reflective_agent
+from sevir_world.agent.runtime import TOOL_CLASSES
+from sevir_world.agent.tool_docs import extract_function_docstrings, selected_api_reference
+from sevir_world.code_execution.client import SafeExecutionClient
+from sevir_world.code_execution.safety import UnsafeCodeError, validate_code
+from sevir_world.tools.geolocation import SevirGeolocator
+from sevir_world.tools.metrics import _contingency, _fss_terms, _scores
+from sevir_world.tools.uncertainty import track_fields
 
 
 class SafetyValidatorTest(unittest.TestCase):
@@ -102,7 +103,7 @@ def run(ds, statistics):
     }
 """
         with tempfile.TemporaryDirectory() as directory, patch(
-            "sevir_world.execution.EXECUTION_LOG_ROOT", Path(directory)
+            "sevir_world.code_execution.client.EXECUTION_LOG_ROOT", Path(directory)
         ):
             execution = SafeExecutionClient(timeout_seconds=30).execute(
                 code, data_descs=[], selected_tools=["ds", "statistics"]
@@ -127,7 +128,7 @@ def run(ds, statistics):
     return {'event_id': ds[0].get('event_id'), 'center': location.get('center')}
 """
         with tempfile.TemporaryDirectory() as directory, patch(
-            "sevir_world.execution.EXECUTION_LOG_ROOT", Path(directory)
+            "sevir_world.code_execution.client.EXECUTION_LOG_ROOT", Path(directory)
         ):
             execution = SafeExecutionClient(timeout_seconds=30).execute(
                 code,
@@ -213,6 +214,93 @@ class DirectAgentTest(unittest.TestCase):
         self.assertEqual(len(result["tool_runs"]), 2)
         self.assertEqual(result["code_result"]["value"], 42)
         self.assertIn('"value": 42', synthesis_messages[1]["content"])
+
+
+class _ReflectiveExecutor:
+    def __init__(self) -> None:
+        self.codes: list[str] = []
+
+    def execute(self, code: str, context: dict, **request: object) -> dict:
+        self.codes.append(code)
+        if len(self.codes) == 1:
+            result = {"event_id": context["event_id"], "maximum_vil": 180}
+            api = "forecaster.nowcast"
+        else:
+            result = {"hazard_regions": 2, "duration_minutes": 35}
+            api = "forecaster.hazards"
+        return {
+            "status": "ok",
+            "result": result,
+            "primary_result": result,
+            "calls": [
+                {
+                    "step": 1,
+                    "api": api,
+                    "arguments": {"event_id": context["event_id"]},
+                    "result": result,
+                }
+            ],
+            "elapsed_ms": 1,
+            "execution_id": f"execution-{len(self.codes)}",
+            "limits": {"imports": "disabled"},
+        }
+
+
+class ReflectiveAgentTest(unittest.TestCase):
+    def test_executes_observes_refines_then_finishes(self) -> None:
+        executor = _ReflectiveExecutor()
+        replies = iter(
+            (
+                {
+                    "action": "execute",
+                    "plan": "先查看未来回波",
+                    "code": (
+                        "def run(ds, geolocator, forecaster, statistics, uncertainty, metrics, visualizer):\n"
+                        "    return forecaster.nowcast(ds)"
+                    ),
+                },
+                {
+                    "action": "execute",
+                    "plan": "根据回波进一步检查危险区域",
+                    "code": (
+                        "def run(ds, geolocator, forecaster, statistics, uncertainty, metrics, visualizer):\n"
+                        "    return forecaster.hazards(ds, threshold=133)"
+                    ),
+                },
+                {
+                    "action": "finish",
+                    "answer": "未来存在2个较强回波候选区域，窗口内持续35分钟。",
+                },
+            )
+        )
+        seen_messages: list[list[dict]] = []
+
+        def complete(provider: dict, model: str, messages: list[dict]) -> dict:
+            seen_messages.append([dict(item) for item in messages])
+            return {
+                "choices": [
+                    {"message": {"content": json.dumps(next(replies), ensure_ascii=False)}}
+                ]
+            }
+
+        result = run_reflective_agent(
+            {"api_key": "test", "label": "Qwen"},
+            "test-model",
+            "预测并分析危险区域和持续时间",
+            {"event_id": "S123"},
+            complete,
+            executor=executor,
+        )
+
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(result["route_mode"], "zephyrus_reflective")
+        self.assertEqual(len(executor.codes), 2)
+        self.assertEqual(len(result["observations"]), 2)
+        self.assertEqual(len(result["tool_runs"]), 2)
+        self.assertEqual(result["reflective_trace"][-1]["action"], "finish")
+        self.assertIn("2个", result["answer"])
+        self.assertIn("<observation>", seen_messages[1][-1]["content"])
+        self.assertIn("maximum_vil", seen_messages[1][-1]["content"])
 
 
 if __name__ == "__main__":

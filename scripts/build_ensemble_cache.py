@@ -11,12 +11,14 @@ import numpy as np
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE_DIR = ROOT / "cascast_ensemble_uncertainty"
+PACKAGE_DIR = ROOT / "data" / "source_packages" / "cascast_uncertainty"
 SOURCE_H5 = PACKAGE_DIR / "cascast_ensemble_10samples_384.h5"
 SOURCE_METADATA = PACKAGE_DIR / "metadata.json"
 GROUND_TRUTH_H5 = (
     ROOT
-    / "cascast_ensemble_ground_truth"
+    / "data"
+    / "source_packages"
+    / "cascast_ground_truth"
     / "cascast_ground_truth_10samples_384.h5"
 )
 TEST_LIST = ROOT.parent / "CasCast" / "datasets" / "sevir_list" / "test.txt"
