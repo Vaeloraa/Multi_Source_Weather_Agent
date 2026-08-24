@@ -1,0 +1,22 @@
+{
+  "execution_id": "a5e2b913f3d6454aa5bc8c10f2082a68",
+  "created_at_epoch_seconds": 1787585550.798,
+  "code": "import time\ntime.sleep(5)\nresult = {'status': 'ok'}",
+  "data_descs": [],
+  "selected_tools": [
+    "ds"
+  ],
+  "execution": {
+    "status": "error",
+    "error_type": "ExecutionCancelled",
+    "error": "request was cancelled during worker execution",
+    "error_phase": "request_cancelled",
+    "elapsed_ms": 761,
+    "repair": {
+      "category": "runtime",
+      "action": "rewrite the failing program using the complete traceback and the actual runtime_schema/result_schema; change the computation strategy, not just formatting",
+      "must_change": true,
+      "message": "request was cancelled during worker execution"
+    }
+  }
+}

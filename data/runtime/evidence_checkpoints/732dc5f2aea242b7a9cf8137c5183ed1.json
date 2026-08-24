@@ -1,0 +1,248 @@
+{
+  "checkpoint_id": "732dc5f2aea242b7a9cf8137c5183ed1",
+  "request_id": "07019dc51f2f4224a942fba8594f6c1a",
+  "created_at": "2026-08-21T16:30:46.271162+00:00",
+  "termination_reason": "error_budget_exhausted",
+  "evidence_bundle": {
+    "version": "1.1",
+    "source_count": 12,
+    "successful_observation_count": 0,
+    "successful_tool_count": 11,
+    "sources": [
+      {
+        "ref": "tool:1:data.match_uploaded_event",
+        "api": "data.match_uploaded_event",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:2:data.match_uploaded_event",
+        "api": "data.match_uploaded_event",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:3:data.load_hdf5",
+        "api": "data.load_hdf5",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:4:data.match_uploaded_event",
+        "api": "data.match_uploaded_event",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:5:data.load_hdf5",
+        "api": "data.load_hdf5",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:6:geolocator.locate",
+        "api": "geolocator.locate",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:7:geolocator.reverse_geocode",
+        "api": "geolocator.reverse_geocode",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:8:data.match_uploaded_event",
+        "api": "data.match_uploaded_event",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:9:data.load_hdf5",
+        "api": "data.load_hdf5",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:10:geolocator.locate",
+        "api": "geolocator.locate",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:11:geolocator.reverse_geocode",
+        "api": "geolocator.reverse_geocode",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "data:1",
+        "api": "data_desc",
+        "status": "available",
+        "source": "upload",
+        "event_id": null,
+        "upload_id": "795a51a9da6b41afbf07666deac4d32b"
+      }
+    ],
+    "facts": [],
+    "numeric_evidence": [
+      {
+        "ref": "tool:1:data.match_uploaded_event",
+        "path": "result.event_match.candidates[0].score",
+        "value": 1.0
+      },
+      {
+        "ref": "tool:1:data.match_uploaded_event",
+        "path": "result.event_match.confidence",
+        "value": 1.0
+      },
+      {
+        "ref": "tool:2:data.match_uploaded_event",
+        "path": "result.event_match.candidates[0].score",
+        "value": 1.0
+      },
+      "...",
+      {
+        "ref": "tool:11:geolocator.reverse_geocode",
+        "path": "result.longitude",
+        "value": -100.509676
+      }
+    ],
+    "verification_scope": {
+      "ground_truth_available": false,
+      "verified_event_count": 0,
+      "scope_kind": "none",
+      "single_event_only": false,
+      "subject_refs": [],
+      "forecast_max_lead_minutes": null,
+      "complete_truth_max_lead_minutes": null,
+      "any_truth_max_lead_minutes": null,
+      "frame_truth_max_lead_minutes": null,
+      "complete_truth_lead_minutes": [],
+      "partial_truth_lead_minutes": [],
+      "truth_completeness_unknown_lead_minutes": [],
+      "unverified_forecast_lead_minutes": [],
+      "coverage_reference_pixels": null,
+      "coverage_method": "none",
+      "cross_event_generalization_supported": false
+    },
+    "capabilities": {
+      "successful_execution": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "encoded_grid": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "temporal_sequence": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "geolocation": {
+        "available": true,
+        "evidence_refs": [
+          "tool:6:geolocator.locate",
+          "tool:7:geolocator.reverse_geocode",
+          "tool:10:geolocator.locate",
+          "tool:11:geolocator.reverse_geocode"
+        ]
+      },
+      "administrative_location": {
+        "available": true,
+        "evidence_refs": [
+          "tool:7:geolocator.reverse_geocode",
+          "tool:11:geolocator.reverse_geocode"
+        ]
+      },
+      "spatial_calibration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "compass_direction": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ground_truth": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "future_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "environment_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "era5_reanalysis": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "aurora_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ensemble_agreement": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "calibrated_probability": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "official_warning": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "rainfall_rate": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "meteorological_dynamics": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "hail": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "object_motion": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "centroid_change": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "observed_window_duration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "monotonic_interval_trend": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "complete_lifecycle": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "route_safety": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "multi_event_verification": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "cross_event_generalization": {
+        "available": false,
+        "evidence_refs": []
+      }
+    }
+  },
+  "observations": [],
+  "tool_summary": {},
+  "limitations": {},
+  "content_hash": "35422b958e2feaaf65d169372547b8c79ddf73ac6775a2e12a332221958b998c"
+}

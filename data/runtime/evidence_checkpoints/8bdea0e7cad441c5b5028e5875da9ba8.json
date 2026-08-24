@@ -1,0 +1,479 @@
+{
+  "checkpoint_id": "8bdea0e7cad441c5b5028e5875da9ba8",
+  "request_id": "b7ff7536b70448c78faf967a72cbadf2",
+  "created_at": "2026-08-21T07:33:25.495927+00:00",
+  "termination_reason": "foundation_summary_completed",
+  "evidence_bundle": {
+    "status": "ok",
+    "event_id": "R19080121067677",
+    "evidence": {
+      "sevir": {
+        "role": "local_observation",
+        "history_frames": 13,
+        "history_mean_vil_first": 9.096,
+        "history_mean_vil_last": 16.5032,
+        "supported_conclusion": "Mean encoded VIL increased across the observed history window.",
+        "limit": "Encoded VIL is not calibrated rainfall rate, dBZ, hail probability or warning severity."
+      },
+      "cascast": {
+        "role": "local_short_term_forecast",
+        "forecast_frames": 12,
+        "forecast_horizon_minutes": 60,
+        "ensemble_members": 10,
+        "forecast_mean_vil_first": 17.5792,
+        "forecast_mean_vil_last": 24.3591,
+        "ground_truth_mean_vil_first": 17.3454,
+        "ground_truth_mean_vil_last": 24.4207,
+        "mae_raw_vil": 10.777,
+        "rmse_raw_vil": 23.1248,
+        "mean_pixel_ensemble_spread": 6.4961,
+        "threshold_133_forecast_fraction_first": 0.01212,
+        "threshold_133_forecast_fraction_last": 0.01884,
+        "threshold_133_truth_fraction_first": 0.01391,
+        "threshold_133_truth_fraction_last": 0.03001,
+        "supported_conclusion": "The ensemble mean captured overall strengthening but underestimated the later high-VIL coverage at encoded threshold 133.",
+        "limit": "Threshold 133 is an analytical encoded-VIL cutoff, not an official hazard threshold."
+      },
+      "era5": {
+        "role": "retrospective_environmental_analysis",
+        "nearest_time_utc": "2019-08-01T21:00:00Z",
+        "nearest_grid_point": {
+          "latitude": 34.75,
+          "longitude": -84.75
+        },
+        "target_2m_temperature_c": 28.6732,
+        "target_10m_wind_speed_ms": 1.2396,
+        "target_mean_sea_level_pressure_hpa": 1016.6244,
+        "target_850hpa_specific_humidity_gkg": 11.5843,
+        "geopotential_height_m": {
+          "850": 1560.53,
+          "500": 5880.37,
+          "250": 10900.98
+        },
+        "supported_conclusion": "ERA5 supplies warm/moist event-time environmental context and multi-level circulation fields.",
+        "limit": "Without CAPE, CIN, vertical shear and related diagnostics, these fields do not establish the cause or certainty of local convective strengthening.",
+        "target_timeseries": {
+          "event_id": "R19080121067677",
+          "event_time_utc": "2019-08-01T21:06:40",
+          "target_point": {
+            "latitude": "...[truncated]",
+            "longitude": "...[truncated]"
+          },
+          "nearest_grid_point": {
+            "latitude": "...[truncated]",
+            "longitude": "...[truncated]"
+          },
+          "source": "ERA5_reanalysis",
+          "sampling_intervals_hours": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "has_time_gaps": true,
+          "variables": {
+            "time_utc": "...[truncated]",
+            "2m_temperature_c": "...[truncated]",
+            "10m_wind_speed_ms": "...[truncated]",
+            "mslp_hpa": "...[truncated]",
+            "850hpa_specific_humidity_gkg": "...[truncated]"
+          },
+          "interpretation_limit": "ERA5 is retrospective environmental context, not a local VIL forecast."
+        }
+      },
+      "aurora": {
+        "role": "large_scale_environmental_forecast",
+        "model": "AuroraPretrained",
+        "forecast": {
+          "lead_hours": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "target_point": {
+            "2m_temperature_c": "...[truncated]",
+            "mslp_hpa": "...[truncated]",
+            "wind_speed_ms": "...[truncated]"
+          }
+        },
+        "verification": {
+          "status": "full_domain_multi_lead",
+          "truth_source": "subsequent_era5",
+          "target_point_truth": {
+            "2m_temperature_c": "...[truncated]",
+            "mslp_hpa": "...[truncated]",
+            "wind_speed_ms": "...[truncated]"
+          },
+          "regional_mae": {
+            "2m_temperature_c": "...[truncated]",
+            "mslp_hpa": "...[truncated]",
+            "wind_speed_ms": "...[truncated]"
+          },
+          "artifacts": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ]
+        },
+        "supported_conclusion": "Aurora produced a four-lead large-scale environmental rollout and was compared with subsequent ERA5 over the full 48x96 domain.",
+        "limit": "This verifies large-scale environmental fields; it is not a local VIL forecast, and this is one retrospective event rather than a generalization study."
+      }
+    },
+    "raw_evidence": {
+      "event_id": "R19080121067677",
+      "event_time_utc": "2019-08-01T21:06:40Z",
+      "target_point": {
+        "latitude": 34.82941969338152,
+        "longitude": -84.86671230653172
+      },
+      "sevir": {
+        "role": "local_observation",
+        "history_frames": 13,
+        "history_mean_vil_first": 9.096,
+        "history_mean_vil_last": 16.5032,
+        "supported_conclusion": "Mean encoded VIL increased across the observed history window.",
+        "limit": "Encoded VIL is not calibrated rainfall rate, dBZ, hail probability or warning severity."
+      },
+      "cascast": {
+        "role": "local_short_term_forecast",
+        "forecast_frames": 12,
+        "forecast_horizon_minutes": 60,
+        "ensemble_members": 10,
+        "forecast_mean_vil_first": 17.5792,
+        "forecast_mean_vil_last": 24.3591,
+        "ground_truth_mean_vil_first": 17.3454,
+        "ground_truth_mean_vil_last": 24.4207,
+        "mae_raw_vil": 10.777,
+        "rmse_raw_vil": 23.1248,
+        "mean_pixel_ensemble_spread": 6.4961,
+        "threshold_133_forecast_fraction_first": 0.01212,
+        "threshold_133_forecast_fraction_last": 0.01884,
+        "threshold_133_truth_fraction_first": 0.01391,
+        "threshold_133_truth_fraction_last": 0.03001,
+        "supported_conclusion": "The ensemble mean captured overall strengthening but underestimated the later high-VIL coverage at encoded threshold 133.",
+        "limit": "Threshold 133 is an analytical encoded-VIL cutoff, not an official hazard threshold."
+      },
+      "era5": {
+        "role": "retrospective_environmental_analysis",
+        "nearest_time_utc": "2019-08-01T21:00:00Z",
+        "nearest_grid_point": {
+          "latitude": 34.75,
+          "longitude": -84.75
+        },
+        "target_2m_temperature_c": 28.6732,
+        "target_10m_wind_speed_ms": 1.2396,
+        "target_mean_sea_level_pressure_hpa": 1016.6244,
+        "target_850hpa_specific_humidity_gkg": 11.5843,
+        "geopotential_height_m": {
+          "850": 1560.53,
+          "500": 5880.37,
+          "250": 10900.98
+        },
+        "supported_conclusion": "ERA5 supplies warm/moist event-time environmental context and multi-level circulation fields.",
+        "limit": "Without CAPE, CIN, vertical shear and related diagnostics, these fields do not establish the cause or certainty of local convective strengthening.",
+        "target_timeseries": {
+          "event_id": "R19080121067677",
+          "event_time_utc": "2019-08-01T21:06:40",
+          "target_point": {
+            "latitude": "...[truncated]",
+            "longitude": "...[truncated]"
+          },
+          "nearest_grid_point": {
+            "latitude": "...[truncated]",
+            "longitude": "...[truncated]"
+          },
+          "source": "ERA5_reanalysis",
+          "sampling_intervals_hours": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "has_time_gaps": true,
+          "variables": {
+            "time_utc": "...[truncated]",
+            "2m_temperature_c": "...[truncated]",
+            "10m_wind_speed_ms": "...[truncated]",
+            "mslp_hpa": "...[truncated]",
+            "850hpa_specific_humidity_gkg": "...[truncated]"
+          },
+          "interpretation_limit": "ERA5 is retrospective environmental context, not a local VIL forecast."
+        }
+      },
+      "aurora": {
+        "role": "large_scale_environmental_forecast",
+        "model": "AuroraPretrained",
+        "input_times_utc": [
+          "2019-08-01T12:00:00Z",
+          "2019-08-01T18:00:00Z"
+        ],
+        "forecast_time_utc": "2019-08-02T00:00:00Z",
+        "grid_shape": [
+          48,
+          96
+        ],
+        "pressure_levels": 13,
+        "target_forecast": {
+          "2m_temperature_c": 24.0317,
+          "mean_sea_level_pressure_hpa": 1017.7888,
+          "10m_wind_speed_ms": 0.9198
+        },
+        "target_subsequent_era5": {
+          "2m_temperature_c": 25.9081,
+          "mean_sea_level_pressure_hpa": 1016.2519,
+          "10m_wind_speed_ms": 1.189
+        },
+        "rollout_leads_hours": [
+          6,
+          12,
+          18,
+          24
+        ],
+        "rollout_surface_region_mae": {
+          "2m_temperature_c": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "mslp_hpa": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "wind_speed_ms": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ]
+        },
+        "rollout_target_point_forecast": {
+          "2m_temperature_c": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "mslp_hpa": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "wind_speed_ms": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ]
+        },
+        "rollout_target_point_era5": {
+          "2m_temperature_c": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "mslp_hpa": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "wind_speed_ms": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ]
+        },
+        "supported_conclusion": "Aurora produced a four-lead large-scale environmental rollout and was compared with subsequent ERA5 over the full 48x96 domain.",
+        "verification_status": "full_domain_multi_lead",
+        "verification_artifacts": [
+          "aurora_rollout.npz",
+          "aurora_rollout_verification.json",
+          "aurora_rollout_timeseries.png",
+          "aurora_rollout_error_maps.png"
+        ],
+        "limit": "This verifies large-scale environmental fields; it is not a local VIL forecast, and this is one retrospective event rather than a generalization study."
+      }
+    },
+    "artifacts": [
+      {
+        "name": "aurora_forecast.json",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\aurora_forecast.json"
+      },
+      {
+        "name": "aurora_forecast.npz",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\aurora_forecast.npz"
+      },
+      {
+        "name": "aurora_forecast_aligned.json",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\aurora_forecast_aligned.json"
+      },
+      {
+        "name": "aurora_forecast_aligned.npz",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\aurora_forecast_aligned.npz"
+      },
+      {
+        "name": "aurora_forecast_event.json",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\aurora_forecast_event.json"
+      },
+      {
+        "name": "aurora_forecast_event.npz",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\aurora_forecast_event.npz"
+      },
+      {
+        "name": "aurora_input_manifest.json",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\aurora_input_manifest.json"
+      },
+      {
+        "name": "aurora_rollout.json",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\aurora_rollout.json"
+      },
+      {
+        "name": "aurora_rollout.npz",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\aurora_rollout.npz"
+      },
+      {
+        "name": "aurora_rollout_error_maps.png",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\aurora_rollout_error_maps.png"
+      },
+      {
+        "name": "aurora_rollout_timeseries.png",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\aurora_rollout_timeseries.png"
+      },
+      {
+        "name": "aurora_rollout_verification.json",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\aurora_rollout_verification.json"
+      },
+      {
+        "name": "case_evidence.json",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\case_evidence.json"
+      },
+      {
+        "name": "era5_environment_summary.json",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\era5_environment_summary.json"
+      },
+      {
+        "name": "era5_pressure_environment.png",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\era5_pressure_environment.png"
+      },
+      {
+        "name": "era5_surface_environment.png",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\era5_surface_environment.png"
+      },
+      {
+        "name": "era5_target_timeseries.json",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\era5_target_timeseries.json"
+      },
+      {
+        "name": "era5_target_timeseries.png",
+        "available": true,
+        "path": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts\\era5_target_timeseries.png"
+      }
+    ],
+    "validation": {
+      "status": "ok",
+      "errors": [],
+      "warnings": []
+    },
+    "cache": {
+      "event_id": "R19080121067677",
+      "cache_root": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\era5_cases\\R19080121067677\\artifacts",
+      "evidence_available": true,
+      "files": {
+        "aurora_forecast.json": 1243,
+        "aurora_forecast.npz": 863480,
+        "aurora_forecast_aligned.json": 1259,
+        "aurora_forecast_aligned.npz": 1039053,
+        "aurora_forecast_event.json": 1263,
+        "aurora_forecast_event.npz": 1036849,
+        "aurora_input_manifest.json": 1246,
+        "aurora_rollout.json": 1475,
+        "aurora_rollout.npz": 4095001,
+        "aurora_rollout_error_maps.png": 80966,
+        "aurora_rollout_timeseries.png": 118799,
+        "aurora_rollout_verification.json": 41024,
+        "case_evidence.json": 3851,
+        "era5_environment_summary.json": 586,
+        "era5_pressure_environment.png": 225718,
+        "era5_surface_environment.png": 107649,
+        "era5_target_timeseries.json": 4367,
+        "era5_target_timeseries.png": 177234
+      },
+      "cache_hit": true,
+      "source": "local_event_cache",
+      "aurora_leads": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "verification_status": "full_domain_multi_lead"
+    }
+  },
+  "observations": [],
+  "tool_summary": {},
+  "limitations": {},
+  "content_hash": "925da290f534d9562560d7b5c39c22939882dbdadd68865d86766a764ff3e774"
+}

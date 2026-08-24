@@ -1,0 +1,236 @@
+{
+  "session_id": "reviewed-acceptance-q12",
+  "turns": [
+    {
+      "turn_id": "reviewed-q12-turn",
+      "created_at": "2026-08-22T01:27:05.921704+00:00",
+      "question": "【验收Q12】CasCast预测的发展方向与该地区历史相似天气过程通常的发展方向是否一致？请比较强度、范围、移动和形态变化，并说明历史样本数。",
+      "answer": "CasCast预测的发展方向与该地区历史相似天气过程**无法进行一致性比较**，因为在SEVIR历史数据库中**未检索到符合条件的相似样本（样本数为0）**。\n这意味着当前预测结果缺乏本地历史气候背景的统计验证，属于模型基于物理规律和训练集泛化能力的独立推演，而非对当地特定历史规律的复刻。\n尽管无法对比历史，CasCast预测本身展示了清晰的演变特征：在未来60分钟内，VIL≥133的编码信号覆盖面积从+5分钟的 **7.34%** 增加至+60分钟的 **11.45%**；\n系统质心在图像网格中从第114行/174列移动至第140行/226列；\n平均VIL编码值从52.6升至57.1后回落至56.0，最大VIL编码值从229.7降至203.9。\n这些数值描述了编码网格的变化趋势，但不直接等同于气象学上的对流系统生消或真实地理移动。\n\n*   **历史样本缺失的含义**：\n分析使用了与预测相同的结构阈值（VIL≥133）在过去365天的记录中搜索相似事件，返回结果为空。\n这通常意味着该上传序列对应的天气过程在当地历史同期较为罕见，或者其强度/形态组合超出了数据库现有样本的匹配范围。\n**因此，关于“历史发展方向是否一致”的问题在当前数据约束下没有实证答案。\n** 随附的图表仅展示了CasCast预测自身的演变曲线，未包含任何历史对比线。\n*   **预测的编码网格演变特征（基于CasCast集合平均）**：\n*   **覆盖范围变化**：VIL≥133的像素占比在+5分钟为7.34%，+60分钟为11.45%，整体呈增加趋势。\n这表明模型预测高编码值区域在网格中的分布范围将扩大。\n*   **质心位移**：加权质心坐标显示系统向“行增加、列增加”的方向移动（即图像坐标系下的右下方）。\n由于上传数据**无地理校准**，无法将其转换为真实的东南/东北等地理方位，但相对位移矢量是明确的。\n*   **编码强度趋势**：平均VIL编码值在+40分钟达到峰值 **57.1**，随后轻微下降；\n最大VIL编码值则从起始的 **229.7** 逐步衰减至 **203.9**。\n这种“极值降低、均值维持”的模式描述了编码值分布的形态变化，不应被解读为确定的气象回声类型转换或物理消散过程。\n*   **重要限制与建议**：\n*   **无历史背书**：由于缺乏相似历史案例，本次预测的不确定性可能高于常见天气过程。\n建议不要依赖“过去类似情况都如何发展”的经验判断。\n*   **非真实地理定位**：所有位置描述均为384×384网格的相对坐标，不能用于导航或行政区划定位。\n*   **阈值定义**：文中“较强信号”指VIL编码值≥133的区域，这是CasCast评估梯度中的一个结构分割点，**不等于**气象预警等级或确定的降雨/冰雹指标。\n*   **图表说明**：随附的两张时间序列图分别展示了预测的平均强度和覆盖范围演变，因历史样本为0，图中仅有预测曲线。\n综上，虽然无法回答“是否与历史一致”，但预测本身指示了一个**VIL≥133覆盖范围整体扩大、最大编码值降低且质心持续位移**的编码网格演变过程。\n鉴于缺乏历史验证，建议对该预报保持更高的警惕性，并密切关注实时雷达更新以修正预期。\n\n从位置口径看，本题所称‘当地历史’应始终围绕同一真实经纬度范围检索；当前事件目录范围为45.2836–48.8250°N、102.4417–97.5104°W，Sheridan County关注点为47.7966°N、100.4214°W。若历史样本没有覆盖该范围，就不能用其他区域的相似过程替代。",
+      "observations": [
+        {
+          "step": 2,
+          "result": {
+            "event_id": "R19062708588472"
+          }
+        }
+      ],
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "data",
+        "geolocator",
+        "forecaster",
+        "statistics",
+        "uncertainty",
+        "metrics",
+        "visualizer"
+      ],
+      "termination_reason": "finished",
+      "code_execution_count": 1,
+      "evidence_summary": {
+        "forecast_frame_count": 12,
+        "cache_hit": true,
+        "ground_truth_available": false,
+        "model_name": "cascast_live",
+        "output_type": "ensemble_mean",
+        "forecast_evidence_id": "forecast-6b8cfe9e188551b2b4dd325e",
+        "ensemble_count": 10,
+        "verified_lead_minutes": [],
+        "upload_id": "7bf060ae47d5495ebbff3cc637cc2509",
+        "event_id": "R19062708588472",
+        "horizon_hours": 1.0,
+        "forecast_evidence": {
+          "forecast_frame_count": 12,
+          "cache_hit": true,
+          "id": "forecast-6b8cfe9e188551b2b4dd325e",
+          "model_name": "cascast_live",
+          "ensemble_count": 10,
+          "selected_lead_minutes": [
+            5,
+            10,
+            15,
+            20,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "horizon_hours": 1.0,
+          "lead_minutes": [
+            5,
+            10,
+            15,
+            20,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "rolling_segments": 1,
+          "subject_id": "7bf060ae47d5495ebbff3cc637cc2509",
+          "member_seeds": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "ground_truth_attached": false,
+          "subject_kind": "uploaded_sequence"
+        },
+        "task": "uploaded_sevir_vil_raw_sequence_forecast",
+        "ground_truth_complete_for_horizon": false,
+        "rolling_segments": 1,
+        "ground_truth_requested": false,
+        "member_seeds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "member_summaries": [
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {}
+        ]
+      },
+      "presentation_result": {
+        "presentation": {
+          "requested_lead_minutes": 60
+        },
+        "status": "ok",
+        "artifacts": [
+          {
+            "mime_type": "image/png",
+            "chart_type": "agent_time_series",
+            "verified": true,
+            "size_bytes": 45133,
+            "artifact_id": "452804376c788576d5d48805ac481633",
+            "description": "",
+            "image_url": "/api/artifacts/452804376c788576d5d48805ac481633.png",
+            "title": "Agent Time Series",
+            "url": "/api/artifacts/452804376c788576d5d48805ac481633.png"
+          },
+          {
+            "mime_type": "image/png",
+            "chart_type": "agent_time_series",
+            "verified": true,
+            "size_bytes": 41953,
+            "artifact_id": "2984fbf60fcd08c40606ca9ef032e112",
+            "description": "",
+            "image_url": "/api/artifacts/2984fbf60fcd08c40606ca9ef032e112.png",
+            "title": "Agent Time Series",
+            "url": "/api/artifacts/2984fbf60fcd08c40606ca9ef032e112.png"
+          }
+        ]
+      }
+    }
+  ],
+  "active_forecast_evidence": {
+    "forecast_frame_count": 24,
+    "cache_hit": false,
+    "id": "forecast-4d4a888a5fc6c73efcbb5fe5",
+    "model_name": "cascast_live",
+    "ensemble_count": 10,
+    "selected_lead_minutes": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120
+    ],
+    "horizon_hours": 2.0,
+    "lead_minutes": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120
+    ],
+    "rolling_segments": 2,
+    "subject_id": "7bf060ae47d5495ebbff3cc637cc2509",
+    "member_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "ground_truth_attached": false,
+    "subject_kind": "uploaded_sequence"
+  },
+  "active_upload": {
+    "upload_id": "",
+    "sequence_upload_id": "7bf060ae47d5495ebbff3cc637cc2509",
+    "data_source": "upload_sequence"
+  }
+}

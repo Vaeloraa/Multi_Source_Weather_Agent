@@ -1,0 +1,228 @@
+{
+  "checkpoint_id": "be97a7b0f30d4545a858630bb5b85016",
+  "request_id": "ca94cf18cc1940faaf3dea81203e3866",
+  "created_at": "2026-08-21T17:09:18.162541+00:00",
+  "termination_reason": "finished",
+  "evidence_bundle": {
+    "version": "1.1",
+    "source_count": 2,
+    "successful_observation_count": 1,
+    "successful_tool_count": 0,
+    "sources": [
+      {
+        "ref": "observation:3",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "data:1",
+        "api": "data_desc",
+        "status": "available",
+        "source": "upload",
+        "event_id": null,
+        "upload_id": "622e13a8d60046ff9de4a19c16aba880"
+      }
+    ],
+    "facts": [
+      {
+        "observation_step": 3,
+        "source": "upload",
+        "upload_id": "622e13a8d60046ff9de4a19c16aba880",
+        "kind": "single_frame"
+      }
+    ],
+    "numeric_evidence": [
+      {
+        "ref": "observation:3",
+        "path": "shape[0]",
+        "value": 384
+      },
+      {
+        "ref": "observation:3",
+        "path": "shape[1]",
+        "value": 384
+      }
+    ],
+    "verification_scope": {
+      "ground_truth_available": false,
+      "verified_event_count": 0,
+      "scope_kind": "none",
+      "single_event_only": false,
+      "subject_refs": [],
+      "forecast_max_lead_minutes": null,
+      "complete_truth_max_lead_minutes": null,
+      "any_truth_max_lead_minutes": null,
+      "frame_truth_max_lead_minutes": null,
+      "complete_truth_lead_minutes": [],
+      "partial_truth_lead_minutes": [],
+      "truth_completeness_unknown_lead_minutes": [],
+      "unverified_forecast_lead_minutes": [],
+      "coverage_reference_pixels": null,
+      "coverage_method": "none",
+      "cross_event_generalization_supported": false
+    },
+    "capabilities": {
+      "successful_execution": {
+        "available": true,
+        "evidence_refs": [
+          "observation:3"
+        ]
+      },
+      "encoded_grid": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "temporal_sequence": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "geolocation": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "administrative_location": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "spatial_calibration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "compass_direction": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ground_truth": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "future_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "environment_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "era5_reanalysis": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "aurora_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ensemble_agreement": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "calibrated_probability": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "official_warning": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "rainfall_rate": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "meteorological_dynamics": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "hail": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "object_motion": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "centroid_change": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "observed_window_duration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "monotonic_interval_trend": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "complete_lifecycle": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "route_safety": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "multi_event_verification": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "cross_event_generalization": {
+        "available": false,
+        "evidence_refs": []
+      }
+    }
+  },
+  "observations": [
+    {
+      "step": 3,
+      "result": {
+        "source": "upload",
+        "upload_id": "622e13a8d60046ff9de4a19c16aba880",
+        "shape": [
+          384,
+          384
+        ],
+        "kind": "single_frame",
+        "capabilities": [
+          "encoded_vil",
+          "local_observation"
+        ],
+        "has_pressure_level_data": false,
+        "note": "当前数据源仅包含上传的VIL图像，没有850/500/250 hPa的温度、风、湿度和位势高度数据"
+      },
+      "tool_calls": [],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    }
+  ],
+  "tool_summary": {
+    "decision_steps": 6,
+    "call_count": 0,
+    "unique_tool_count": 0,
+    "cache_hits": 0
+  },
+  "limitations": {
+    "status": "not_run",
+    "covered_dimensions": [],
+    "missing_dimensions": [],
+    "needs_more_execution": false,
+    "next_analysis": "",
+    "reason": "claim_gate_convergence"
+  },
+  "content_hash": "094fa8d4e46771e3d110fe1d8d8b11c8b6b30f88571a163292982db66d0ac035"
+}

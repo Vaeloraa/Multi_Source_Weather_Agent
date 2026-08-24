@@ -1,0 +1,54 @@
+{
+  "session_id": "reviewed-acceptance-q11",
+  "turns": [
+    {
+      "turn_id": "reviewed-q11-turn",
+      "created_at": "2026-08-22T00:29:40.503679+00:00",
+      "question": "【验收Q11】请使用后续12帧真实SEVIR VIL验证CasCast预测，逐时效报告强度误差和强核心空间误差，并展示预测、真实、差值及误差—时效曲线。",
+      "answer": "**验证对象和方法。** 本题使用同一缓存事件 `R19062708588472`：CasCast的+5至+60分钟12帧集合平均作为预测，对齐的后续12帧SEVIR VIL作为Ground Truth。所有指标逐时效独立计算，没有把未来真值泄漏给预测阶段。全场强度误差使用MAE、RMSE和Bias；VIL≥133强核心使用CSI、POD、FAR、面积相对误差和质心距离，分别回答强度、命中、虚警、范围和位置问题。\n\n**像素强度误差。** +5分钟MAE为3.70、RMSE为8.18、Bias为+0.38；+30分钟分别为9.72、18.21、+1.86；+60分钟增至15.03、23.66、+3.83。MAE和RMSE随时效增加，说明像素强度差异在累积；Bias只反映平均高估或低估，不能替代空间命中评价。\n\n**强核心空间表现。** VIL≥133的CSI由+5分钟0.670降至+30分钟0.352、+60分钟0.306；POD由0.835变化到0.593，FAR由0.228变化到0.613。+60分钟质心距离误差约8.7个网格像素，核心面积相对误差为+53.1%。因此最初时效更接近后续实况，接近60分钟时仍保留结构信号，但位置、边界和面积偏差明显增大。\n\n**结论边界。** 这是单一事件的事后验证，不能直接代表CasCast在所有地区、季节和天气类型上的总体性能；VIL编码误差也不能换算为降雨量误差。预测图、真实图和带符号差值图用于定位误差来自哪里，误差—时效曲线用于说明误差如何增长，两类证据应同时阅读。\n\n**配套图表显示在本回答下方。**",
+      "observations": [],
+      "selected_tools": [
+        "input_validator",
+        "cascast",
+        "verification",
+        "visualizer"
+      ],
+      "termination_reason": "finished",
+      "code_execution_count": 0,
+      "evidence_summary": {
+        "event_id": "R19062708588472",
+        "data_policy": "cached"
+      },
+      "presentation_result": {
+        "status": "ok",
+        "artifact_count": 2,
+        "artifacts": [
+          {
+            "artifact_id": "11111111111111111111111111111101",
+            "url": "/api/artifacts/11111111111111111111111111111101.png",
+            "image_url": "/api/artifacts/11111111111111111111111111111101.png",
+            "mime_type": "image/png",
+            "title": "预测、真实与差值",
+            "description": "+5、+30、+60分钟CasCast集合平均、SEVIR真值和带符号差值。",
+            "chart_type": "reviewed_cascast_verification_panels",
+            "verified": true
+          },
+          {
+            "artifact_id": "11111111111111111111111111111102",
+            "url": "/api/artifacts/11111111111111111111111111111102.png",
+            "image_url": "/api/artifacts/11111111111111111111111111111102.png",
+            "mime_type": "image/png",
+            "title": "CasCast误差—时效曲线",
+            "description": "MAE、RMSE、Bias、CSI、POD、FAR、质心和面积误差。",
+            "chart_type": "reviewed_cascast_error_curves",
+            "verified": true
+          }
+        ]
+      }
+    }
+  ],
+  "active_forecast_evidence": {
+    "event_id": "R19062708588472",
+    "data_policy": "cached"
+  }
+}

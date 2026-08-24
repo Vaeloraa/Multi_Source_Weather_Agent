@@ -1,0 +1,3748 @@
+{
+  "execution_id": "74757acff3e84aa5aeffdee6db5ea1b0",
+  "created_at_epoch_seconds": 1787585562.366,
+  "code": "case = foundation.case('R19062708588472')\nresult = {\n    'status': case.status,\n    'cache_hit': case.cache.cache_hit,\n    'leads': case.evidence.aurora.rollout_leads_hours,\n    'verification': case.evidence.aurora.verification_status,\n}",
+  "data_descs": [
+    {
+      "source": "sevir",
+      "event_id": "R19062708588472",
+      "contract_version": "sevir-data-v3",
+      "selection": "explicit_event_id",
+      "representation": "event_handle"
+    }
+  ],
+  "selected_tools": [
+    "ds",
+    "foundation"
+  ],
+  "execution": {
+    "status": "ok",
+    "result": {
+      "status": "ok",
+      "cache_hit": true,
+      "leads": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "verification": "full_domain_multi_lead"
+    },
+    "primary_result": {
+      "status": "ok",
+      "cache_hit": true,
+      "leads": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "verification": "full_domain_multi_lead"
+    },
+    "calls": [
+      {
+        "step": 1,
+        "api": "foundation.case",
+        "arguments": {
+          "event_id": "R19062708588472"
+        },
+        "status": "ok",
+        "result_status": "ok",
+        "cache_hit": false,
+        "cache_key": "3ebc4ea774b009aad1008213a2d7ea168aeae75efb5df7248d86e132210b6089",
+        "tool_contract": {
+          "name": "foundation.case",
+          "output_role": "analysis",
+          "retry_policy": "transient_only",
+          "cache_policy": "request_key"
+        },
+        "result": {
+          "status": "ok",
+          "task": "foundation_case",
+          "event_id": "R19062708588472",
+          "capabilities": [
+            "era5_reanalysis",
+            "aurora_forecast",
+            "verification"
+          ],
+          "interpretation_limit": "SEVIR/CasCast describe local encoded VIL; ERA5 describes retrospective environment; Aurora predicts large-scale environmental fields. These roles must remain separate, and Aurora verification status must be stated.",
+          "trace_truncated": true,
+          "original_json_characters": 170267
+        },
+        "result_schema": {
+          "type": "object",
+          "fields": {
+            "status": {
+              "type": "str"
+            },
+            "task": {
+              "type": "str"
+            },
+            "event_id": {
+              "type": "str"
+            },
+            "evidence": {
+              "type": "object",
+              "fields": {
+                "era5": {
+                  "type": "object",
+                  "fields": {
+                    "status": {
+                      "type": "str"
+                    },
+                    "role": {
+                      "type": "str"
+                    },
+                    "analysis_time_utc": {
+                      "type": "str"
+                    },
+                    "target_timeseries": {
+                      "type": "object",
+                      "fields": {
+                        "requested_target": {
+                          "type": "object",
+                          "fields": {
+                            "latitude": {
+                              "type": "float"
+                            },
+                            "longitude": {
+                              "type": "float"
+                            }
+                          }
+                        },
+                        "selected_target": {
+                          "type": "object",
+                          "fields": {
+                            "latitude": {
+                              "type": "float"
+                            },
+                            "longitude": {
+                              "type": "float"
+                            }
+                          }
+                        },
+                        "coverage": {
+                          "type": "object",
+                          "fields": {
+                            "start_utc": {
+                              "type": "str"
+                            },
+                            "end_utc": {
+                              "type": "str"
+                            },
+                            "time_count": {
+                              "type": "int"
+                            },
+                            "history_before_hours": {
+                              "type": "int"
+                            },
+                            "history_after_hours": {
+                              "type": "int"
+                            },
+                            "event_nearest_index": {
+                              "type": "int"
+                            },
+                            "event_nearest_time_utc": {
+                              "type": "str"
+                            }
+                          }
+                        },
+                        "endpoint_change": {
+                          "type": "object",
+                          "fields": {
+                            "t2m_c": {
+                              "type": "float"
+                            },
+                            "wind10_m_s": {
+                              "type": "float"
+                            },
+                            "mslp_hpa": {
+                              "type": "float"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "aurora": {
+                  "type": "object",
+                  "fields": {
+                    "status": {
+                      "type": "str"
+                    },
+                    "role": {
+                      "type": "str"
+                    },
+                    "model": {
+                      "type": "str"
+                    },
+                    "rollout_leads_hours": {
+                      "type": "array",
+                      "length": 4,
+                      "items": {
+                        "type": "int"
+                      }
+                    },
+                    "rollout_target_point_forecast": {
+                      "type": "object",
+                      "fields": {
+                        "2m_temperature_c": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "float"
+                          }
+                        },
+                        "mslp_hpa": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "float"
+                          }
+                        },
+                        "wind_speed_ms": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "float"
+                          }
+                        }
+                      }
+                    },
+                    "rollout_target_point_era5": {
+                      "type": "object",
+                      "fields": {
+                        "2m_temperature_c": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "float"
+                          }
+                        },
+                        "mslp_hpa": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "float"
+                          }
+                        },
+                        "wind_speed_ms": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "float"
+                          }
+                        }
+                      }
+                    },
+                    "rollout_surface_region_mae": {
+                      "type": "object",
+                      "fields": {
+                        "2m_temperature_c": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "object",
+                            "fields": {
+                              "mae": {
+                                "type": "float",
+                                "truncated": true
+                              },
+                              "rmse": {
+                                "type": "float",
+                                "truncated": true
+                              },
+                              "bias": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "mslp_hpa": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "object",
+                            "fields": {
+                              "mae": {
+                                "type": "float",
+                                "truncated": true
+                              },
+                              "rmse": {
+                                "type": "float",
+                                "truncated": true
+                              },
+                              "bias": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "wind_speed_ms": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "object",
+                            "fields": {
+                              "mae": {
+                                "type": "float",
+                                "truncated": true
+                              },
+                              "rmse": {
+                                "type": "float",
+                                "truncated": true
+                              },
+                              "bias": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "pressure_t": {
+                          "type": "object",
+                          "fields": {
+                            "1000": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "925": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "850": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "700": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "600": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "500": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "400": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "300": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "250": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "200": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "150": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "100": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "50": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "pressure_u": {
+                          "type": "object",
+                          "fields": {
+                            "1000": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "925": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "850": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "700": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "600": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "500": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "400": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "300": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "250": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "200": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "150": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "100": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "50": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "pressure_v": {
+                          "type": "object",
+                          "fields": {
+                            "1000": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "925": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "850": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "700": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "600": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "500": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "400": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "300": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "250": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "200": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "150": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "100": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "50": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "pressure_q": {
+                          "type": "object",
+                          "fields": {
+                            "1000": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "925": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "850": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "700": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "600": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "500": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "400": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "300": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "250": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "200": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "150": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "100": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "50": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "pressure_z": {
+                          "type": "object",
+                          "fields": {
+                            "1000": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "925": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "850": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "700": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "600": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "500": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "400": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "300": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "250": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "200": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "150": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "100": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "50": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "verification_status": {
+                      "type": "str"
+                    },
+                    "verification_artifacts": {
+                      "type": "array",
+                      "length": 3,
+                      "items": {
+                        "type": "str"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "case_evidence": {
+              "type": "object",
+              "fields": {
+                "era5": {
+                  "type": "object",
+                  "fields": {
+                    "status": {
+                      "type": "str"
+                    },
+                    "role": {
+                      "type": "str"
+                    },
+                    "analysis_time_utc": {
+                      "type": "str"
+                    },
+                    "target_timeseries": {
+                      "type": "object",
+                      "fields": {
+                        "requested_target": {
+                          "type": "object",
+                          "fields": {
+                            "latitude": {
+                              "type": "float"
+                            },
+                            "longitude": {
+                              "type": "float"
+                            }
+                          }
+                        },
+                        "selected_target": {
+                          "type": "object",
+                          "fields": {
+                            "latitude": {
+                              "type": "float"
+                            },
+                            "longitude": {
+                              "type": "float"
+                            }
+                          }
+                        },
+                        "coverage": {
+                          "type": "object",
+                          "fields": {
+                            "start_utc": {
+                              "type": "str"
+                            },
+                            "end_utc": {
+                              "type": "str"
+                            },
+                            "time_count": {
+                              "type": "int"
+                            },
+                            "history_before_hours": {
+                              "type": "int"
+                            },
+                            "history_after_hours": {
+                              "type": "int"
+                            },
+                            "event_nearest_index": {
+                              "type": "int"
+                            },
+                            "event_nearest_time_utc": {
+                              "type": "str"
+                            }
+                          }
+                        },
+                        "endpoint_change": {
+                          "type": "object",
+                          "fields": {
+                            "t2m_c": {
+                              "type": "float"
+                            },
+                            "wind10_m_s": {
+                              "type": "float"
+                            },
+                            "mslp_hpa": {
+                              "type": "float"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "aurora": {
+                  "type": "object",
+                  "fields": {
+                    "status": {
+                      "type": "str"
+                    },
+                    "role": {
+                      "type": "str"
+                    },
+                    "model": {
+                      "type": "str"
+                    },
+                    "rollout_leads_hours": {
+                      "type": "array",
+                      "length": 4,
+                      "items": {
+                        "type": "int"
+                      }
+                    },
+                    "rollout_target_point_forecast": {
+                      "type": "object",
+                      "fields": {
+                        "2m_temperature_c": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "float"
+                          }
+                        },
+                        "mslp_hpa": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "float"
+                          }
+                        },
+                        "wind_speed_ms": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "float"
+                          }
+                        }
+                      }
+                    },
+                    "rollout_target_point_era5": {
+                      "type": "object",
+                      "fields": {
+                        "2m_temperature_c": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "float"
+                          }
+                        },
+                        "mslp_hpa": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "float"
+                          }
+                        },
+                        "wind_speed_ms": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "float"
+                          }
+                        }
+                      }
+                    },
+                    "rollout_surface_region_mae": {
+                      "type": "object",
+                      "fields": {
+                        "2m_temperature_c": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "object",
+                            "fields": {
+                              "mae": {
+                                "type": "float",
+                                "truncated": true
+                              },
+                              "rmse": {
+                                "type": "float",
+                                "truncated": true
+                              },
+                              "bias": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "mslp_hpa": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "object",
+                            "fields": {
+                              "mae": {
+                                "type": "float",
+                                "truncated": true
+                              },
+                              "rmse": {
+                                "type": "float",
+                                "truncated": true
+                              },
+                              "bias": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "wind_speed_ms": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "object",
+                            "fields": {
+                              "mae": {
+                                "type": "float",
+                                "truncated": true
+                              },
+                              "rmse": {
+                                "type": "float",
+                                "truncated": true
+                              },
+                              "bias": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "pressure_t": {
+                          "type": "object",
+                          "fields": {
+                            "1000": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "925": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "850": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "700": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "600": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "500": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "400": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "300": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "250": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "200": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "150": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "100": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "50": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "pressure_u": {
+                          "type": "object",
+                          "fields": {
+                            "1000": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "925": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "850": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "700": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "600": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "500": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "400": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "300": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "250": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "200": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "150": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "100": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "50": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "pressure_v": {
+                          "type": "object",
+                          "fields": {
+                            "1000": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "925": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "850": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "700": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "600": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "500": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "400": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "300": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "250": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "200": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "150": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "100": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "50": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "pressure_q": {
+                          "type": "object",
+                          "fields": {
+                            "1000": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "925": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "850": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "700": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "600": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "500": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "400": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "300": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "250": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "200": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "150": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "100": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "50": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "pressure_z": {
+                          "type": "object",
+                          "fields": {
+                            "1000": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "925": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "850": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "700": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "600": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "500": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "400": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "300": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "250": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "200": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "150": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "100": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "50": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "verification_status": {
+                      "type": "str"
+                    },
+                    "verification_artifacts": {
+                      "type": "array",
+                      "length": 3,
+                      "items": {
+                        "type": "str"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "evidence_bundle": {
+              "type": "object",
+              "fields": {
+                "status": {
+                  "type": "str"
+                },
+                "event_id": {
+                  "type": "str"
+                },
+                "evidence": {
+                  "type": "object",
+                  "fields": {
+                    "sevir": {
+                      "type": "null"
+                    },
+                    "cascast": {
+                      "type": "null"
+                    },
+                    "era5": {
+                      "type": "object",
+                      "fields": {
+                        "status": {
+                          "type": "str"
+                        },
+                        "role": {
+                          "type": "str"
+                        },
+                        "analysis_time_utc": {
+                          "type": "str"
+                        },
+                        "target_timeseries": {
+                          "type": "object",
+                          "fields": {
+                            "requested_target": {
+                              "type": "object",
+                              "fields": {
+                                "latitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "longitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "selected_target": {
+                              "type": "object",
+                              "fields": {
+                                "latitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "longitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "coverage": {
+                              "type": "object",
+                              "fields": {
+                                "start_utc": {
+                                  "type": "str",
+                                  "truncated": true
+                                },
+                                "end_utc": {
+                                  "type": "str",
+                                  "truncated": true
+                                },
+                                "time_count": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "history_before_hours": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "history_after_hours": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "event_nearest_index": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "event_nearest_time_utc": {
+                                  "type": "str",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "endpoint_change": {
+                              "type": "object",
+                              "fields": {
+                                "t2m_c": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "wind10_m_s": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "mslp_hpa": {
+                                  "type": "float",
+                                  "truncated": true
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "aurora": {
+                      "type": "object",
+                      "fields": {
+                        "role": {
+                          "type": "str"
+                        },
+                        "model": {
+                          "type": "str"
+                        },
+                        "forecast": {
+                          "type": "object",
+                          "fields": {
+                            "lead_hours": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "int",
+                                "truncated": true
+                              }
+                            },
+                            "target_point": {
+                              "type": "object",
+                              "fields": {
+                                "2m_temperature_c": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "mslp_hpa": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "wind_speed_ms": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "verification": {
+                          "type": "object",
+                          "fields": {
+                            "status": {
+                              "type": "str"
+                            },
+                            "truth_source": {
+                              "type": "str"
+                            },
+                            "target_point_truth": {
+                              "type": "object",
+                              "fields": {
+                                "2m_temperature_c": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "mslp_hpa": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "wind_speed_ms": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "regional_mae": {
+                              "type": "object",
+                              "fields": {
+                                "2m_temperature_c": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "mslp_hpa": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "wind_speed_ms": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "pressure_t": {
+                                  "type": "ContractDict",
+                                  "truncated": true
+                                },
+                                "pressure_u": {
+                                  "type": "ContractDict",
+                                  "truncated": true
+                                },
+                                "pressure_v": {
+                                  "type": "ContractDict",
+                                  "truncated": true
+                                },
+                                "pressure_q": {
+                                  "type": "ContractDict",
+                                  "truncated": true
+                                },
+                                "pressure_z": {
+                                  "type": "ContractDict",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "artifacts": {
+                              "type": "array",
+                              "length": 3,
+                              "items": {
+                                "type": "str",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "supported_conclusion": {
+                          "type": "null"
+                        },
+                        "limit": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                },
+                "raw_evidence": {
+                  "type": "object",
+                  "fields": {
+                    "era5": {
+                      "type": "object",
+                      "fields": {
+                        "status": {
+                          "type": "str"
+                        },
+                        "role": {
+                          "type": "str"
+                        },
+                        "analysis_time_utc": {
+                          "type": "str"
+                        },
+                        "target_timeseries": {
+                          "type": "object",
+                          "fields": {
+                            "requested_target": {
+                              "type": "object",
+                              "fields": {
+                                "latitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "longitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "selected_target": {
+                              "type": "object",
+                              "fields": {
+                                "latitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "longitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "coverage": {
+                              "type": "object",
+                              "fields": {
+                                "start_utc": {
+                                  "type": "str",
+                                  "truncated": true
+                                },
+                                "end_utc": {
+                                  "type": "str",
+                                  "truncated": true
+                                },
+                                "time_count": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "history_before_hours": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "history_after_hours": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "event_nearest_index": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "event_nearest_time_utc": {
+                                  "type": "str",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "endpoint_change": {
+                              "type": "object",
+                              "fields": {
+                                "t2m_c": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "wind10_m_s": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "mslp_hpa": {
+                                  "type": "float",
+                                  "truncated": true
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "aurora": {
+                      "type": "object",
+                      "fields": {
+                        "status": {
+                          "type": "str"
+                        },
+                        "role": {
+                          "type": "str"
+                        },
+                        "model": {
+                          "type": "str"
+                        },
+                        "rollout_leads_hours": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "int"
+                          }
+                        },
+                        "rollout_target_point_forecast": {
+                          "type": "object",
+                          "fields": {
+                            "2m_temperature_c": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            },
+                            "mslp_hpa": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            },
+                            "wind_speed_ms": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "rollout_target_point_era5": {
+                          "type": "object",
+                          "fields": {
+                            "2m_temperature_c": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            },
+                            "mslp_hpa": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            },
+                            "wind_speed_ms": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "rollout_surface_region_mae": {
+                          "type": "object",
+                          "fields": {
+                            "2m_temperature_c": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "mslp_hpa": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "wind_speed_ms": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "pressure_t": {
+                              "type": "object",
+                              "fields": {
+                                "1000": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "925": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "850": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "700": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "600": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "500": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "400": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "300": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "250": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "200": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "150": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "100": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "50": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "pressure_u": {
+                              "type": "object",
+                              "fields": {
+                                "1000": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "925": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "850": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "700": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "600": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "500": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "400": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "300": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "250": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "200": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "150": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "100": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "50": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "pressure_v": {
+                              "type": "object",
+                              "fields": {
+                                "1000": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "925": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "850": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "700": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "600": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "500": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "400": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "300": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "250": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "200": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "150": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "100": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "50": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "pressure_q": {
+                              "type": "object",
+                              "fields": {
+                                "1000": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "925": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "850": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "700": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "600": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "500": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "400": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "300": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "250": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "200": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "150": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "100": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "50": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "pressure_z": {
+                              "type": "object",
+                              "fields": {
+                                "1000": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "925": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "850": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "700": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "600": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "500": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "400": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "300": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "250": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "200": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "150": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "100": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "50": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "verification_status": {
+                          "type": "str"
+                        },
+                        "verification_artifacts": {
+                          "type": "array",
+                          "length": 3,
+                          "items": {
+                            "type": "str"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "artifacts": {
+                  "type": "array",
+                  "length": 12,
+                  "items": {
+                    "type": "object",
+                    "fields": {
+                      "name": {
+                        "type": "str"
+                      },
+                      "relative_path": {
+                        "type": "str"
+                      },
+                      "path": {
+                        "type": "str"
+                      },
+                      "format": {
+                        "type": "str"
+                      },
+                      "size_bytes": {
+                        "type": "int"
+                      },
+                      "model": {
+                        "type": "str"
+                      },
+                      "role": {
+                        "type": "str"
+                      },
+                      "available": {
+                        "type": "bool"
+                      }
+                    }
+                  }
+                },
+                "validation": {
+                  "type": "object",
+                  "fields": {
+                    "status": {
+                      "type": "str"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "length": 0
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "length": 0
+                    }
+                  }
+                }
+              }
+            },
+            "cache": {
+              "type": "object",
+              "fields": {
+                "event_id": {
+                  "type": "str"
+                },
+                "cache_root": {
+                  "type": "str"
+                },
+                "evidence_available": {
+                  "type": "bool"
+                },
+                "files": {
+                  "type": "object",
+                  "fields": {
+                    "aurora_forecast.json": {
+                      "type": "int"
+                    },
+                    "aurora_forecast.npz": {
+                      "type": "int"
+                    },
+                    "aurora_forecast_aligned_0300.json": {
+                      "type": "int"
+                    },
+                    "aurora_forecast_aligned_0300.npz": {
+                      "type": "int"
+                    },
+                    "era5_target_timeseries.json": {
+                      "type": "int"
+                    },
+                    "live_manifest.json": {
+                      "type": "int"
+                    },
+                    "pressure.nc": {
+                      "type": "int"
+                    },
+                    "static.nc": {
+                      "type": "int"
+                    },
+                    "surface.nc": {
+                      "type": "int"
+                    },
+                    "verification/aurora_error_maps.png": {
+                      "type": "int"
+                    },
+                    "verification/aurora_vs_era5_timeseries.png": {
+                      "type": "int"
+                    },
+                    "verification/aurora_vs_era5_verification.json": {
+                      "type": "int"
+                    }
+                  }
+                },
+                "cache_hit": {
+                  "type": "bool"
+                },
+                "source": {
+                  "type": "str"
+                },
+                "layers": {
+                  "type": "object",
+                  "fields": {
+                    "event_id": {
+                      "type": "str"
+                    },
+                    "layers": {
+                      "type": "object",
+                      "fields": {
+                        "raw": {
+                          "type": "object",
+                          "fields": {
+                            "available": {
+                              "type": "bool"
+                            },
+                            "compatible": {
+                              "type": "bool"
+                            },
+                            "source_roles": {
+                              "type": "array",
+                              "length": 1,
+                              "items": {
+                                "type": "str",
+                                "truncated": true
+                              }
+                            },
+                            "compatible_source_roles": {
+                              "type": "array",
+                              "length": 1,
+                              "items": {
+                                "type": "str",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "standardized": {
+                          "type": "object",
+                          "fields": {
+                            "available": {
+                              "type": "bool"
+                            },
+                            "compatible": {
+                              "type": "bool"
+                            },
+                            "source_roles": {
+                              "type": "array",
+                              "length": 1,
+                              "items": {
+                                "type": "str",
+                                "truncated": true
+                              }
+                            },
+                            "compatible_source_roles": {
+                              "type": "array",
+                              "length": 1,
+                              "items": {
+                                "type": "str",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "verification": {
+                          "type": "object",
+                          "fields": {
+                            "available": {
+                              "type": "bool"
+                            },
+                            "compatible": {
+                              "type": "bool"
+                            },
+                            "source_roles": {
+                              "type": "array",
+                              "length": 1,
+                              "items": {
+                                "type": "str",
+                                "truncated": true
+                              }
+                            },
+                            "compatible_source_roles": {
+                              "type": "array",
+                              "length": 1,
+                              "items": {
+                                "type": "str",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "presentation": {
+                          "type": "object",
+                          "fields": {
+                            "available": {
+                              "type": "bool"
+                            },
+                            "compatible": {
+                              "type": "bool"
+                            },
+                            "source_roles": {
+                              "type": "array",
+                              "length": 0
+                            },
+                            "compatible_source_roles": {
+                              "type": "array",
+                              "length": 0
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "cache_hit": {
+                      "type": "bool"
+                    }
+                  }
+                },
+                "aurora_leads": {
+                  "type": "array",
+                  "length": 4,
+                  "items": {
+                    "type": "int"
+                  }
+                },
+                "verification_status": {
+                  "type": "str"
+                }
+              }
+            },
+            "validation": {
+              "type": "object",
+              "fields": {
+                "status": {
+                  "type": "str"
+                },
+                "errors": {
+                  "type": "array",
+                  "length": 0
+                },
+                "warnings": {
+                  "type": "array",
+                  "length": 0
+                }
+              }
+            },
+            "artifacts": {
+              "type": "array",
+              "length": 12,
+              "items": {
+                "type": "object",
+                "fields": {
+                  "name": {
+                    "type": "str"
+                  },
+                  "relative_path": {
+                    "type": "str"
+                  },
+                  "path": {
+                    "type": "str"
+                  },
+                  "format": {
+                    "type": "str"
+                  },
+                  "size_bytes": {
+                    "type": "int"
+                  },
+                  "model": {
+                    "type": "str"
+                  },
+                  "role": {
+                    "type": "str"
+                  },
+                  "available": {
+                    "type": "bool"
+                  }
+                }
+              }
+            },
+            "manifest": {
+              "type": "object",
+              "fields": {
+                "status": {
+                  "type": "str"
+                },
+                "event_id": {
+                  "type": "str"
+                },
+                "analysis_time_utc": {
+                  "type": "str"
+                },
+                "era5_time_utc": {
+                  "type": "str"
+                },
+                "time_offset_minutes": {
+                  "type": "int"
+                },
+                "latitude": {
+                  "type": "float"
+                },
+                "longitude": {
+                  "type": "float"
+                },
+                "area_north_west_south_east": {
+                  "type": "array",
+                  "length": 4,
+                  "items": {
+                    "type": "float"
+                  }
+                },
+                "grid": {
+                  "type": "str"
+                },
+                "forecast_leads_hours": {
+                  "type": "array",
+                  "length": 4,
+                  "items": {
+                    "type": "int"
+                  }
+                },
+                "input_window_hours": {
+                  "type": "int"
+                },
+                "history_before_hours": {
+                  "type": "int"
+                },
+                "history_after_hours": {
+                  "type": "int"
+                },
+                "request_key": {
+                  "type": "str"
+                },
+                "cache_dir": {
+                  "type": "str"
+                },
+                "cache_kind": {
+                  "type": "str"
+                }
+              }
+            },
+            "interpretation_limit": {
+              "type": "str"
+            },
+            "role": {
+              "type": "str"
+            },
+            "capabilities": {
+              "type": "array",
+              "length": 3,
+              "items": {
+                "type": "str"
+              }
+            },
+            "provenance": {
+              "type": "object",
+              "fields": {
+                "source": {
+                  "type": "str"
+                },
+                "request_key": {
+                  "type": "null"
+                }
+              }
+            },
+            "data": {
+              "type": "object",
+              "fields": {
+                "status": {
+                  "type": "str"
+                },
+                "event_id": {
+                  "type": "str"
+                },
+                "evidence": {
+                  "type": "object",
+                  "fields": {
+                    "sevir": {
+                      "type": "null"
+                    },
+                    "cascast": {
+                      "type": "null"
+                    },
+                    "era5": {
+                      "type": "object",
+                      "fields": {
+                        "status": {
+                          "type": "str"
+                        },
+                        "role": {
+                          "type": "str"
+                        },
+                        "analysis_time_utc": {
+                          "type": "str"
+                        },
+                        "target_timeseries": {
+                          "type": "object",
+                          "fields": {
+                            "requested_target": {
+                              "type": "object",
+                              "fields": {
+                                "latitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "longitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "selected_target": {
+                              "type": "object",
+                              "fields": {
+                                "latitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "longitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "coverage": {
+                              "type": "object",
+                              "fields": {
+                                "start_utc": {
+                                  "type": "str",
+                                  "truncated": true
+                                },
+                                "end_utc": {
+                                  "type": "str",
+                                  "truncated": true
+                                },
+                                "time_count": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "history_before_hours": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "history_after_hours": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "event_nearest_index": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "event_nearest_time_utc": {
+                                  "type": "str",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "endpoint_change": {
+                              "type": "object",
+                              "fields": {
+                                "t2m_c": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "wind10_m_s": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "mslp_hpa": {
+                                  "type": "float",
+                                  "truncated": true
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "aurora": {
+                      "type": "object",
+                      "fields": {
+                        "role": {
+                          "type": "str"
+                        },
+                        "model": {
+                          "type": "str"
+                        },
+                        "forecast": {
+                          "type": "object",
+                          "fields": {
+                            "lead_hours": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "int",
+                                "truncated": true
+                              }
+                            },
+                            "target_point": {
+                              "type": "object",
+                              "fields": {
+                                "2m_temperature_c": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "mslp_hpa": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "wind_speed_ms": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "verification": {
+                          "type": "object",
+                          "fields": {
+                            "status": {
+                              "type": "str"
+                            },
+                            "truth_source": {
+                              "type": "str"
+                            },
+                            "target_point_truth": {
+                              "type": "object",
+                              "fields": {
+                                "2m_temperature_c": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "mslp_hpa": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "wind_speed_ms": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "regional_mae": {
+                              "type": "object",
+                              "fields": {
+                                "2m_temperature_c": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "mslp_hpa": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "wind_speed_ms": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "pressure_t": {
+                                  "type": "ContractDict",
+                                  "truncated": true
+                                },
+                                "pressure_u": {
+                                  "type": "ContractDict",
+                                  "truncated": true
+                                },
+                                "pressure_v": {
+                                  "type": "ContractDict",
+                                  "truncated": true
+                                },
+                                "pressure_q": {
+                                  "type": "ContractDict",
+                                  "truncated": true
+                                },
+                                "pressure_z": {
+                                  "type": "ContractDict",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "artifacts": {
+                              "type": "array",
+                              "length": 3,
+                              "items": {
+                                "type": "str",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "supported_conclusion": {
+                          "type": "null"
+                        },
+                        "limit": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                },
+                "raw_evidence": {
+                  "type": "object",
+                  "fields": {
+                    "era5": {
+                      "type": "object",
+                      "fields": {
+                        "status": {
+                          "type": "str"
+                        },
+                        "role": {
+                          "type": "str"
+                        },
+                        "analysis_time_utc": {
+                          "type": "str"
+                        },
+                        "target_timeseries": {
+                          "type": "object",
+                          "fields": {
+                            "requested_target": {
+                              "type": "object",
+                              "fields": {
+                                "latitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "longitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "selected_target": {
+                              "type": "object",
+                              "fields": {
+                                "latitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "longitude": {
+                                  "type": "float",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "coverage": {
+                              "type": "object",
+                              "fields": {
+                                "start_utc": {
+                                  "type": "str",
+                                  "truncated": true
+                                },
+                                "end_utc": {
+                                  "type": "str",
+                                  "truncated": true
+                                },
+                                "time_count": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "history_before_hours": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "history_after_hours": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "event_nearest_index": {
+                                  "type": "int",
+                                  "truncated": true
+                                },
+                                "event_nearest_time_utc": {
+                                  "type": "str",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "endpoint_change": {
+                              "type": "object",
+                              "fields": {
+                                "t2m_c": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "wind10_m_s": {
+                                  "type": "float",
+                                  "truncated": true
+                                },
+                                "mslp_hpa": {
+                                  "type": "float",
+                                  "truncated": true
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "aurora": {
+                      "type": "object",
+                      "fields": {
+                        "status": {
+                          "type": "str"
+                        },
+                        "role": {
+                          "type": "str"
+                        },
+                        "model": {
+                          "type": "str"
+                        },
+                        "rollout_leads_hours": {
+                          "type": "array",
+                          "length": 4,
+                          "items": {
+                            "type": "int"
+                          }
+                        },
+                        "rollout_target_point_forecast": {
+                          "type": "object",
+                          "fields": {
+                            "2m_temperature_c": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            },
+                            "mslp_hpa": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            },
+                            "wind_speed_ms": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "rollout_target_point_era5": {
+                          "type": "object",
+                          "fields": {
+                            "2m_temperature_c": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            },
+                            "mslp_hpa": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            },
+                            "wind_speed_ms": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "float",
+                                "truncated": true
+                              }
+                            }
+                          }
+                        },
+                        "rollout_surface_region_mae": {
+                          "type": "object",
+                          "fields": {
+                            "2m_temperature_c": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "mslp_hpa": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "wind_speed_ms": {
+                              "type": "array",
+                              "length": 4,
+                              "items": {
+                                "type": "ContractDict",
+                                "truncated": true
+                              }
+                            },
+                            "pressure_t": {
+                              "type": "object",
+                              "fields": {
+                                "1000": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "925": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "850": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "700": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "600": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "500": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "400": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "300": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "250": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "200": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "150": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "100": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "50": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "pressure_u": {
+                              "type": "object",
+                              "fields": {
+                                "1000": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "925": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "850": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "700": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "600": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "500": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "400": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "300": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "250": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "200": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "150": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "100": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "50": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "pressure_v": {
+                              "type": "object",
+                              "fields": {
+                                "1000": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "925": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "850": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "700": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "600": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "500": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "400": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "300": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "250": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "200": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "150": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "100": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "50": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "pressure_q": {
+                              "type": "object",
+                              "fields": {
+                                "1000": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "925": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "850": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "700": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "600": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "500": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "400": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "300": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "250": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "200": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "150": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "100": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "50": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            },
+                            "pressure_z": {
+                              "type": "object",
+                              "fields": {
+                                "1000": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "925": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "850": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "700": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "600": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "500": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "400": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "300": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "250": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "200": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "150": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "100": {
+                                  "type": "list",
+                                  "truncated": true
+                                },
+                                "50": {
+                                  "type": "list",
+                                  "truncated": true
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "verification_status": {
+                          "type": "str"
+                        },
+                        "verification_artifacts": {
+                          "type": "array",
+                          "length": 3,
+                          "items": {
+                            "type": "str"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "artifacts": {
+                  "type": "array",
+                  "length": 12,
+                  "items": {
+                    "type": "object",
+                    "fields": {
+                      "name": {
+                        "type": "str"
+                      },
+                      "relative_path": {
+                        "type": "str"
+                      },
+                      "path": {
+                        "type": "str"
+                      },
+                      "format": {
+                        "type": "str"
+                      },
+                      "size_bytes": {
+                        "type": "int"
+                      },
+                      "model": {
+                        "type": "str"
+                      },
+                      "role": {
+                        "type": "str"
+                      },
+                      "available": {
+                        "type": "bool"
+                      }
+                    }
+                  }
+                },
+                "validation": {
+                  "type": "object",
+                  "fields": {
+                    "status": {
+                      "type": "str"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "length": 0
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "length": 0
+                    }
+                  }
+                },
+                "dimensions": {
+                  "type": "array",
+                  "length": 0
+                }
+              }
+            },
+            "limitations": {
+              "type": "array",
+              "length": 1,
+              "items": {
+                "type": "str"
+              }
+            },
+            "schema_version": {
+              "type": "str"
+            },
+            "result_status": {
+              "type": "str"
+            },
+            "available": {
+              "type": "bool"
+            },
+            "data_kind": {
+              "type": "str"
+            },
+            "meta": {
+              "type": "object",
+              "fields": {
+                "tool_api": {
+                  "type": "str"
+                },
+                "cache_hit": {
+                  "type": "bool"
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "stdout": "",
+    "result_json_characters": 103,
+    "runtime_schema": {
+      "schema_version": "sevir-contract-2",
+      "dataset": {
+        "schema_version": "sevir-contract-2",
+        "object": "ds",
+        "type": "list[DatasetRecord]",
+        "records": [
+          {
+            "index": 0,
+            "source": "sevir",
+            "role": "event_metadata",
+            "dataset_id": "sevir:R19062708588472",
+            "status": "available",
+            "capabilities": [
+              "event_metadata",
+              "event_time",
+              "event_location"
+            ],
+            "is_primary": true,
+            "kind": null,
+            "event_id": "R19062708588472",
+            "upload_id": null,
+            "shape": null,
+            "dtype": null,
+            "source_dtype": null,
+            "missing_value_code": null,
+            "fields": {
+              "metadata": {
+                "type": "object",
+                "fields": {
+                  "id": {
+                    "type": "str"
+                  },
+                  "time_utc": {
+                    "type": "str"
+                  },
+                  "event_type": {
+                    "type": "str"
+                  },
+                  "file_name": {
+                    "type": "str"
+                  },
+                  "file_index": {
+                    "type": "int"
+                  },
+                  "data_min": {
+                    "type": "float"
+                  },
+                  "data_max": {
+                    "type": "float"
+                  },
+                  "pct_missing": {
+                    "type": "float"
+                  },
+                  "local_hdf5_available": {
+                    "type": "bool"
+                  },
+                  "remote_hdf5_available": {
+                    "type": "bool"
+                  },
+                  "sevir_id": {
+                    "type": "str"
+                  },
+                  "img_type": {
+                    "type": "str"
+                  },
+                  "minute_offsets": {
+                    "type": "array",
+                    "length": 49,
+                    "items": {
+                      "type": "int"
+                    }
+                  },
+                  "frame_times_utc": {
+                    "type": "array",
+                    "length": 49,
+                    "items": {
+                      "type": "str"
+                    }
+                  },
+                  "noaa_episode_id": {
+                    "type": "null"
+                  },
+                  "noaa_event_id": {
+                    "type": "null"
+                  },
+                  "bounding_box": {
+                    "type": "object",
+                    "fields": {
+                      "south": {
+                        "type": "float"
+                      },
+                      "west": {
+                        "type": "float"
+                      },
+                      "north": {
+                        "type": "float"
+                      },
+                      "east": {
+                        "type": "float"
+                      }
+                    }
+                  },
+                  "proj": {
+                    "type": "str"
+                  },
+                  "size_x": {
+                    "type": "int"
+                  },
+                  "size_y": {
+                    "type": "int"
+                  },
+                  "height_m": {
+                    "type": "float"
+                  },
+                  "width_m": {
+                    "type": "float"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "tools": [
+        "foundation"
+      ]
+    },
+    "evidence_ledger": {
+      "completed_evidence": [
+        {
+          "key": "3ebc4ea774b009aad100",
+          "api": "foundation.case",
+          "arguments": {
+            "event_id": "R19062708588472"
+          },
+          "status": "ok",
+          "schema_version": "sevir-contract-2",
+          "evidence_id": null
+        }
+      ],
+      "reuse_rule": "reuse completed evidence unless arguments materially change"
+    },
+    "worker_session": {
+      "id": "0030c1e794fa440cadcec90f99dc0500",
+      "step": 1
+    },
+    "tool_result_cache": {
+      "entries": 0,
+      "updates": 0
+    },
+    "elapsed_ms": 2468,
+    "limits": {
+      "timeout_seconds": 1200.0,
+      "memory_limit_mb": 12288,
+      "budget_profile": "live_cascast",
+      "network": "inherits worker process policy; weather tools own supported data access",
+      "filesystem": "temporary cwd; persistent figures use SEVIR_ARTIFACT_DIR",
+      "imports": "standard Python imports enabled"
+    }
+  }
+}

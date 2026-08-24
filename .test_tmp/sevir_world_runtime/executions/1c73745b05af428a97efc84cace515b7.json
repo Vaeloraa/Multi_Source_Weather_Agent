@@ -1,0 +1,58 @@
+{
+  "execution_id": "1c73745b05af428a97efc84cace515b7",
+  "created_at_epoch_seconds": 1787585567.036,
+  "code": "import sys\nresult = {\n    'visualization': 'sevir_world.tools.visualization' in sys.modules,\n    'forecast': 'sevir_world.tools.forecast' in sys.modules,\n    'matplotlib': 'matplotlib' in sys.modules,\n    'torch': 'torch' in sys.modules,\n}",
+  "data_descs": [],
+  "selected_tools": [
+    "ds"
+  ],
+  "execution": {
+    "status": "ok",
+    "result": {
+      "visualization": false,
+      "forecast": false,
+      "matplotlib": false,
+      "torch": false
+    },
+    "primary_result": {
+      "visualization": false,
+      "forecast": false,
+      "matplotlib": false,
+      "torch": false
+    },
+    "calls": [],
+    "stdout": "",
+    "result_json_characters": 80,
+    "runtime_schema": {
+      "schema_version": "sevir-contract-2",
+      "dataset": {
+        "schema_version": "sevir-contract-2",
+        "object": "ds",
+        "type": "list[DatasetRecord]",
+        "records": []
+      },
+      "tools": []
+    },
+    "evidence_ledger": {
+      "completed_evidence": [],
+      "reuse_rule": "reuse completed evidence unless arguments materially change"
+    },
+    "worker_session": {
+      "id": "0dd3fd4b39ac4da088e834bac1c1871f",
+      "step": 1
+    },
+    "tool_result_cache": {
+      "entries": 0,
+      "updates": 0
+    },
+    "elapsed_ms": 1500,
+    "limits": {
+      "timeout_seconds": 20.0,
+      "memory_limit_mb": 1024,
+      "budget_profile": "standard",
+      "network": "inherits worker process policy; weather tools own supported data access",
+      "filesystem": "temporary cwd; persistent figures use SEVIR_ARTIFACT_DIR",
+      "imports": "standard Python imports enabled"
+    }
+  }
+}

@@ -1,0 +1,442 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-08-24T23:45:00+08:00",
+  "active_phase": "phase_2",
+  "active_iteration": {
+    "id": "phase_2_final",
+    "phase_id": "phase_2",
+    "status": "accepted",
+    "reason": "用户要求撤出 Phase 3 和 Phase 4；治理范围恢复为已验收的 Phase 1/2。",
+    "execution_order": [],
+    "scope_rule": "Only Phase 1 and Phase 2 architecture remain in the governed project state.",
+    "stop_rule": "Do not reintroduce a case-specific weather workflow; any future phase requires a new user-approved plan."
+  },
+  "status_policy": {
+    "criterion_statuses": [
+      "not_started",
+      "implemented",
+      "verified",
+      "accepted",
+      "blocked"
+    ],
+    "phase_statuses": [
+      "not_started",
+      "in_progress",
+      "verified",
+      "accepted",
+      "blocked"
+    ],
+    "accepted_definition": "Every criterion is accepted, every required evidence type is recorded, and every automated counter-check passes."
+  },
+  "known_baseline": [
+    {
+      "id": "B-01",
+      "claim": "同一 Agent 请求中的多次 execute 尚未复用一个持久 Worker/Python 命名空间。",
+      "resolved": true
+    },
+    {
+      "id": "B-02",
+      "claim": "uploaded_ensemble_divergence 问题级预写流程仍存在。",
+      "resolved": true
+    },
+    {
+      "id": "B-03",
+      "claim": "旧 API、前端 render-jobs 调用、失效脚本和过期文档仍未清理。",
+      "resolved": true
+    },
+    {
+      "id": "B-04",
+      "claim": "工具业务错误仍可能被 Worker 进程成功状态掩盖。",
+      "resolved": true
+    },
+    {
+      "id": "B-05",
+      "claim": "当前 Agent 默认总预算仍大于 30 秒，客户端断开不会形成完整取消链。",
+      "resolved": true
+    }
+  ],
+  "phases": [
+    {
+      "id": "phase_1",
+      "title": "恢复真实、稳定且有硬预算的 Agent 循环",
+      "status": "accepted",
+      "allowed_paths": [
+        "sevir_world/agent/",
+        "sevir_world/api/unified_service.py",
+        "sevir_world/api/server.py",
+        "sevir_world/api/response_pipeline.py",
+        "sevir_world/code_execution/",
+        "web/app.js",
+        "tests/",
+        "scripts/refactor_gate.py",
+        "scripts/project_health_check.py",
+        "ARCHITECTURE_REFACTOR_PLAN.md",
+        "ARCHITECTURE_BACKLOG.md",
+        "architecture_refactor_state.json",
+        "README.md"
+      ],
+      "acceptance": [
+        {
+          "id": "P1-01",
+          "description": "工具或生成程序返回业务错误时，主循环将其计为失败且不会清零连续错误计数。",
+          "status": "accepted",
+          "required_evidence": [
+            "source_diff",
+            "targeted_test",
+            "execution_trace"
+          ],
+          "evidence": [
+            {
+              "type": "source_diff",
+              "reference": "sevir_world/agent/schema.py; sevir_world/code_execution/client.py; sevir_world/agent/unified.py",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "业务结果和失败工具调用会被转换为 DomainResultError/ToolResultError，主循环不会再把它们计为成功。"
+            },
+            {
+              "type": "targeted_test",
+              "reference": "tests.test_phase1_agent_control.PhaseOneAgentControlTests.test_domain_result_error_counts_as_execution_failure",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "连续两次业务错误均进入失败计数，code_execution_count 保持为 0。"
+            },
+            {
+              "type": "execution_trace",
+              "reference": "test_domain_result_error_counts_as_execution_failure agent_trace",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "两次 execute 均显示 status=error、error_type=DomainResultError，并以 consecutive_execution_errors 停止。"
+            }
+          ]
+        },
+        {
+          "id": "P1-02",
+          "description": "一个共享的 30 秒硬截止时间约束地点解析、每次 LLM 调用、每次 Worker 执行和最终整理。",
+          "status": "accepted",
+          "required_evidence": [
+            "source_diff",
+            "targeted_test",
+            "timing_result"
+          ],
+          "evidence": [
+            {
+              "type": "source_diff",
+              "reference": "sevir_world/api/server.py; sevir_world/api/unified_service.py; sevir_world/api/response_pipeline.py; sevir_world/code_execution/client.py",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "请求入口创建共享 deadline；地点解析、LLM、Worker 和最终持久化均消费同一预算，配置值被硬上限 30 秒约束。"
+            },
+            {
+              "type": "targeted_test",
+              "reference": "tests.test_phase1_agent_control.PhaseOneAgentControlTests.test_shared_deadline_bounds_the_complete_request",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "即使环境配置为 300 秒，报告的硬上限仍为 30 秒，LLM 获得的 timeout 不超过剩余预算。"
+            },
+            {
+              "type": "timing_result",
+              "reference": "test_shared_deadline_bounds_the_complete_request late_complete branch",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "30ms 人工截止时间后的迟到模型响应被拒绝，测试在 0.5 秒内终止。"
+            }
+          ]
+        },
+        {
+          "id": "P1-03",
+          "description": "客户端取消或断开后，服务端停止继续执行剩余 Agent/Worker 工作。",
+          "status": "accepted",
+          "required_evidence": [
+            "source_diff",
+            "targeted_test",
+            "cancellation_trace"
+          ],
+          "evidence": [
+            {
+              "type": "source_diff",
+              "reference": "web/app.js; sevir_world/api/server.py; sevir_world/api/unified_service.py; sevir_world/agent/unified.py; sevir_world/code_execution/client.py",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "浏览器 AbortController、HTTP socket 断开监视、Agent 取消检查和 Worker 进程树终止形成一条取消传播链。"
+            },
+            {
+              "type": "targeted_test",
+              "reference": "tests.test_phase1_agent_control.PhaseOneAgentControlTests.test_client_cancellation_stops_agent_and_worker",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "socket peer 关闭会设置取消事件，运行中 Worker 随后被停止。"
+            },
+            {
+              "type": "cancellation_trace",
+              "reference": "test_client_cancellation_stops_agent_and_worker result",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "5秒长任务在2.5秒验收上限内返回 cancelled/client_cancelled，成功执行计数为0。"
+            }
+          ]
+        },
+        {
+          "id": "P1-04",
+          "description": "已有有效 Observation 时，最终 LLM 失败不会抹掉证据；系统返回明确的部分结果而非伪造成功。",
+          "status": "accepted",
+          "required_evidence": [
+            "source_diff",
+            "targeted_test",
+            "execution_trace"
+          ],
+          "evidence": [
+            {
+              "type": "source_diff",
+              "reference": "sevir_world/agent/unified.py",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "模型调用异常时，如果已有 status=ok Observation，则返回 partial 并保留 observations、artifacts 和完整 trace。"
+            },
+            {
+              "type": "targeted_test",
+              "reference": "tests.test_phase1_agent_control.PhaseOneAgentControlTests.test_last_valid_observation_survives_final_model_failure",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "首轮执行值42后最终模型超时，结果仍保留该值且不伪装成完整回答。"
+            },
+            {
+              "type": "execution_trace",
+              "reference": "test_last_valid_observation_survives_final_model_failure agent_trace",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "终止原因为 model_failure_after_observation，状态 partial，最后一步为模型错误。"
+            }
+          ]
+        },
+        {
+          "id": "P1-05",
+          "description": "R190 代表问题留下完整可读 trace，失败、重试和终止原因与真实状态一致。",
+          "status": "accepted",
+          "required_evidence": [
+            "representative_scenario",
+            "trace_review",
+            "git_diff_review"
+          ],
+          "evidence": [
+            {
+              "type": "representative_scenario",
+              "reference": "tests.test_phase1_agent_control.PhaseOneAgentControlTests.test_r190_representative_trace_preserves_real_statuses",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "使用真实 R190 Foundation 缓存和真实隔离 Worker 完成 execute→observe→solution；模型动作由确定性测试替身提供，本证据只验收 Agent 控制链，不冒充外部模型联调。"
+            },
+            {
+              "type": "external_model_scenario",
+              "reference": "python scripts/diagnose_agent_run.py --event-id R19062708588472 --question <bar-chart and heatmap request>",
+              "result": "fail",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "外部执行在启动前被安全审批拒绝：provider 参数显示 qwen 网关，需明确授权将 R190 请求上下文发送给该网关上的 deepseek-v4-flash；没有尝试其他模型或绕过。该项移入 Demo 前联调，不作为 Phase 1 控制层验收证据。"
+            },
+            {
+              "type": "trace_review",
+              "reference": "tests.test_phase1_agent_control.PhaseOneAgentControlTests.test_r190_representative_trace_preserves_real_statuses",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "本地真实 R190 Foundation 缓存读取成功，trace 为 execute→finish，Observation status=ok，Aurora leads=[6,12,18,24]。该测试不冒充真实外部 LLM。"
+            },
+            {
+              "type": "git_diff_review",
+              "reference": "git diff --check on Phase 1 scoped files",
+              "result": "pass",
+              "recorded_at": "2026-08-24T12:41:02Z",
+              "notes": "Phase 1 范围文件无 whitespace error；现有工作区仍为大范围未提交状态，因此未把 Git clean 当成验收条件。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase_2",
+      "title": "收口为持久执行、按需工具和无问题级预写流程的架构",
+      "status": "accepted",
+      "allowed_paths": [
+        "sevir_world/agent/",
+        "sevir_world/api/",
+        "sevir_world/code_execution/",
+        "sevir_world/tools/",
+        "sevir_world/backends/",
+        "sevir_world/data_access/",
+        "web/",
+        "scripts/",
+        "tests/",
+        "docs/",
+        "README.md",
+        "ARCHITECTURE_REFACTOR_PLAN.md",
+        "ARCHITECTURE_BACKLOG.md",
+        "architecture_refactor_state.json"
+      ],
+      "acceptance": [
+        {
+          "id": "P2-01",
+          "description": "同一 Agent 请求的多次 execute 复用一个受控执行会话并保留完整 Python 命名空间。",
+          "status": "accepted",
+          "required_evidence": [
+            "source_diff",
+            "targeted_test",
+            "worker_session_trace"
+          ],
+          "evidence": [
+            {
+              "type": "source_diff",
+              "reference": "sevir_world/code_execution/worker.py; sevir_world/code_execution/client.py",
+              "result": "pass",
+              "recorded_at": "2026-08-24T13:20:00Z",
+              "notes": "ExecutionClient 在请求内维持一个行协议 Worker；WorkerSession 只绑定一次数据和工具，并在多次 execute 间保留同一 Python namespace。取消、超时、内存超限或绑定变化会关闭该会话。"
+            },
+            {
+              "type": "targeted_test",
+              "reference": "tests.test_unified_architecture.UnifiedArchitectureTests.test_execute_steps_share_complete_python_namespace",
+              "result": "pass",
+              "recorded_at": "2026-08-24T13:20:00Z",
+              "notes": "第二步直接复用第一步留下的 NumPy 数组、用户函数和模块别名；这些对象无法由旧 previous_result JSON 机制提供。"
+            },
+            {
+              "type": "worker_session_trace",
+              "reference": "test_execute_steps_share_complete_python_namespace worker_session fields",
+              "result": "pass",
+              "recorded_at": "2026-08-24T13:20:00Z",
+              "notes": "两步返回相同 worker_session.id，step 从 1 增至 2；以 ResourceWarning 作为错误运行的生命周期复测也通过。"
+            }
+          ]
+        },
+        {
+          "id": "P2-02",
+          "description": "删除 uploaded_ensemble_divergence 等问题级预写分析流程，代表问题改用原始集合数据和通用绘图。",
+          "status": "accepted",
+          "required_evidence": [
+            "negative_search",
+            "targeted_test",
+            "representative_scenario"
+          ],
+          "evidence": [
+            {
+              "type": "negative_search",
+              "reference": "sevir_world/tools/visualization.py source search",
+              "result": "pass",
+              "recorded_at": "2026-08-24T13:45:00Z",
+              "notes": "问题级 uploaded_ensemble_divergence 方法及其工具记录已从正式 Visualizer 源码删除；治理反证通过。"
+            },
+            {
+              "type": "targeted_test",
+              "reference": "tests.test_visualization_protocol.VisualizationProtocolTests.test_divergence_charts_use_raw_ensemble_and_generic_renderer",
+              "result": "pass",
+              "recorded_at": "2026-08-24T13:45:00Z",
+              "notes": "测试从 uncertainty.uploaded_raw 的成员网格自行计算成员均值和逐像素标准差，再用两个 visualizer.render_spec 分别生成 bar 与 heatmap。"
+            },
+            {
+              "type": "representative_scenario",
+              "reference": "raw ensemble → generated NumPy analysis → generic bar/heatmap test trace",
+              "result": "pass",
+              "recorded_at": "2026-08-24T13:45:00Z",
+              "notes": "代表性分歧问题只出现 uncertainty.uploaded_raw、visualizer.render_spec、visualizer.render_spec 三个工具调用；无固定阈值、固定十成员或问题级答案流程。三项可视化协议测试共 0.932 秒。"
+            }
+          ]
+        },
+        {
+          "id": "P2-03",
+          "description": "工具在 Worker 中真正按需加载，简单执行不导入未选择的重型工具。",
+          "status": "accepted",
+          "required_evidence": [
+            "source_diff",
+            "targeted_test",
+            "timing_result"
+          ],
+          "evidence": [
+            {
+              "type": "source_diff",
+              "reference": "sevir_world/agent/runtime.py; sevir_world/agent/unified.py",
+              "result": "pass",
+              "recorded_at": "2026-08-24T13:30:00Z",
+              "notes": "删除模块导入时构造的 TOOL_CLASSES；Worker 通过 _load_tool_class 仅加载当前绑定需要的实现，主 Agent 的紧凑运行说明使用名称注册表而不导入工具实现。"
+            },
+            {
+              "type": "targeted_test",
+              "reference": "tests.test_unified_architecture.UnifiedArchitectureTests.test_unselected_heavy_tools_are_not_imported",
+              "result": "pass",
+              "recorded_at": "2026-08-24T13:30:00Z",
+              "notes": "ds-only Worker 的 sys.modules 中没有 visualization、forecast、matplotlib 或 torch；forecaster 专项发现测试仍通过。"
+            },
+            {
+              "type": "timing_result",
+              "reference": "ds-only persistent Worker cold-start measurement",
+              "result": "pass",
+              "recorded_at": "2026-08-24T13:30:00Z",
+              "notes": "本机冷启动简单执行为 1063ms，专项测试设置的 10 秒反回归上限通过。"
+            }
+          ]
+        },
+        {
+          "id": "P2-04",
+          "description": "正式服务器、前端、测试和文档只描述真实存在的 API；旧 render-jobs 和失效脚本已处理。",
+          "status": "accepted",
+          "required_evidence": [
+            "negative_search",
+            "targeted_test",
+            "documentation_review"
+          ],
+          "evidence": [
+            {
+              "type": "negative_search",
+              "reference": "web/app.js; sevir_world/api; scripts/verify_agent_pipeline.py",
+              "result": "pass",
+              "recorded_at": "2026-08-24T14:00:00Z",
+              "notes": "前端不再调用或维护 render-jobs 状态；两个无正式路由的后台模块及其旧测试已删除；验证脚本改用现行 ExecutionClient。"
+            },
+            {
+              "type": "targeted_test",
+              "reference": "tests.test_api_route_consistency.ApiRouteConsistencyTests.test_frontend_only_calls_registered_server_routes",
+              "result": "pass",
+              "recorded_at": "2026-08-24T14:00:00Z",
+              "notes": "静态提取全部前端 fetch API 基路径并逐项确认服务器注册，同时反证旧模块和旧 URL 均不存在；web/app.js 语法检查通过。"
+            },
+            {
+              "type": "documentation_review",
+              "reference": "web/index.html; web/styles.css; docs source search",
+              "result": "pass",
+              "recorded_at": "2026-08-24T14:00:00Z",
+              "notes": "删除已无数据源的图片后台任务失败/重试界面和样式；现有 docs 未引用 render-jobs，正式图片仅通过同步工具 artifact 与 /api/artifacts 路由呈现。"
+            }
+          ]
+        },
+        {
+          "id": "P2-05",
+          "description": "缓存读取、写入、身份和验证元数据使用一套可解释协议，不缓存自然语言答案作为科学证据。",
+          "status": "accepted",
+          "required_evidence": [
+            "architecture_review",
+            "targeted_test",
+            "cache_manifest"
+          ],
+          "evidence": [
+            {
+              "type": "architecture_review",
+              "reference": "sevir_world/data_access/cache_layers.py; sevir_world/data_access/live_foundation.py; sevir_world/agent/session.py",
+              "result": "pass",
+              "recorded_at": "2026-08-24T14:20:00Z",
+              "notes": "科学缓存按 layer+source_role+request_key 寻址；ERA5 环境输入、ERA5 标准化分析、Aurora 环境预测和模型验证不再互相覆盖。会话 answer 继续只属于 conversation context，并明确不得作为 evidence。"
+            },
+            {
+              "type": "targeted_test",
+              "reference": "tests.test_cache_protocol.CacheProtocolTests.test_cache_manifest_preserves_source_roles_and_no_answer_evidence",
+              "result": "pass",
+              "recorded_at": "2026-08-24T14:20:00Z",
+              "notes": "同一 standardized 层连续写入 ERA5 与 Aurora 后两个角色均可独立读取，验证元数据保留；answer 字段写入会抛出 ValueError。"
+            },
+            {
+              "type": "cache_manifest",
+              "reference": "R19062708588472 raw/standardized/verification compatibility read",
+              "result": "pass",
+              "recorded_at": "2026-08-24T14:20:00Z",
+              "notes": "旧 R190 数据通过兼容读取分别显示 era5_environment_input、aurora_environment_forecast、model_forecast_verification；均标记 scientific_evidence 且 contains_natural_language_answer=false。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

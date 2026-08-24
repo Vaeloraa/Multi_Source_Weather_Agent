@@ -16,6 +16,121 @@ except ImportError:  # pragma: no cover - exercised only in minimal deployments
     linear_sum_assignment = None
 
 
+def _uploaded_raw_contract(
+    upload_id: str,
+    lead_minutes: list[int],
+    ensemble_members: int = 10,
+    horizon_hours: float = 1.0,
+    include_ground_truth: bool = False,
+    array_transport: bool = True,
+    force_live: bool = False,
+) -> dict[str, Any]:
+    """Load up to twelve leads and attach non-probabilistic evidence semantics."""
+    selected = list(dict.fromkeys(int(value) for value in lead_minutes))
+    if not selected:
+        raise ValueError("lead_minutes must contain at least one lead")
+    if len(selected) > 12:
+        raise ValueError("uncertainty.uploaded_raw supports at most twelve leads per call")
+    chunks = [selected[index:index + 4] for index in range(0, len(selected), 4)]
+    parts = [
+        forecast.get_uploaded_ensemble_raw_values(
+            upload_id=upload_id,
+            lead_minutes=chunk,
+            ensemble_members=ensemble_members,
+            horizon_hours=horizon_hours,
+            include_ground_truth=include_ground_truth,
+            array_transport=True,
+            force_live=force_live,
+        )
+        for chunk in chunks
+    ]
+    result = dict(parts[0])
+    if len(parts) > 1:
+        merged_records: list[dict[str, Any]] = []
+        member_count = int(parts[0]["ensemble_members"])
+        for member_index in range(member_count):
+            record = dict(parts[0]["records"][member_index])
+            frames = np.ascontiguousarray(
+                np.concatenate(
+                    [np.asarray(part["records"][member_index]["frames"]) for part in parts],
+                    axis=0,
+                ),
+                dtype=np.float32,
+            )
+            frames.setflags(write=False)
+            record["lead_minutes"] = selected
+            record["frames"] = frames if array_transport else frames.tolist()
+            merged_records.append(record)
+        result["records"] = merged_records
+        result["selected_lead_minutes"] = selected
+        result["cache_hit"] = all(bool(part.get("cache_hit")) for part in parts)
+        if isinstance(result.get("forecast_evidence"), dict):
+            result["forecast_evidence"] = dict(result["forecast_evidence"])
+            result["forecast_evidence"]["selected_lead_minutes"] = selected
+            result["forecast_evidence"]["cache_hit"] = result["cache_hit"]
+
+        truth_available = bool(include_ground_truth) and all(
+            bool(part.get("ground_truth_available")) for part in parts
+        )
+        if truth_available:
+            truth_frames = np.ascontiguousarray(
+                np.concatenate(
+                    [np.asarray(part["ground_truth"]["frames"], dtype=np.uint8) for part in parts],
+                    axis=0,
+                ),
+                dtype=np.uint8,
+            )
+            truth_frames.setflags(write=False)
+            truth = dict(parts[0]["ground_truth"])
+            truth["lead_minutes"] = selected
+            truth["frames"] = truth_frames if array_transport else truth_frames.tolist()
+            result["ground_truth"] = truth
+        elif include_ground_truth:
+            result["ground_truth"] = {
+                "available": False,
+                "lead_minutes": selected,
+                "frames": [],
+                "reason": "held-out truth was not available for every selected lead",
+            }
+        result["ground_truth_available"] = truth_available
+        result["ground_truth_requested"] = bool(include_ground_truth)
+
+    result["backend_chunk_count"] = len(parts)
+    result["capabilities"] = list(dict.fromkeys([
+        *result.get("capabilities", []),
+        "ensemble_agreement",
+    ]))
+    result["ensemble_semantics"] = {
+        "member_count": int(result.get("ensemble_members", ensemble_members)),
+        "member_fraction_meaning": "fraction of configured model members satisfying a generated-code condition",
+        "calibrated_probability_available": False,
+        "member_agreement_is_observed_probability": False,
+        "member_spread_is_forecast_error": False,
+        "ground_truth_loaded": bool(result.get("ground_truth_available")),
+    }
+    result["decision_capabilities"] = {
+        "official_warning": False,
+        "rainfall_rate": False,
+        "road_condition": False,
+        "route_safety": False,
+        "safe_to_drive": False,
+    }
+    provenance = dict(result.get("provenance") or {})
+    provenance.update({
+        "member_support_is_calibrated_probability": False,
+        "route_safety_evidence_available": False,
+    })
+    result["provenance"] = provenance
+    result["interpretation_limit"] = (
+        "These grids describe disagreement among configured CasCast members, not a "
+        "calibrated chance of weather, impact, or route safety. Encoded VIL cannot by "
+        "itself establish rainfall rate, road flooding, visibility, hail, an official "
+        "warning, or whether someone should drive, wait, or reroute. Give only conditional "
+        "general safety guidance and direct users to official weather and traffic sources."
+    )
+    return result
+
+
 def _components(frame: np.ndarray, threshold: float, minimum_pixels: int) -> list[dict[str, Any]]:
     mask = np.asarray(frame) >= threshold
     height, width = mask.shape
@@ -98,11 +213,25 @@ def _assign(cost: np.ndarray) -> list[tuple[int, int]]:
 def track_fields(
     fields: np.ndarray,
     threshold: float,
-    minimum_region_pixels: int = 16,
+    minimum_region_pixels: int = 1,
     maximum_gap_frames: int = 1,
-    pixel_size_km: float = 1.0,
+    pixel_size_km: float | None = None,
+    calibration_source: str = "",
 ) -> dict[str, Any]:
-    """Track real connected masks with one-to-one assignment and one-frame gaps."""
+    """Track masks in grid coordinates, with optional explicit calibration.
+
+    Physical distance and area fields are emitted only when the caller supplies
+    both a positive ``pixel_size_km`` and a non-empty ``calibration_source``.
+    """
+    calibrated = pixel_size_km is not None
+    if calibrated:
+        pixel_size_km = float(pixel_size_km)
+        if pixel_size_km <= 0:
+            raise ValueError("pixel_size_km must be positive when supplied")
+        if not str(calibration_source or "").strip():
+            raise ValueError(
+                "calibration_source is required when converting pixels to physical units"
+            )
     sequence = np.asarray(fields, dtype=np.float32)
     tracks: list[dict[str, Any]] = []
     frame_counts: list[int] = []
@@ -159,42 +288,65 @@ def track_fields(
         frames = track["frames"]
         objects = track["objects"]
         centroids = np.asarray([item["centroid"] for item in objects], dtype=np.float64)
-        segment_distance = (
-            np.linalg.norm(np.diff(centroids, axis=0), axis=1) * pixel_size_km
+        segment_distance_pixels = (
+            np.linalg.norm(np.diff(centroids, axis=0), axis=1)
             if len(centroids) > 1
             else np.asarray([], dtype=np.float64)
         )
         elapsed_hours = max((frames[-1] - frames[0]) * 5 / 60.0, 0.0)
-        path_km = float(segment_distance.sum())
+        path_pixels = float(segment_distance_pixels.sum())
         observations = [
             {
                 "frame_index": frame_index,
                 "lead_minutes": (frame_index + 1) * 5,
                 "centroid": [round(value, 3) for value in item["centroid"]],
                 "pixel_count": item["pixel_count"],
-                "area_km2_approx": round(item["pixel_count"] * pixel_size_km**2, 3),
                 "maximum_vil": round(item["maximum_vil"], 3),
             }
             for frame_index, item in zip(frames, objects)
         ]
-        public_tracks.append(
-            {
+        if calibrated:
+            for observation in observations:
+                observation["area_km2"] = round(
+                    observation["pixel_count"] * float(pixel_size_km) ** 2, 3
+                )
+        public_track = {
                 "track_id": f"T{index}",
                 "start_frame": frames[0],
                 "end_frame": frames[-1],
-                "duration_minutes": len(frames) * 5,
+                "duration_minutes": max(0, (frames[-1] - frames[0]) * 5),
+                "duration_definition": "elapsed span from first to last matched frame",
+                "left_censored": frames[0] == 0,
+                "right_censored": frames[-1] == int(sequence.shape[0]) - 1,
+                "complete_lifecycle_available": False,
                 "maximum_gap_frames": max(np.diff(frames), default=1) - 1,
                 "maximum_pixel_count": max(item["pixel_count"] for item in objects),
-                "path_length_km_approx": round(path_km, 3),
-                "mean_speed_kmh_approx": round(path_km / elapsed_hours, 3) if elapsed_hours else 0.0,
+                "path_length_pixels": round(path_pixels, 3),
+                "mean_speed_pixels_per_hour": (
+                    round(path_pixels / elapsed_hours, 3) if elapsed_hours else 0.0
+                ),
                 "mean_centroid": [round(value, 3) for value in centroids.mean(axis=0)],
                 "observations": observations,
             }
-        )
+        if calibrated:
+            path_km = path_pixels * float(pixel_size_km)
+            public_track.update({
+                "path_length_km": round(path_km, 3),
+                "mean_speed_kmh": round(path_km / elapsed_hours, 3) if elapsed_hours else 0.0,
+            })
+        public_tracks.append(public_track)
     public_tracks.sort(
         key=lambda item: (item["duration_minutes"], item["maximum_pixel_count"]), reverse=True
     )
     return {
+        "capabilities": ["grid_object_tracking", "split_merge_diagnostics"]
+        + (["calibrated_distance", "calibrated_area"] if calibrated else []),
+        "provenance": {
+            "spatial_units": "kilometres and square kilometres" if calibrated else "pixels",
+            "physical_calibration_available": bool(calibrated),
+            "calibration_source": str(calibration_source) if calibrated else None,
+            "compass_direction_available": False,
+        },
         "track_count": len(public_tracks),
         "frame_object_counts": frame_counts,
         "tracks": public_tracks,
@@ -228,7 +380,7 @@ class UncertaintyAnalyzer(WorldComponent):
     """Analyze member spread, connected-object tracks, and cross-member consensus."""
 
     def analyze(
-        self, event_id: str, threshold: float = 133.0, minimum_region_pixels: int = 16
+        self, event_id: str, threshold: float = 133.0, minimum_region_pixels: int = 1
     ) -> dict[str, Any]:
         """Return the existing pixel-wise and storm-object uncertainty summary."""
         arguments = {
@@ -240,18 +392,117 @@ class UncertaintyAnalyzer(WorldComponent):
             "uncertainty.analyze", arguments, forecast.analyze_ensemble_uncertainty
         )
 
+    def uploaded_sequence(
+        self,
+        upload_id: str,
+        fields: list[str],
+        lead_minutes: list[int],
+        threshold: float = 133.0,
+        minimum_region_pixels: int = 1,
+        ensemble_members: int = 10,
+    ) -> dict[str, Any]:
+        """Fetch agent-selected per-member values for an uploaded CasCast run.
+
+        ``fields`` is required and may contain mean_vil, max_vil,
+        exceeding_pixel_count, exceeding_area_ratio, threshold_centroid_x,
+        threshold_centroid_y, largest_region_pixel_count,
+        largest_region_area_ratio, largest_region_centroid_x, or
+        largest_region_centroid_y. ``lead_minutes`` is also required and may
+        contain any 5-minute forecast leads from 5 through 60.
+
+        This tool deliberately returns records only. The generated run() code
+        must choose and calculate any range, median, standard deviation,
+        relative spread, trend, or member-to-member distance needed to answer
+        the question. Use this instead of analyze(event_id=...) for uploads.
+        """
+        arguments = {
+            "upload_id": upload_id,
+            "fields": fields,
+            "lead_minutes": lead_minutes,
+            "threshold": threshold,
+            "minimum_region_pixels": minimum_region_pixels,
+            "ensemble_members": ensemble_members,
+        }
+        return self._call(
+            "uncertainty.uploaded_sequence",
+            arguments,
+            forecast.query_uploaded_ensemble_member_values,
+        )
+
+    def uploaded_raw(
+        self,
+        upload_id: str,
+        lead_minutes: list[int],
+        ensemble_members: int = 10,
+        horizon_hours: float = 1.0,
+        include_ground_truth: bool = False,
+        force_live: bool = False,
+    ) -> dict[str, Any]:
+        """Return raw CasCast member grids for selected forecast leads.
+
+        This is the preferred primitive for open-ended ensemble questions.
+        ``horizon_hours`` must be 1.0, 2.0, or 3.0. For a two- or three-hour
+        rolling request, leads may extend through 120 or 180 minutes. The same
+        uploaded 13-frame history conditions consecutive 60-minute blocks.
+        It accepts no fields or threshold and computes no statistics. The
+        generated ``run()`` code must choose fields, comparisons, and
+        statistics from the raw member pixels. Up to twelve leads are accepted
+        in one call; the trusted wrapper chunks backend reads while returning
+        one aligned result, so generated code must not make tool calls in a
+        loop. The exact response is
+        ``records``, one item per member; each record has ``lead_minutes`` and
+        a positionally aligned read-only float32 ``frames`` array shaped
+        ``[selected_lead, row, column]`` inside
+        the isolated worker. Analysis values retain CasCast decoded precision;
+        uint8 conversion is for display only. Every member includes its seed,
+        output_type, and is_deterministic=false. There are no dynamic keys such
+        as ``lead_60``.
+        ``records`` contains one item per member, not one item per lead. Each
+        record's ``lead_minutes`` and the first ``frames`` axis are positionally aligned;
+        use the lead's list index to select its frame. Do not treat ``frames``
+        as a dictionary keyed by lead.
+        ``records[i]['frames']`` is an ndarray: never write ``if frames`` or
+        ``if not frames``. Check ``len(records)``, the documented shape, or use
+        ``arrays.any/all/count_nonzero``. Array transport is automatic; do not
+        pass an ``array_transport`` argument. For all 12 one-hour leads, call
+        this method once with ``lead_minutes=[5,10,...,60]``.
+        By default this uncertainty primitive does not load or return held-out
+        future observations. Set ``include_ground_truth=true`` only for an
+        explicit verification request; normally prefer
+        ``metrics.uploaded_raw_pair`` so prediction/truth alignment and the
+        missing-value mask are explicit.
+        """
+        arguments = {
+            "upload_id": upload_id,
+            "lead_minutes": lead_minutes,
+            "ensemble_members": ensemble_members,
+            "horizon_hours": horizon_hours,
+            "include_ground_truth": include_ground_truth,
+            "force_live": bool(force_live),
+            # Internal transport choice: keep the cube as an ndarray inside the
+            # isolated worker instead of expanding millions of JSON scalars.
+            "array_transport": True,
+        }
+        return self._call(
+            "uncertainty.uploaded_raw",
+            arguments,
+            _uploaded_raw_contract,
+        )
+
     def track_objects(
         self,
         event_id: str,
         source: str = "ensemble_mean",
         member: int = 1,
         threshold: float = 133.0,
-        minimum_region_pixels: int = 16,
+        minimum_region_pixels: int = 1,
+        pixel_size_km: float | None = None,
+        calibration_source: str = "",
     ) -> dict[str, Any]:
         """Track per-frame objects in ensemble mean, ground truth, or one member.
 
-        Member numbering is one-based. Distances assume the native VIL grid is
-        approximately 1 km per pixel.
+        Member numbering is one-based. Results stay in pixels unless an
+        explicit positive pixel size and its calibration provenance are passed.
         """
         arrays, _ = ensemble._load_cascast_ensemble(event_id)
         if source == "ensemble_mean":
@@ -259,8 +510,9 @@ class UncertaintyAnalyzer(WorldComponent):
         elif source == "ground_truth":
             fields = arrays["ground_truth"]
         elif source == "member":
-            if not 1 <= int(member) <= arrays["ensemble_members"].shape[0]:
-                raise ValueError("member must be between 1 and 10")
+            ensemble_count = int(arrays["ensemble_members"].shape[0])
+            if not 1 <= int(member) <= ensemble_count:
+                raise ValueError(f"member must be between 1 and {ensemble_count}")
             fields = arrays["ensemble_members"][int(member) - 1]
         else:
             raise ValueError("source must be ensemble_mean, ground_truth, or member")
@@ -271,7 +523,13 @@ class UncertaintyAnalyzer(WorldComponent):
             "source": source,
             "member": int(member) if source == "member" else None,
             "threshold": threshold,
-            **track_fields(fields, threshold, minimum_region_pixels),
+            **track_fields(
+                fields,
+                threshold,
+                minimum_region_pixels,
+                pixel_size_km=pixel_size_km,
+                calibration_source=calibration_source,
+            ),
         }
         self._recorder(
             "uncertainty.track_objects",
@@ -281,6 +539,8 @@ class UncertaintyAnalyzer(WorldComponent):
                 "member": member,
                 "threshold": threshold,
                 "minimum_region_pixels": minimum_region_pixels,
+                "pixel_size_km": pixel_size_km,
+                "calibration_source": calibration_source,
             },
             result,
         )
@@ -290,15 +550,16 @@ class UncertaintyAnalyzer(WorldComponent):
         self,
         event_id: str,
         threshold: float = 133.0,
-        minimum_region_pixels: int = 16,
+        minimum_region_pixels: int = 1,
     ) -> dict[str, Any]:
-        """Match storm tracks across ten members into consensus objects.
+        """Match storm tracks across all available members into consensus objects.
 
         Members are processed one at a time and matched one-to-one to existing
         consensus prototypes using temporal overlap and mean-path distance.
         Member support is an ensemble fraction, not a calibrated hazard probability.
         """
         arrays, _ = ensemble._load_cascast_ensemble(event_id)
+        ensemble_count = int(arrays["ensemble_members"].shape[0])
         member_tracks = [
             track_fields(member, threshold, minimum_region_pixels)["tracks"]
             for member in arrays["ensemble_members"]
@@ -346,7 +607,9 @@ class UncertaintyAnalyzer(WorldComponent):
                 {
                     "consensus_id": f"C{index}",
                     "member_count": len(cluster["members"]),
-                    "member_support_fraction": round(len(cluster["members"]) / 10.0, 3),
+                    "member_support_fraction": round(
+                        len(cluster["members"]) / float(ensemble_count), 3
+                    ),
                     "members": cluster["members"],
                     "mean_centroid": [round(value, 3) for value in centroids.mean(axis=0)],
                     "centroid_spread_pixels": round(
@@ -371,9 +634,17 @@ class UncertaintyAnalyzer(WorldComponent):
         result = {
             "status": "ok",
             "task": "cross_ensemble_object_matching",
+            "capabilities": ["grid_object_tracking", "ensemble_object_agreement"],
+            "provenance": {
+                "prediction_source": "saved CasCast ensemble members",
+                "spatial_units": "pixels",
+                "physical_calibration_available": False,
+                "compass_direction_available": False,
+                "member_support_is_calibrated_probability": False,
+            },
             "event_id": event_id,
             "threshold": threshold,
-            "ensemble_count": 10,
+            "ensemble_count": ensemble_count,
             "member_track_counts": [len(tracks) for tracks in member_tracks],
             "consensus_object_count": len(consensus),
             "consensus_objects": consensus[:20],

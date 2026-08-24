@@ -1,81 +1,10 @@
 from __future__ import annotations
 
-import zipfile
-from functools import lru_cache
-from pathlib import Path
 from typing import Any
-from xml.etree import ElementTree
 
 from ..backends import geospatial
 
 from .base import WorldComponent, resolve_event_id
-
-
-BOUNDARY_ROOT = Path(__file__).resolve().parents[2] / "data" / "boundaries"
-
-
-def _point_in_ring(longitude: float, latitude: float, ring: list[tuple[float, float]]) -> bool:
-    inside = False
-    previous = ring[-1]
-    for current in ring:
-        x1, y1 = previous
-        x2, y2 = current
-        if (y1 > latitude) != (y2 > latitude):
-            crossing = (x2 - x1) * (latitude - y1) / ((y2 - y1) or 1e-12) + x1
-            if longitude < crossing:
-                inside = not inside
-        previous = current
-    return inside
-
-
-@lru_cache(maxsize=4)
-def _load_kmz(path_text: str) -> tuple[dict[str, Any], ...]:
-    path = Path(path_text)
-    if not path.exists():
-        return ()
-    with zipfile.ZipFile(path) as archive:
-        kml_name = next(name for name in archive.namelist() if name.lower().endswith(".kml"))
-        root = ElementTree.fromstring(archive.read(kml_name))
-    namespace = {"k": "http://www.opengis.net/kml/2.2"}
-    features: list[dict[str, Any]] = []
-    for placemark in root.findall(".//k:Placemark", namespace):
-        fields = {
-            item.attrib.get("name", ""): (item.text or "").strip()
-            for item in placemark.findall(".//k:SimpleData", namespace)
-        }
-        polygons: list[list[tuple[float, float]]] = []
-        for coordinates in placemark.findall(
-            ".//k:Polygon/k:outerBoundaryIs/k:LinearRing/k:coordinates", namespace
-        ):
-            ring = []
-            for token in (coordinates.text or "").split():
-                parts = token.split(",")
-                if len(parts) >= 2:
-                    ring.append((float(parts[0]), float(parts[1])))
-            if len(ring) >= 3:
-                polygons.append(ring)
-        if not polygons:
-            continue
-        xs = [point[0] for polygon in polygons for point in polygon]
-        ys = [point[1] for polygon in polygons for point in polygon]
-        features.append(
-            {
-                "fields": fields,
-                "polygons": polygons,
-                "bbox": (min(xs), min(ys), max(xs), max(ys)),
-            }
-        )
-    return tuple(features)
-
-
-def _find_feature(path: Path, latitude: float, longitude: float) -> dict[str, Any] | None:
-    for feature in _load_kmz(str(path)):
-        min_lon, min_lat, max_lon, max_lat = feature["bbox"]
-        if not (min_lon <= longitude <= max_lon and min_lat <= latitude <= max_lat):
-            continue
-        if any(_point_in_ring(longitude, latitude, ring) for ring in feature["polygons"]):
-            return feature["fields"]
-    return None
 
 
 class SevirGeolocator(WorldComponent):
@@ -95,52 +24,95 @@ class SevirGeolocator(WorldComponent):
         return self._call("geolocator.locate", arguments, geospatial.geolocate_sevir_event)
 
     def pixel_to_latlon(self, event_id: Any, row: int, column: int) -> dict[str, Any]:
-        """Convert a zero-based raster row/column to projected WGS84 lat/lon."""
+        """Convert one zero-based raster pixel to a georeferenced point.
+
+        Returns a dictionary, not a tuple.  Read ``result['latitude']`` and
+        ``result['longitude']``; ``row`` and ``column`` are zero-based NumPy
+        indices.  For a user-facing ordinal use ``result['human_position']``
+        (so row=39 means the 40th row); the result also contains row, column,
+        and ``relative_position`` (fractions from the left/top edge, which is
+        usually more intuitive for a non-technical user),
+        projected_x_m, projected_y_m, pixel_resolution_m,
+        physical_calibration_available, calibration_source and
+        coordinate_reference_system.  A real compass direction requires two
+        distinct calls/endpoints.  Do not write ``lat, lon =
+        pixel_to_latlon(...)`` because iterating the dictionary yields keys.
+        """
         location = self.locate(event_id, row=row, column=column)
         return location["pixel_location"]
 
     def reverse_geocode(self, latitude: float, longitude: float) -> dict[str, Any]:
         """Resolve a WGS84 point to offline Census state and county polygons."""
-        latitude = float(latitude)
-        longitude = float(longitude)
-        if not -90 <= latitude <= 90 or not -180 <= longitude <= 180:
-            raise ValueError("latitude/longitude is outside the WGS84 range")
-        state_path = BOUNDARY_ROOT / "cb_2025_us_state_20m.kmz"
-        county_path = BOUNDARY_ROOT / "cb_2025_us_county_20m.kmz"
-        if not state_path.exists() or not county_path.exists():
-            result = {
-                "status": "boundary_data_unavailable",
-                "latitude": latitude,
-                "longitude": longitude,
-                "required_files": [state_path.name, county_path.name],
-                "boundary_root": str(BOUNDARY_ROOT),
-            }
-        else:
-            state = _find_feature(state_path, latitude, longitude)
-            county = _find_feature(county_path, latitude, longitude)
-            result = {
-                "status": "ok" if state else "outside_us_boundaries",
-                "latitude": latitude,
-                "longitude": longitude,
-                "country": "United States" if state else None,
-                "state": state.get("NAME") if state else None,
-                "state_code": state.get("STUSPS") if state else None,
-                "state_fips": state.get("STATEFP") if state else None,
-                "county": county.get("NAME") if county else None,
-                "county_fips": county.get("GEOID") if county else None,
-                "source": "US Census 2025 cartographic boundary files, 1:20m",
-                "interpretation_limit": "Polygon lookup only; not a city or street geocoder.",
-            }
-        self._recorder(
+        return self._call(
             "geolocator.reverse_geocode",
-            {"latitude": latitude, "longitude": longitude},
-            result,
+            {"latitude": float(latitude), "longitude": float(longitude)},
+            geospatial.reverse_geocode_us,
         )
-        return result
+
+    def resolve_region(self, latitude: float, longitude: float) -> dict[str, Any]:
+        """Return offline administrative names for a user-supplied WGS84 point."""
+        return self.reverse_geocode(float(latitude), float(longitude))
+
+    def resolve_place(self, place: str, country_codes: str = "us") -> dict[str, Any]:
+        """Resolve a place name or explicit ``latitude,longitude`` text to WGS84."""
+        return self._call(
+            "geolocator.resolve_place",
+            {"place": str(place), "country_codes": str(country_codes)},
+            geospatial.resolve_place,
+        )
 
     def locate_admin(self, event_id: Any, row: int = 192, column: int = 192) -> dict[str, Any]:
         """Resolve an event pixel to WGS84 and offline state/county."""
         event_id = resolve_event_id(event_id)
         pixel = self.pixel_to_latlon(event_id, row, column)
         admin = self.reverse_geocode(pixel["latitude"], pixel["longitude"])
-        return {"event_id": event_id, "pixel_location": pixel, "administrative_area": admin}
+        return {
+            "status": "ok" if admin.get("status") == "ok" else admin.get("status"),
+            "task": "sevir_pixel_administrative_location",
+            "capabilities": ["pixel_to_wgs84", "offline_state_county_polygon_lookup"],
+            "event_id": event_id,
+            "pixel_location": pixel,
+            "administrative_area": admin,
+            "provenance": {
+                "grid_calibration": pixel.get("calibration_source"),
+                "administrative_boundaries": admin.get("source"),
+                "location_is_image_derived_guess": False,
+            },
+        }
+
+    def region_administrative_coverage(
+        self, event_id: Any, pixels: list[list[int]]
+    ) -> dict[str, Any]:
+        """Resolve county/state coverage for all pixels in one analysis region.
+
+        The result distinguishes a region-wide pixel-centre coverage calculation
+        from the separate administrative lookup for its centroid.
+        """
+        event_id = resolve_event_id(event_id)
+        return self._call(
+            "geolocator.region_administrative_coverage",
+            {"event_id": event_id, "pixels": pixels},
+            geospatial.geolocate_pixel_region,
+        )
+
+    def pixel_box_to_latlon_bounds(
+        self, event_id: Any, box: list[int]
+    ) -> dict[str, Any]:
+        """Convert an event pixel box to a conservative WGS84 bounding box."""
+        event_id = resolve_event_id(event_id)
+        return self._call(
+            "geolocator.pixel_box_to_latlon_bounds",
+            {"event_id": event_id, "box": box},
+            geospatial.pixel_box_to_latlon_bounds,
+        )
+
+    def latlon_box_to_pixel_box(
+        self, event_id: Any, bounds: dict[str, float]
+    ) -> dict[str, Any]:
+        """Map a WGS84 bounding box to the corresponding event pixel box."""
+        event_id = resolve_event_id(event_id)
+        return self._call(
+            "geolocator.latlon_box_to_pixel_box",
+            {"event_id": event_id, "bounds": bounds},
+            geospatial.latlon_box_to_pixel_box,
+        )

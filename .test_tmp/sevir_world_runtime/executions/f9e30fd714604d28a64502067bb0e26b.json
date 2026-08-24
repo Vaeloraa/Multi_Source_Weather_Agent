@@ -1,0 +1,52 @@
+{
+  "execution_id": "f9e30fd714604d28a64502067bb0e26b",
+  "created_at_epoch_seconds": 1787585558.437,
+  "code": "import statistics as stats\nworking_array = np.arange(6, dtype=np.float32)\ndef retained_transform(offset):\n    return float(stats.mean(working_array)) + offset\nresult = {'value': retained_transform(1)}",
+  "data_descs": [],
+  "selected_tools": [
+    "ds"
+  ],
+  "execution": {
+    "status": "ok",
+    "result": {
+      "value": 3.5
+    },
+    "primary_result": {
+      "value": 3.5
+    },
+    "calls": [],
+    "stdout": "",
+    "result_json_characters": 14,
+    "runtime_schema": {
+      "schema_version": "sevir-contract-2",
+      "dataset": {
+        "schema_version": "sevir-contract-2",
+        "object": "ds",
+        "type": "list[DatasetRecord]",
+        "records": []
+      },
+      "tools": []
+    },
+    "evidence_ledger": {
+      "completed_evidence": [],
+      "reuse_rule": "reuse completed evidence unless arguments materially change"
+    },
+    "worker_session": {
+      "id": "f1c7888f2c3546a599a1d88af5c1d618",
+      "step": 1
+    },
+    "tool_result_cache": {
+      "entries": 0,
+      "updates": 0
+    },
+    "elapsed_ms": 1502,
+    "limits": {
+      "timeout_seconds": 20.0,
+      "memory_limit_mb": 1024,
+      "budget_profile": "standard",
+      "network": "inherits worker process policy; weather tools own supported data access",
+      "filesystem": "temporary cwd; persistent figures use SEVIR_ARTIFACT_DIR",
+      "imports": "standard Python imports enabled"
+    }
+  }
+}

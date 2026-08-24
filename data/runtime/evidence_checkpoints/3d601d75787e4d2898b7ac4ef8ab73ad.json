@@ -1,0 +1,715 @@
+{
+  "checkpoint_id": "3d601d75787e4d2898b7ac4ef8ab73ad",
+  "request_id": "b8d17fdaf0484612810f87891b677b32",
+  "created_at": "2026-08-21T18:02:05.961399+00:00",
+  "termination_reason": "agent_failed_annotation_fallback",
+  "evidence_bundle": {
+    "version": "1.1",
+    "source_count": 15,
+    "successful_observation_count": 1,
+    "successful_tool_count": 13,
+    "sources": [
+      {
+        "ref": "tool:1:geolocator.locate",
+        "api": "geolocator.locate",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:2:geolocator.pixel_box_to_latlon_bounds",
+        "api": "geolocator.pixel_box_to_latlon_bounds",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:3:geolocator.pixel_box_to_latlon_bounds",
+        "api": "geolocator.pixel_box_to_latlon_bounds",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:4:geolocator.region_administrative_coverage",
+        "api": "geolocator.region_administrative_coverage",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:5:geolocator.locate",
+        "api": "geolocator.locate",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:6:geolocator.pixel_box_to_latlon_bounds",
+        "api": "geolocator.pixel_box_to_latlon_bounds",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:7:geolocator.pixel_box_to_latlon_bounds",
+        "api": "geolocator.pixel_box_to_latlon_bounds",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:8:geolocator.region_administrative_coverage",
+        "api": "geolocator.region_administrative_coverage",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:9:geolocator.locate",
+        "api": "geolocator.locate",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:10:geolocator.pixel_box_to_latlon_bounds",
+        "api": "geolocator.pixel_box_to_latlon_bounds",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:11:geolocator.pixel_box_to_latlon_bounds",
+        "api": "geolocator.pixel_box_to_latlon_bounds",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:12:geolocator.region_administrative_coverage",
+        "api": "geolocator.region_administrative_coverage",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:13:visualizer.grid_panels",
+        "api": "visualizer.grid_panels",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "observation:5",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "data:1",
+        "api": "data_desc",
+        "status": "available",
+        "source": "upload",
+        "event_id": null,
+        "upload_id": "6c2f18781cb94d0fbfc5256dee2d81c5"
+      }
+    ],
+    "facts": [],
+    "numeric_evidence": [
+      {
+        "ref": "observation:5",
+        "path": "image_shape[0]",
+        "value": 384
+      },
+      {
+        "ref": "observation:5",
+        "path": "image_shape[1]",
+        "value": 384
+      },
+      {
+        "ref": "observation:5",
+        "path": "n_valid_pixels",
+        "value": 147456
+      },
+      "...",
+      {
+        "ref": "tool:13:visualizer.grid_panels",
+        "path": "result.data.panels[2].vmax",
+        "value": 219.0
+      }
+    ],
+    "verification_scope": {
+      "ground_truth_available": false,
+      "verified_event_count": 0,
+      "scope_kind": "none",
+      "single_event_only": false,
+      "subject_refs": [],
+      "forecast_max_lead_minutes": null,
+      "complete_truth_max_lead_minutes": null,
+      "any_truth_max_lead_minutes": null,
+      "frame_truth_max_lead_minutes": null,
+      "complete_truth_lead_minutes": [],
+      "partial_truth_lead_minutes": [],
+      "truth_completeness_unknown_lead_minutes": [],
+      "unverified_forecast_lead_minutes": [],
+      "coverage_reference_pixels": null,
+      "coverage_method": "none",
+      "cross_event_generalization_supported": false
+    },
+    "capabilities": {
+      "successful_execution": {
+        "available": true,
+        "evidence_refs": [
+          "observation:5"
+        ]
+      },
+      "encoded_grid": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "temporal_sequence": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "geolocation": {
+        "available": true,
+        "evidence_refs": [
+          "tool:1:geolocator.locate",
+          "tool:4:geolocator.region_administrative_coverage",
+          "tool:5:geolocator.locate",
+          "tool:8:geolocator.region_administrative_coverage",
+          "tool:9:geolocator.locate",
+          "tool:12:geolocator.region_administrative_coverage"
+        ]
+      },
+      "administrative_location": {
+        "available": true,
+        "evidence_refs": [
+          "tool:4:geolocator.region_administrative_coverage",
+          "tool:8:geolocator.region_administrative_coverage",
+          "tool:12:geolocator.region_administrative_coverage"
+        ]
+      },
+      "spatial_calibration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "compass_direction": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ground_truth": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "future_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "environment_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "era5_reanalysis": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "aurora_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ensemble_agreement": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "calibrated_probability": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "official_warning": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "rainfall_rate": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "meteorological_dynamics": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "hail": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "object_motion": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "centroid_change": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "observed_window_duration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "monotonic_interval_trend": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "complete_lifecycle": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "route_safety": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "multi_event_verification": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "cross_event_generalization": {
+        "available": false,
+        "evidence_refs": []
+      }
+    }
+  },
+  "observations": [
+    {
+      "step": 5,
+      "result": {
+        "image_shape": [
+          384,
+          384
+        ],
+        "n_valid_pixels": 147456,
+        "mean_vil": 13.78787612915039,
+        "median_vil": 0.0,
+        "max_vil": 219.0,
+        "min_vil": 0.0,
+        "max_location": {
+          "row": 373,
+          "col": 212
+        },
+        "threshold_stats": {
+          "74": {
+            "count": "...[truncated]",
+            "pct": "...[truncated]"
+          },
+          "133": {
+            "count": "...[truncated]",
+            "pct": "...[truncated]"
+          },
+          "160": {
+            "count": "...[truncated]",
+            "pct": "...[truncated]"
+          },
+          "181": {
+            "count": "...[truncated]",
+            "pct": "...[truncated]"
+          },
+          "219": {
+            "count": "...[truncated]",
+            "pct": "...[truncated]"
+          }
+        },
+        "high_bbox_133": [
+          70,
+          30,
+          373,
+          212
+        ],
+        "mid_bbox_74": [
+          2,
+          0,
+          383,
+          350
+        ],
+        "geo_info_max_point": {
+          "status": "ok",
+          "task": "sevir_event_geolocation",
+          "capabilities": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "provenance": {
+            "metadata_source": "...[truncated]",
+            "physical_calibration_available": "...[truncated]",
+            "projection_available": "...[truncated]",
+            "administrative_boundary_lookup_performed": "...[truncated]"
+          },
+          "event_id": "R19051501438046",
+          "time_utc": "2019-05-15 01:43:45",
+          "event_type": "Unlabeled",
+          "bounding_box": {
+            "south": "...[truncated]",
+            "west": "...[truncated]",
+            "north": "...[truncated]",
+            "east": "...[truncated]"
+          },
+          "approx_center_latlon": [
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "projection": "+proj=laea +lat_0=38 +lon_0=-98 +units=m +a=6370997.0 +ellps=sphere",
+          "image_shape": [
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "physical_extent_m": [
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "file_name": "vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5",
+          "file_index": 500,
+          "metadata_source": "SEVIR CATALOG",
+          "interpretation_limit": "The bounding box and projection come from SEVIR CATALOG. Pixel coordinates are converted with the supplied projection; no administrative reverse geocoding is performed.",
+          "pixel_location": {
+            "row": "...[truncated]",
+            "column": "...[truncated]",
+            "index_base": "...[truncated]",
+            "human_position": "...[truncated]",
+            "relative_position": "...[truncated]",
+            "latitude": "...[truncated]",
+            "longitude": "...[truncated]",
+            "projected_x_m": "...[truncated]",
+            "projected_y_m": "...[truncated]",
+            "pixel_resolution_m": "...[truncated]",
+            "physical_calibration_available": "...[truncated]",
+            "calibration_source": "...[truncated]",
+            "coordinate_reference_system": "...[truncated]"
+          },
+          "schema_version": "sevir-contract-1",
+          "result_status": "ok",
+          "available": true
+        },
+        "bbox_geo_133": {
+          "status": "ok",
+          "event_id": "R19051501438046",
+          "pixel_box": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "south": 40.351933,
+          "west": -103.532475,
+          "north": 43.142169,
+          "east": -101.172249,
+          "coordinate_reference_system": "WGS84"
+        },
+        "mid_bbox_geo_74": {
+          "status": "ok",
+          "event_id": "R19051501438046",
+          "pixel_box": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "south": 40.246115,
+          "west": -103.959151,
+          "north": 43.788021,
+          "east": -99.540176,
+          "coordinate_reference_system": "WGS84"
+        },
+        "admin_coverage": {
+          "status": "ok",
+          "task": "sevir_region_administrative_coverage",
+          "event_id": "R19051501438046",
+          "region_scope": "provided_region_pixel_centres",
+          "pixel_count": 11,
+          "pixel_bbox": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "latlon_bbox": {
+            "south": "...[truncated]",
+            "west": "...[truncated]",
+            "north": "...[truncated]",
+            "east": "...[truncated]"
+          },
+          "region_centroid": {
+            "row": "...[truncated]",
+            "column": "...[truncated]",
+            "index_base": "...[truncated]",
+            "human_position": "...[truncated]",
+            "relative_position": "...[truncated]",
+            "latitude": "...[truncated]",
+            "longitude": "...[truncated]",
+            "projected_x_m": "...[truncated]",
+            "projected_y_m": "...[truncated]",
+            "pixel_resolution_m": "...[truncated]",
+            "physical_calibration_available": "...[truncated]",
+            "calibration_source": "...[truncated]",
+            "coordinate_reference_system": "...[truncated]"
+          },
+          "administrative_center": {
+            "status": "...[truncated]",
+            "capabilities": "...[truncated]",
+            "latitude": "...[truncated]",
+            "longitude": "...[truncated]",
+            "country": "...[truncated]",
+            "state": "...[truncated]",
+            "state_code": "...[truncated]",
+            "state_fips": "...[truncated]",
+            "county": "...[truncated]",
+            "county_fips": "...[truncated]",
+            "source": "...[truncated]",
+            "provenance": "...[truncated]",
+            "interpretation_limit": "...[truncated]"
+          },
+          "administrative_coverage": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "unresolved_pixel_count": 0,
+          "provenance": {
+            "grid_calibration": "...[truncated]",
+            "administrative_boundaries": "...[truncated]",
+            "coverage_method": "...[truncated]",
+            "complete_for_provided_pixels": "...[truncated]"
+          },
+          "interpretation_limit": "Coverage counts raster pixel centres in the supplied region. It does not prove that the full geographic bounding box or an entire county is affected."
+        },
+        "viz_result": {
+          "status": "ok",
+          "task": "sevir_chart",
+          "chart_type": "agent_grid_panels",
+          "artifact_id": "333607eac6ee4cf44b576d7e70d3c470",
+          "url": "/api/artifacts/333607eac6ee4cf44b576d7e70d3c470.png",
+          "image_url": "/api/artifacts/333607eac6ee4cf44b576d7e70d3c470.png",
+          "mime_type": "image/png",
+          "title": "SEVIR VIL 最值得注意区域标注",
+          "description": "Agent-selected spatial grids; comparable panels share a color scale by unit, while unlike quantities use separately labeled scales.",
+          "size_bytes": 168393,
+          "verified": true
+        }
+      },
+      "tool_calls": [
+        {
+          "step": 1,
+          "api": "geolocator.locate",
+          "arguments": {
+            "event_id": "...[truncated]",
+            "row": "...[truncated]",
+            "column": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "tool_contract": {
+            "name": "...[truncated]",
+            "output_role": "...[truncated]",
+            "retry_policy": "...[truncated]",
+            "cache_policy": "...[truncated]"
+          },
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "capabilities": "...[truncated]",
+            "provenance": "...[truncated]",
+            "event_id": "...[truncated]",
+            "time_utc": "...[truncated]",
+            "event_type": "...[truncated]",
+            "bounding_box": "...[truncated]",
+            "approx_center_latlon": "...[truncated]",
+            "projection": "...[truncated]",
+            "image_shape": "...[truncated]",
+            "physical_extent_m": "...[truncated]",
+            "file_name": "...[truncated]",
+            "file_index": "...[truncated]",
+            "metadata_source": "...[truncated]",
+            "interpretation_limit": "...[truncated]",
+            "pixel_location": "...[truncated]",
+            "schema_version": "...[truncated]",
+            "result_status": "...[truncated]",
+            "available": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 2,
+          "api": "geolocator.pixel_box_to_latlon_bounds",
+          "arguments": {
+            "event_id": "...[truncated]",
+            "box": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "tool_contract": {
+            "name": "...[truncated]",
+            "output_role": "...[truncated]",
+            "retry_policy": "...[truncated]",
+            "cache_policy": "...[truncated]"
+          },
+          "result": {
+            "status": "...[truncated]",
+            "event_id": "...[truncated]",
+            "pixel_box": "...[truncated]",
+            "south": "...[truncated]",
+            "west": "...[truncated]",
+            "north": "...[truncated]",
+            "east": "...[truncated]",
+            "coordinate_reference_system": "...[truncated]",
+            "schema_version": "...[truncated]",
+            "result_status": "...[truncated]",
+            "available": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 3,
+          "api": "geolocator.pixel_box_to_latlon_bounds",
+          "arguments": {
+            "event_id": "...[truncated]",
+            "box": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "tool_contract": {
+            "name": "...[truncated]",
+            "output_role": "...[truncated]",
+            "retry_policy": "...[truncated]",
+            "cache_policy": "...[truncated]"
+          },
+          "result": {
+            "status": "...[truncated]",
+            "event_id": "...[truncated]",
+            "pixel_box": "...[truncated]",
+            "south": "...[truncated]",
+            "west": "...[truncated]",
+            "north": "...[truncated]",
+            "east": "...[truncated]",
+            "coordinate_reference_system": "...[truncated]",
+            "schema_version": "...[truncated]",
+            "result_status": "...[truncated]",
+            "available": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 4,
+          "api": "geolocator.region_administrative_coverage",
+          "arguments": {
+            "event_id": "...[truncated]",
+            "pixel_count": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "tool_contract": {
+            "name": "...[truncated]",
+            "output_role": "...[truncated]",
+            "retry_policy": "...[truncated]",
+            "cache_policy": "...[truncated]"
+          },
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "event_id": "...[truncated]",
+            "region_scope": "...[truncated]",
+            "pixel_count": "...[truncated]",
+            "pixel_bbox": "...[truncated]",
+            "latlon_bbox": "...[truncated]",
+            "region_centroid": "...[truncated]",
+            "administrative_center": "...[truncated]",
+            "administrative_coverage": "...[truncated]",
+            "unresolved_pixel_count": "...[truncated]",
+            "provenance": "...[truncated]",
+            "interpretation_limit": "...[truncated]",
+            "schema_version": "...[truncated]",
+            "result_status": "...[truncated]",
+            "available": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 5,
+          "api": "visualizer.grid_panels",
+          "arguments": {
+            "title": "...[truncated]",
+            "labels": "...[truncated]",
+            "panel_count": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "tool_contract": {
+            "name": "...[truncated]",
+            "output_role": "...[truncated]",
+            "retry_policy": "...[truncated]",
+            "cache_policy": "...[truncated]"
+          },
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "chart_type": "...[truncated]",
+            "artifact_id": "...[truncated]",
+            "url": "...[truncated]",
+            "image_url": "...[truncated]",
+            "mime_type": "...[truncated]",
+            "title": "...[truncated]",
+            "description": "...[truncated]",
+            "size_bytes": "...[truncated]",
+            "verified": "...[truncated]",
+            "schema_version": "...[truncated]",
+            "result_status": "...[truncated]",
+            "available": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        }
+      ],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "geolocator": "...[truncated]",
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    }
+  ],
+  "tool_summary": {
+    "decision_steps": 9,
+    "call_count": 13,
+    "unique_tool_count": 4,
+    "cache_hits": 0
+  },
+  "limitations": {
+    "status": "not_run",
+    "covered_dimensions": [],
+    "missing_dimensions": [],
+    "needs_more_execution": false,
+    "next_analysis": "",
+    "reason": "claim_gate_convergence"
+  },
+  "content_hash": "0013bd3e38b93ea307b8b751d3efd9555f5460ebb96c0475f783b1e347286432"
+}

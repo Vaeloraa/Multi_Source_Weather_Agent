@@ -13,6 +13,7 @@ from typing import Any
 
 from ..data_access.config import *
 from ..data_access.catalog import _catalog_vil_records
+from ..data_access.live_inference import live_cascast_readiness
 from ..data_access.ensemble import (
     _earthformer_latent_status,
     _ensemble_manifest,
@@ -78,6 +79,14 @@ def runtime_status() -> dict[str, Any]:
     ).exists()
     autoencoder_checkpoint = (CASCAST_ROOT / "ckpts" / "autoencoder" / "ckpt.pth").exists()
     earthformer_latent = _earthformer_latent_status()
+    live_readiness = live_cascast_readiness()
+    local_hdf5_records = [
+        record
+        for record in _catalog_vil_records()
+        if (LOCAL_SEVIR_DATA_ROOT / record["file_name"]).is_file()
+    ] if CATALOG_CSV.exists() else []
+    local_hdf5_event_ids = list(dict.fromkeys(record["id"] for record in local_hdf5_records))
+    remote_event_access = bool(SEVIR_REMOTE_ENABLED and CATALOG_CSV.exists())
     latent_data = earthformer_latent["available"]
     prediction_output = CASCAST_ENSEMBLE_MANIFEST.exists()
     cascast_assets_ready = bool(
@@ -128,15 +137,24 @@ def runtime_status() -> dict[str, Any]:
             "event_latent_available": event_latent_available,
             "prediction_output_available": prediction_output,
             "display_mode": "saved_verified_ensemble_package",
-            "live_inference_for_selected_event": False,
-            "ensemble_count": 10 if prediction_output else 0,
+            "live_inference_ready": bool(live_readiness["ready"] and (local_hdf5_event_ids or remote_event_access)),
+            "live_inference_for_selected_event": bool(live_readiness["ready"]),
+            "live_assets": live_readiness["assets"],
+            "local_hdf5_event_count": len(local_hdf5_event_ids),
+            "local_hdf5_event_ids": local_hdf5_event_ids,
+            "remote_hdf5_enabled": remote_event_access,
+            "remote_hdf5_base_url": SEVIR_REMOTE_BASE_URL if remote_event_access else None,
+            "ensemble_count": int(manifest.get("members_per_sample", 0)) if prediction_output else 0,
             "available_event_count": int(manifest["samples"]) if prediction_output else 0,
             "event_ids": [event["event_id"] for event in manifest["events"]] if prediction_output else [],
             "earthformer_latent": earthformer_latent,
             "reason": (
                 f"仍缺少{'、'.join(missing_assets)}"
                 if missing_assets
-                else f"10个事件的10路CasCast ensemble已接入Demo"
+                else (
+                    f"{int(manifest.get('samples', 0))}个事件的"
+                    f"{int(manifest.get('members_per_sample', 0))}路CasCast ensemble已接入Demo"
+                )
             ),
         },
         "satellite_to_radar": {"available": False, "reason": "等待模型材料和卫星通道数据"},

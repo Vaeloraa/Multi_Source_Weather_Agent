@@ -1,0 +1,272 @@
+{
+  "event_id": "R19080121067677",
+  "purpose": "routing_level_model_selection_evaluation",
+  "cases": [
+    {
+      "id": "local_observation",
+      "question": "事件 R19080121067677 的 13 帧局地 VIL 观测如何变化？",
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "visualizer"
+      ],
+      "selected_models": [
+        "sevir"
+      ],
+      "expected_models": [
+        "sevir"
+      ],
+      "missing_expected": [],
+      "forbidden_models": [],
+      "routing_correct": true,
+      "route_available": true,
+      "note": "This is deterministic capability routing; live execution is evaluated separately."
+    },
+    {
+      "id": "local_nowcast",
+      "question": "事件 R19080121067677 未来 60 分钟 VIL 如何变化？",
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "forecaster",
+        "visualizer"
+      ],
+      "selected_models": [
+        "sevir",
+        "cascast"
+      ],
+      "expected_models": [
+        "cascast",
+        "sevir"
+      ],
+      "missing_expected": [],
+      "forbidden_models": [],
+      "routing_correct": true,
+      "route_available": true,
+      "note": "This is deterministic capability routing; live execution is evaluated separately."
+    },
+    {
+      "id": "environment_analysis",
+      "question": "事件 R19080121067677 发生时的大尺度环境如何？",
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "foundation",
+        "visualizer"
+      ],
+      "selected_models": [
+        "era5"
+      ],
+      "expected_models": [
+        "era5"
+      ],
+      "missing_expected": [],
+      "forbidden_models": [],
+      "routing_correct": true,
+      "route_available": true,
+      "note": "This is deterministic capability routing; live execution is evaluated separately."
+    },
+    {
+      "id": "environment_forecast",
+      "question": "事件 R19080121067677 未来 6 到 24 小时的大尺度环境如何变化？",
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "forecaster",
+        "foundation",
+        "visualizer"
+      ],
+      "selected_models": [
+        "era5",
+        "aurora"
+      ],
+      "expected_models": [
+        "aurora",
+        "era5"
+      ],
+      "missing_expected": [],
+      "forbidden_models": [],
+      "routing_correct": true,
+      "route_available": true,
+      "note": "This is deterministic capability routing; live execution is evaluated separately."
+    },
+    {
+      "id": "full_case",
+      "question": "请解释事件 R19080121067677 的局地 VIL、大尺度环境和未来环境趋势，并区分四个模型的证据。",
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "forecaster",
+        "foundation",
+        "visualizer"
+      ],
+      "selected_models": [
+        "sevir",
+        "cascast",
+        "era5",
+        "aurora"
+      ],
+      "expected_models": [
+        "aurora",
+        "cascast",
+        "era5",
+        "sevir"
+      ],
+      "missing_expected": [],
+      "forbidden_models": [],
+      "routing_correct": true,
+      "route_available": true,
+      "note": "This is deterministic capability routing; live execution is evaluated separately."
+    },
+    {
+      "id": "id_conflict",
+      "question": "上传图像属于另一个事件，但请解释 R19080121067677 的完整 case。",
+      "selected_tools": [],
+      "selected_models": [],
+      "expected_models": [],
+      "missing_expected": [],
+      "forbidden_models": [],
+      "routing_correct": true,
+      "route_available": true,
+      "note": "This is deterministic capability routing; live execution is evaluated separately."
+    },
+    {
+      "id": "unavailable_model",
+      "question": "如果 Aurora 预测文件不可用，仍请解释 R19080121067677。",
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "forecaster",
+        "foundation",
+        "visualizer"
+      ],
+      "selected_models": [
+        "sevir",
+        "cascast",
+        "era5"
+      ],
+      "expected_models": [
+        "cascast",
+        "era5",
+        "sevir"
+      ],
+      "missing_expected": [],
+      "forbidden_models": [],
+      "routing_correct": true,
+      "route_available": true,
+      "note": "This is deterministic capability routing; live execution is evaluated separately."
+    },
+    {
+      "id": "evidence_conflict",
+      "question": "针对事件 R19080121067677，如果 CasCast 显示 VIL 增强但 Aurora 环境趋势不明显，应如何调整结论强度？",
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "foundation",
+        "visualizer"
+      ],
+      "selected_models": [
+        "cascast",
+        "era5",
+        "aurora"
+      ],
+      "expected_models": [
+        "aurora",
+        "cascast",
+        "era5"
+      ],
+      "missing_expected": [],
+      "forbidden_models": [],
+      "routing_correct": true,
+      "route_available": true,
+      "note": "This is deterministic capability routing; live execution is evaluated separately."
+    },
+    {
+      "id": "era5_profile",
+      "question": "事件 R19080121067677 的 850、500、250 hPa 温度、风和位势高度环境如何？",
+      "selected_tools": [],
+      "selected_models": [
+        "era5"
+      ],
+      "expected_models": [
+        "era5"
+      ],
+      "missing_expected": [],
+      "forbidden_models": [],
+      "routing_correct": true,
+      "route_available": true,
+      "note": "This is deterministic capability routing; live execution is evaluated separately."
+    },
+    {
+      "id": "era5_timeseries",
+      "question": "事件 R19080121067677 前后24小时目标区域的ERA5环境时间序列如何变化？",
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "foundation",
+        "visualizer"
+      ],
+      "selected_models": [
+        "era5"
+      ],
+      "expected_models": [
+        "era5"
+      ],
+      "missing_expected": [],
+      "forbidden_models": [],
+      "routing_correct": true,
+      "route_available": true,
+      "note": "This is deterministic capability routing; live execution is evaluated separately."
+    },
+    {
+      "id": "aurora_value",
+      "question": "Aurora相比只使用ERA5，给事件 R19080121067677 增加了什么未来环境信息？",
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "forecaster",
+        "foundation",
+        "visualizer"
+      ],
+      "selected_models": [
+        "era5",
+        "aurora"
+      ],
+      "expected_models": [
+        "aurora",
+        "era5"
+      ],
+      "missing_expected": [],
+      "forbidden_models": [],
+      "routing_correct": true,
+      "route_available": true,
+      "note": "This is deterministic capability routing; live execution is evaluated separately."
+    },
+    {
+      "id": "aurora_cost",
+      "question": "只问事件 R19080121067677 未来30分钟局地VIL时，是否值得追加Aurora？请说明理由。",
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "forecaster",
+        "foundation",
+        "visualizer"
+      ],
+      "selected_models": [
+        "sevir",
+        "cascast"
+      ],
+      "expected_models": [
+        "cascast",
+        "sevir"
+      ],
+      "missing_expected": [],
+      "forbidden_models": [],
+      "routing_correct": true,
+      "route_available": true,
+      "note": "This is deterministic capability routing; live execution is evaluated separately."
+    }
+  ],
+  "route_available_rate": 1.0,
+  "routing_accuracy": 1.0
+}

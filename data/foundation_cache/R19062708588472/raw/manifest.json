@@ -1,0 +1,70 @@
+{
+  "event_id": "R19062708588472",
+  "layer": "raw",
+  "request_key": "06090dd5dc26ec7819eb15f29dd8e982",
+  "canonical": {
+    "analysis_time_utc": "2019-06-27T08:58:20Z",
+    "era5_time_utc": "2019-06-27T08:00:00Z",
+    "time_offset_minutes": 58,
+    "latitude": 47.0543161257054,
+    "longitude": -99.9760441976778,
+    "area_north_west_south_east": [
+      53.05,
+      -111.98,
+      41.3,
+      -88.23
+    ],
+    "grid": "0.25/0.25",
+    "surface_variables": [
+      "2m_temperature",
+      "10m_u_component_of_wind",
+      "10m_v_component_of_wind",
+      "mean_sea_level_pressure"
+    ],
+    "pressure_variables": [
+      "temperature",
+      "u_component_of_wind",
+      "v_component_of_wind",
+      "specific_humidity",
+      "geopotential"
+    ],
+    "pressure_levels_hpa": [
+      850,
+      500,
+      250
+    ],
+    "aurora_pressure_levels_hpa": [
+      50,
+      100,
+      150,
+      200,
+      250,
+      300,
+      400,
+      500,
+      600,
+      700,
+      850,
+      925,
+      1000
+    ],
+    "forecast_leads_hours": [
+      6,
+      12,
+      18,
+      24
+    ],
+    "input_window_hours": 6,
+    "history_before_hours": 24,
+    "history_after_hours": 24,
+    "data_policy": "live",
+    "event_id": "R19062708588472",
+    "model_version": "",
+    "request_key": "b4893bce3f9fc8ca4d96",
+    "canonical_request_key": "06090dd5dc26ec7819eb15f29dd8e982",
+    "artifact_dir": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\R19062708588472\\06090dd5dc26ec7819eb15f29dd8e982",
+    "status": "normalized"
+  },
+  "status": "available",
+  "migrated_from": "legacy_complete_cache"
+}

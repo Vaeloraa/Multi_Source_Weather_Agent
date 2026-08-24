@@ -1,0 +1,521 @@
+{
+  "checkpoint_id": "2df059f40ffd4253971789f92b010d79",
+  "request_id": "74d1ccfe0ca945609ed20933949d345b",
+  "created_at": "2026-08-20T17:36:40.621918+00:00",
+  "termination_reason": "finished",
+  "evidence_bundle": {
+    "version": "1.1",
+    "source_count": 10,
+    "successful_observation_count": 1,
+    "successful_tool_count": 8,
+    "sources": [
+      {
+        "ref": "tool:1:forecaster.uploaded_sequence",
+        "api": "forecaster.uploaded_sequence",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:2:uncertainty.uploaded_raw",
+        "api": "uncertainty.uploaded_raw",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:3:forecaster.uploaded_sequence",
+        "api": "forecaster.uploaded_sequence",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:4:uncertainty.uploaded_raw",
+        "api": "uncertainty.uploaded_raw",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:5:forecaster.uploaded_sequence",
+        "api": "forecaster.uploaded_sequence",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:6:uncertainty.uploaded_raw",
+        "api": "uncertainty.uploaded_raw",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:7:visualizer.time_series",
+        "api": "visualizer.time_series",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:8:visualizer.scatter",
+        "api": "visualizer.scatter",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "observation:3",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "data:1",
+        "api": "data_desc",
+        "status": "available",
+        "source": "upload",
+        "event_id": null,
+        "upload_id": "3e4060c7d26f4b2b9d48651523dcb76e"
+      }
+    ],
+    "facts": [],
+    "numeric_evidence": [
+      {
+        "ref": "observation:3",
+        "path": "leads[0]",
+        "value": 5
+      },
+      {
+        "ref": "observation:3",
+        "path": "leads[1]",
+        "value": 10
+      },
+      {
+        "ref": "observation:3",
+        "path": "leads[2]",
+        "value": 15
+      },
+      "...",
+      {
+        "ref": "tool:8:visualizer.scatter",
+        "path": "result.data.plotted_count",
+        "value": 10
+      }
+    ],
+    "verification_scope": {
+      "ground_truth_available": false,
+      "verified_event_count": 0,
+      "scope_kind": "none",
+      "single_event_only": false,
+      "subject_refs": [],
+      "forecast_max_lead_minutes": 60,
+      "complete_truth_max_lead_minutes": null,
+      "any_truth_max_lead_minutes": null,
+      "frame_truth_max_lead_minutes": null,
+      "complete_truth_lead_minutes": [],
+      "partial_truth_lead_minutes": [],
+      "truth_completeness_unknown_lead_minutes": [],
+      "unverified_forecast_lead_minutes": [
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60
+      ],
+      "coverage_reference_pixels": null,
+      "coverage_method": "none",
+      "cross_event_generalization_supported": false
+    },
+    "capabilities": {
+      "successful_execution": {
+        "available": true,
+        "evidence_refs": [
+          "observation:3"
+        ]
+      },
+      "encoded_grid": {
+        "available": true,
+        "evidence_refs": [
+          "data:1",
+          "executed-data"
+        ]
+      },
+      "temporal_sequence": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "geolocation": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "administrative_location": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "spatial_calibration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "compass_direction": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ground_truth": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "future_forecast": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "ensemble_agreement": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "calibrated_probability": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "official_warning": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "rainfall_rate": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "meteorological_dynamics": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "hail": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "object_motion": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "centroid_change": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "observed_window_duration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "monotonic_interval_trend": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "complete_lifecycle": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "route_safety": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "multi_event_verification": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "cross_event_generalization": {
+        "available": false,
+        "evidence_refs": []
+      }
+    }
+  },
+  "observations": [
+    {
+      "step": 3,
+      "result": {
+        "leads": [
+          5,
+          10,
+          15,
+          20,
+          25,
+          30,
+          35,
+          40,
+          45,
+          50,
+          55,
+          60
+        ],
+        "mean_vil_series": [
+          52.57782028558237,
+          53.58984161612008,
+          54.568466914002784,
+          55.31230001848113,
+          55.96787768163873,
+          56.46694760848509,
+          56.880847094089,
+          57.06256245681693,
+          56.983578213817154,
+          56.6556377894271,
+          56.43616501663281,
+          56.027504359585386
+        ],
+        "member_coverage_60": [
+          11.303032769097223,
+          10.729302300347223,
+          12.71633572048611,
+          10.80593532986111,
+          11.619059244791668,
+          11.175537109375,
+          11.14773220486111,
+          11.555311414930555,
+          11.438666449652777,
+          11.646864149305555
+        ],
+        "member_max_60": [
+          233.70849609375,
+          241.92626953125,
+          239.3115234375,
+          249.0234375,
+          233.583984375,
+          243.046875,
+          248.64990234375,
+          242.2998046875,
+          232.71240234375,
+          229.599609375
+        ],
+        "ts_url": "/api/artifacts/be53a7b6b3e7043a1f759b8b35ef73af.png",
+        "scatter_url": "/api/artifacts/818d63e091cf6fc757c81c8c8c07e6ec.png",
+        "start_vil": 52.57782028558237,
+        "peak_vil": 57.06256245681693,
+        "end_vil": 56.027504359585386,
+        "peak_lead": 40
+      },
+      "tool_calls": [
+        {
+          "step": 1,
+          "api": "forecaster.uploaded_sequence",
+          "arguments": {
+            "upload_id": "...[truncated]",
+            "model_name": "...[truncated]",
+            "ensemble_members": "...[truncated]",
+            "horizon_hours": "...[truncated]",
+            "include_ground_truth": "...[truncated]",
+            "force_live": "...[truncated]",
+            "array_transport": "...[truncated]"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "capabilities": "...[truncated]",
+            "forecast_evidence_id": "...[truncated]",
+            "forecast_evidence": "...[truncated]",
+            "upload_id": "...[truncated]",
+            "data_source": "...[truncated]",
+            "model_name": "...[truncated]",
+            "inference_mode": "...[truncated]",
+            "cache_hit": "...[truncated]",
+            "prediction_source": "...[truncated]",
+            "ensemble_count": "...[truncated]",
+            "ensemble_members_available": "...[truncated]",
+            "ensemble": "...[truncated]",
+            "member_summaries": "...[truncated]",
+            "member_seeds": "...[truncated]",
+            "output_type": "...[truncated]",
+            "is_deterministic": "...[truncated]",
+            "history_shape": "...[truncated]",
+            "forecast_shape": "...[truncated]",
+            "forecast_dtype": "...[truncated]",
+            "analysis_value_space": "...[truncated]",
+            "history_relative_minutes": "...[truncated]",
+            "forecast_relative_minutes": "...[truncated]",
+            "history_frames": "...[truncated]",
+            "forecast_frames": "...[truncated]",
+            "history_frame_count": "...[truncated]",
+            "forecast_frame_count": "...[truncated]",
+            "lead_minutes": "...[truncated]",
+            "forecast_mode": "...[truncated]",
+            "statistics_computed": "...[truncated]",
+            "fields_computed": "...[truncated]",
+            "threshold_applied": "...[truncated]",
+            "region_parameters_applied": "...[truncated]",
+            "ground_truth_requested": "...[truncated]",
+            "ground_truth_available": "...[truncated]",
+            "ground_truth": "...[truncated]",
+            "sample_identity": "...[truncated]",
+            "validation_manifest": "...[truncated]",
+            "verified_lead_minutes": "...[truncated]",
+            "unverified_lead_minutes": "...[truncated]",
+            "ground_truth_complete_for_horizon": "...[truncated]",
+            "provenance": "...[truncated]",
+            "horizon_hours": "...[truncated]",
+            "rolling_segments": "...[truncated]",
+            "interpretation_limit": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 2,
+          "api": "uncertainty.uploaded_raw",
+          "arguments": {
+            "upload_id": "...[truncated]",
+            "lead_minutes": "...[truncated]",
+            "ensemble_members": "...[truncated]",
+            "horizon_hours": "...[truncated]",
+            "include_ground_truth": "...[truncated]",
+            "force_live": "...[truncated]",
+            "array_transport": "...[truncated]"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "capabilities": "...[truncated]",
+            "forecast_evidence_id": "...[truncated]",
+            "forecast_evidence": "...[truncated]",
+            "upload_id": "...[truncated]",
+            "model_name": "...[truncated]",
+            "output_type": "...[truncated]",
+            "is_deterministic": "...[truncated]",
+            "ensemble_members": "...[truncated]",
+            "member_seeds": "...[truncated]",
+            "selected_lead_minutes": "...[truncated]",
+            "horizon_hours": "...[truncated]",
+            "rolling_segments": "...[truncated]",
+            "forecast_frame_count": "...[truncated]",
+            "shape": "...[truncated]",
+            "dtype": "...[truncated]",
+            "analysis_value_space": "...[truncated]",
+            "frame_layout": "...[truncated]",
+            "display_conversion": "...[truncated]",
+            "records": "...[truncated]",
+            "statistics_computed": "...[truncated]",
+            "fields_computed": "...[truncated]",
+            "threshold_applied": "...[truncated]",
+            "region_parameters_applied": "...[truncated]",
+            "cache_hit": "...[truncated]",
+            "ground_truth_requested": "...[truncated]",
+            "ground_truth_available": "...[truncated]",
+            "ground_truth": "...[truncated]",
+            "provenance": "...[truncated]",
+            "verification_rule": "...[truncated]",
+            "backend_chunk_count": "...[truncated]",
+            "ensemble_semantics": "...[truncated]",
+            "decision_capabilities": "...[truncated]",
+            "interpretation_limit": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 3,
+          "api": "visualizer.time_series",
+          "arguments": {
+            "time_minutes": "...[truncated]",
+            "series_labels": "...[truncated]",
+            "data_kind": "...[truncated]"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "chart_type": "...[truncated]",
+            "artifact_id": "...[truncated]",
+            "url": "...[truncated]",
+            "image_url": "...[truncated]",
+            "mime_type": "...[truncated]",
+            "title": "...[truncated]",
+            "description": "...[truncated]",
+            "size_bytes": "...[truncated]",
+            "verified": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 4,
+          "api": "visualizer.scatter",
+          "arguments": {
+            "title": "...[truncated]",
+            "x_label": "...[truncated]",
+            "y_label": "...[truncated]",
+            "pair_count": "...[truncated]"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "chart_type": "...[truncated]",
+            "artifact_id": "...[truncated]",
+            "url": "...[truncated]",
+            "image_url": "...[truncated]",
+            "mime_type": "...[truncated]",
+            "title": "...[truncated]",
+            "description": "...[truncated]",
+            "size_bytes": "...[truncated]",
+            "verified": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        }
+      ],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "geolocator": "...[truncated]",
+            "history": "...[truncated]",
+            "advise": "...[truncated]",
+            "forecaster": "...[truncated]",
+            "statistics": "...[truncated]",
+            "uncertainty": "...[truncated]",
+            "metrics": "...[truncated]",
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    }
+  ],
+  "tool_summary": {
+    "decision_steps": 6,
+    "call_count": 8,
+    "unique_tool_count": 4,
+    "cache_hits": 0
+  },
+  "limitations": {
+    "status": "not_run",
+    "covered_dimensions": [],
+    "missing_dimensions": [],
+    "needs_more_execution": false,
+    "next_analysis": "",
+    "reason": "claim_gate_convergence"
+  },
+  "content_hash": "fbbe1ce617fac026e8c244504c1672bef732a76d645c6851925577b3c5784624"
+}

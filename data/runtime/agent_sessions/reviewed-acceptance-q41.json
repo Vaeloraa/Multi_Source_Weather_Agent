@@ -1,0 +1,45 @@
+{
+  "session_id": "reviewed-acceptance-q41",
+  "turns": [
+    {
+      "turn_id": "reviewed-q41-turn",
+      "created_at": "2026-08-22T01:12:43.422064+00:00",
+      "question": "【验收Q41】请仅针对Aurora，将+6、+12、+18、+24小时环境预测与对应时刻的后续ERA5实际再分析比较，分变量报告区域MAE、RMSE、Bias及目标点误差。",
+      "answer": "本题只验证Aurora，不再混入CasCast或SEVIR。与后续ERA5相比，三个地面变量的区域误差总体随时效增大：+24小时2米气温RMSE为5.33°C、海平面气压RMSE为4.18 hPa、近地面风速RMSE为3.30 m/s。气温Bias在+12小时改变符号，风速则四个时效均为负偏，说明不同变量的系统误差结构并不相同。\n\n| Aurora时效 | 气温MAE / RMSE / Bias（°C） | 气压MAE / RMSE / Bias（hPa） | 风速MAE / RMSE / Bias（m/s） | 目标点气温/气压/风速误差 |\n| --- | --- | --- | --- | --- |\n| +6h | 1.98 / 2.37 / -1.88 | 1.06 / 1.24 / -0.29 | 1.36 / 1.65 / -1.31 | -1.87°C / -1.45hPa / -1.25m/s |\n| +12h | 2.72 / 3.23 / +2.69 | 1.96 / 2.24 / -1.73 | 1.36 / 1.69 / -1.23 | +3.64°C / -0.51hPa / -2.88m/s |\n| +18h | 3.20 / 3.80 / -2.62 | 2.74 / 3.12 / -2.11 | 2.67 / 3.06 / -2.61 | -1.66°C / -2.80hPa / -4.44m/s |\n| +24h | 4.29 / 5.33 / -3.13 | 3.74 / 4.18 / -2.31 | 2.75 / 3.30 / -2.73 | -2.30°C / -3.94hPa / -4.30m/s |\n\n### 区域误差与目标点误差\n区域MAE/RMSE/Bias在整个验证网格上聚合，回答环境场整体偏差；最后一列是47.05°N、99.98°W目标格点的预测减ERA5，只回答该点。目标点误差可能比区域统计更大或方向相反，因此不能用一个点代表整个区域，也不能把区域RMSE称为站点误差。\n\n### 指标怎样读\nMAE衡量平均绝对偏差，RMSE对少数较大空间误差更敏感，Bias表示区域平均的系统高估或低估。气温+12小时Bias为+2.69°C，而+24小时为-3.13°C；风速Bias从-1.31到-2.73 m/s且始终为负，提示后期低估增强。海平面气压Bias从-0.29降到-2.31 hPa，表现出持续负偏。\n\n### 验证范围\nERA5是本验收定义的后续再分析参照，并非无误差真值；四个时效来自单一事件，不能推广为Aurora总体性能。图表按MAE、RMSE、Bias分面，避免不同统计含义混在一条曲线上。",
+      "observations": [],
+      "selected_tools": [
+        "aurora",
+        "era5",
+        "verification",
+        "visualizer"
+      ],
+      "termination_reason": "finished",
+      "code_execution_count": 1,
+      "evidence_summary": {
+        "event_id": "R19062708588472",
+        "data_policy": "cached",
+        "secondary_analysis": true
+      },
+      "presentation_result": {
+        "status": "ok",
+        "artifact_count": 1,
+        "artifacts": [
+          {
+            "artifact_id": "41414141414141414141414141414101",
+            "url": "/api/artifacts/41414141414141414141414141414101.png",
+            "image_url": "/api/artifacts/41414141414141414141414141414101.png",
+            "mime_type": "image/png",
+            "title": "Aurora分变量误差",
+            "description": "与ERA5比较的MAE、RMSE和Bias。",
+            "chart_type": "reviewed_aurora_verification",
+            "verified": true
+          }
+        ]
+      }
+    }
+  ],
+  "active_forecast_evidence": {
+    "event_id": "R19062708588472",
+    "data_policy": "cached"
+  }
+}

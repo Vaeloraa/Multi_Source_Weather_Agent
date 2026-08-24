@@ -1,0 +1,43 @@
+{
+  "session_id": "reviewed-acceptance-q06",
+  "turns": [
+    {
+      "turn_id": "reviewed-q06-turn",
+      "created_at": "2026-08-22T01:12:43.391982+00:00",
+      "question": "【验收Q06】只看这一张图，能否判断它接下来会增强、减弱、扩大或移动？请明确哪些结论有依据，哪些必须补充连续观测才能判断。",
+      "answer": "仅凭这一张SEVIR VIL图，能够确认当前时刻存在集中高值区及其网格位置，但不能判断下一时刻会增强、减弱、扩大、收缩或移动。原因不是模型能力不足，而是单帧没有时间维度：任何趋势都至少需要两个严格对齐的时次，稳定阶段划分通常需要完整连续序列。\n\n### 这张图能够确认什么\n当前最大VIL编码为254，P95为141.0，按本题选用的VIL≥133结构切点，覆盖率为6.54%；核心质心位于网格列99.1、行72.8。这些量分别描述当前极端值、高端典型强度、较高编码区域范围和瞬时几何位置。它们共同构成后续比较基线，但本身都不包含变化率。\n\n| 待判断问题 | 单帧可以确认什么 | 单帧不能证明什么 | 最少需要补充的证据 |\n| --- | --- | --- | --- |\n| 强度变化 | 当前最大值、P95和强核心内分布 | 下一时刻增强或减弱 | 连续帧同口径强度序列及相邻差分 |\n| 覆盖变化 | 当前VIL≥133覆盖率与边界 | 扩大、收缩或维持 | 连续帧覆盖率、对象边界和面积变化 |\n| 位置变化 | 当前核心质心和包围范围 | 移动方向、速度或轨迹 | 相邻时次质心/对象匹配与地理标定 |\n| 形态变化 | 当前对象数、形状和连通结构 | 分裂、合并、生成或消散 | 多帧对象对应关系和全过程追踪 |\n\n### 为什么还不能判断趋势\n即使把当前帧成功匹配到历史事件`R19062708588472`，也只能恢复其时间、地理范围和历史记录身份；若本轮没有读取连续帧，就不能把数据库中该事件的后续发展倒灌为“从这张图已看出未来”。正确工作流是补充过去一小时13帧，再用完整相邻变化讨论观测演变；需要未来判断时，另行运行CasCast并保留Ensemble分歧。\n\n### 使用边界\nVIL是0–255编码代理量，不是dBZ、毫米降水或官方预警等级。单帧还能做地理定位，但不能证明道路积水、冰雹或交通安全。",
+      "observations": [],
+      "selected_tools": [
+        "sevir",
+        "secondary_analysis"
+      ],
+      "termination_reason": "finished",
+      "code_execution_count": 1,
+      "evidence_summary": {
+        "event_id": "R19062708588472",
+        "data_policy": "cached",
+        "secondary_analysis": true
+      },
+      "presentation_result": {
+        "status": "ok",
+        "artifact_count": 1,
+        "artifacts": [
+          {
+            "artifact_id": "efe37a5d5a8ba6c0c6eda9c352a1a5ca",
+            "url": "/api/artifacts/efe37a5d5a8ba6c0c6eda9c352a1a5ca.png",
+            "image_url": "/api/artifacts/efe37a5d5a8ba6c0c6eda9c352a1a5ca.png",
+            "mime_type": "image/png",
+            "title": "单帧当前状态",
+            "description": "当前单帧VIL场；用于说明静态证据边界。",
+            "chart_type": "agent_frame_montage",
+            "verified": true
+          }
+        ]
+      }
+    }
+  ],
+  "active_forecast_evidence": {
+    "event_id": "R19062708588472",
+    "data_policy": "cached"
+  }
+}

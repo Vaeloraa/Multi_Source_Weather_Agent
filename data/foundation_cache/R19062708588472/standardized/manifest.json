@@ -1,0 +1,586 @@
+{
+  "event_id": "R19062708588472",
+  "layer": "standardized",
+  "request_key": "06090dd5dc26ec7819eb15f29dd8e982",
+  "canonical": {
+    "analysis_time_utc": "2019-06-27T08:58:20Z",
+    "era5_time_utc": "2019-06-27T08:00:00Z",
+    "time_offset_minutes": 58,
+    "latitude": 47.0543161257054,
+    "longitude": -99.9760441976778,
+    "area_north_west_south_east": [
+      53.05,
+      -111.98,
+      41.3,
+      -88.23
+    ],
+    "grid": "0.25/0.25",
+    "surface_variables": [
+      "2m_temperature",
+      "10m_u_component_of_wind",
+      "10m_v_component_of_wind",
+      "mean_sea_level_pressure"
+    ],
+    "pressure_variables": [
+      "temperature",
+      "u_component_of_wind",
+      "v_component_of_wind",
+      "specific_humidity",
+      "geopotential"
+    ],
+    "pressure_levels_hpa": [
+      850,
+      500,
+      250
+    ],
+    "aurora_pressure_levels_hpa": [
+      50,
+      100,
+      150,
+      200,
+      250,
+      300,
+      400,
+      500,
+      600,
+      700,
+      850,
+      925,
+      1000
+    ],
+    "forecast_leads_hours": [
+      6,
+      12,
+      18,
+      24
+    ],
+    "input_window_hours": 6,
+    "history_before_hours": 24,
+    "history_after_hours": 24,
+    "data_policy": "live",
+    "event_id": "R19062708588472",
+    "model_version": "",
+    "request_key": "b4893bce3f9fc8ca4d96",
+    "canonical_request_key": "06090dd5dc26ec7819eb15f29dd8e982",
+    "artifact_dir": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\R19062708588472\\06090dd5dc26ec7819eb15f29dd8e982",
+    "status": "normalized"
+  },
+  "status": "available",
+  "aurora_forecast_file": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\R19062708588472\\06090dd5dc26ec7819eb15f29dd8e982\\aurora_forecast.npz",
+  "completed_leads_hours": [
+    6,
+    12,
+    18,
+    24
+  ],
+  "evidence": {
+    "source": "aurora",
+    "role": "environment_forecast",
+    "event_id": "R19062708588472",
+    "request_key": "06090dd5dc26ec7819eb15f29dd8e982",
+    "time_range": {
+      "analysis_time_utc": "2019-06-27T08:58:20Z",
+      "leads_hours": [
+        6,
+        12,
+        18,
+        24
+      ]
+    },
+    "variables": [
+      "geopotential",
+      "humidity",
+      "pressure",
+      "temperature",
+      "wind"
+    ],
+    "data": {
+      "status": "ok",
+      "model": "AuroraPretrained",
+      "event_input_time": "2019-06-27T08:00:00.000000000",
+      "device": "cuda",
+      "pressure_levels": [
+        1000,
+        925,
+        850,
+        700,
+        600,
+        500,
+        400,
+        300,
+        250,
+        200,
+        150,
+        100,
+        50
+      ],
+      "input_grid_shape": [
+        48,
+        96
+      ],
+      "output": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_live_foundation\\ba998237d1430bbba655\\aurora_forecast.npz",
+      "completed_leads_hours": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "target_point_forecasts": {
+        "6": {
+          "time_utc": "2019-06-27 14:00:00",
+          "latitude": 47.05,
+          "longitude": 260.02,
+          "t2m_c": 17.22247314453125,
+          "u10_m_s": -1.6671335697174072,
+          "v10_m_s": 0.5455084443092346,
+          "mslp_hpa": 1013.2935180664062,
+          "pressure_levels": {
+            "850": {
+              "temperature_c": 17.0911865234375,
+              "u_m_s": -1.755637526512146,
+              "v_m_s": 3.1122422218322754,
+              "wind_m_s": 3.573277874984422,
+              "specific_humidity_g_kg": 10.250391006469727,
+              "geopotential_height_m": 1509.1351318359375
+            },
+            "500": {
+              "temperature_c": -12.185394287109375,
+              "u_m_s": 11.16872787475586,
+              "v_m_s": 0.9933030605316162,
+              "wind_m_s": 11.212811124352806,
+              "specific_humidity_g_kg": 1.4572829008102417,
+              "geopotential_height_m": 5811.1728515625
+            },
+            "250": {
+              "temperature_c": -50.433380126953125,
+              "u_m_s": 19.575016021728516,
+              "v_m_s": 0.6881383657455444,
+              "wind_m_s": 19.587107664515937,
+              "specific_humidity_g_kg": 0.08511615544557571,
+              "geopotential_height_m": 10721.501953125
+            }
+          },
+          "wind10_m_s": 1.7541133948782748
+        },
+        "12": {
+          "time_utc": "2019-06-27 20:00:00",
+          "latitude": 47.05,
+          "longitude": 260.02,
+          "t2m_c": 20.25885009765625,
+          "u10_m_s": -0.6845753192901611,
+          "v10_m_s": 1.0259413719177246,
+          "mslp_hpa": 1012.8206787109375,
+          "pressure_levels": {
+            "850": {
+              "temperature_c": 17.06488037109375,
+              "u_m_s": 0.38303327560424805,
+              "v_m_s": 2.7855043411254883,
+              "wind_m_s": 2.811716366323079,
+              "specific_humidity_g_kg": 10.98315143585205,
+              "geopotential_height_m": 1507.9520263671875
+            },
+            "500": {
+              "temperature_c": -12.3798828125,
+              "u_m_s": 9.103551864624023,
+              "v_m_s": 1.3865073919296265,
+              "wind_m_s": 9.208531875373785,
+              "specific_humidity_g_kg": 1.4991569519042969,
+              "geopotential_height_m": 5807.18017578125
+            },
+            "250": {
+              "temperature_c": -50.83680725097656,
+              "u_m_s": 15.30449390411377,
+              "v_m_s": 1.6495505571365356,
+              "wind_m_s": 15.393133232113758,
+              "specific_humidity_g_kg": 0.07600650191307068,
+              "geopotential_height_m": 10707.4091796875
+            }
+          },
+          "wind10_m_s": 1.2333689903648661
+        },
+        "18": {
+          "time_utc": "2019-06-28 02:00:00",
+          "latitude": 47.05,
+          "longitude": 260.02,
+          "t2m_c": 23.546875,
+          "u10_m_s": 0.24454006552696228,
+          "v10_m_s": 0.3046576976776123,
+          "mslp_hpa": 1012.1185302734375,
+          "pressure_levels": {
+            "850": {
+              "temperature_c": 16.540191650390625,
+              "u_m_s": 1.2489227056503296,
+              "v_m_s": 1.3618468046188354,
+              "wind_m_s": 1.8478188882949196,
+              "specific_humidity_g_kg": 11.360734939575195,
+              "geopotential_height_m": 1507.30029296875
+            },
+            "500": {
+              "temperature_c": -12.30487060546875,
+              "u_m_s": 8.847358703613281,
+              "v_m_s": 0.5048926472663879,
+              "wind_m_s": 8.861753360123792,
+              "specific_humidity_g_kg": 1.2730728387832642,
+              "geopotential_height_m": 5795.2099609375
+            },
+            "250": {
+              "temperature_c": -50.33613586425781,
+              "u_m_s": 15.225248336791992,
+              "v_m_s": 2.4106740951538086,
+              "wind_m_s": 15.414912796056711,
+              "specific_humidity_g_kg": 0.08322618156671524,
+              "geopotential_height_m": 10700.34765625
+            }
+          },
+          "wind10_m_s": 0.39066117851938453
+        },
+        "24": {
+          "time_utc": "2019-06-28 08:00:00",
+          "latitude": 47.05,
+          "longitude": 260.02,
+          "t2m_c": 23.3189697265625,
+          "u10_m_s": -0.5547033548355103,
+          "v10_m_s": 0.3932051360607147,
+          "mslp_hpa": 1011.3842163085938,
+          "pressure_levels": {
+            "850": {
+              "temperature_c": 16.38330078125,
+              "u_m_s": 2.3823955059051514,
+              "v_m_s": 1.2290370464324951,
+              "wind_m_s": 2.680735049955622,
+              "specific_humidity_g_kg": 10.779126167297363,
+              "geopotential_height_m": 1495.9783935546875
+            },
+            "500": {
+              "temperature_c": -11.66558837890625,
+              "u_m_s": 7.366332054138184,
+              "v_m_s": -0.05368708446621895,
+              "wind_m_s": 7.366527691854701,
+              "specific_humidity_g_kg": 1.233170747756958,
+              "geopotential_height_m": 5782.923828125
+            },
+            "250": {
+              "temperature_c": -49.00871276855469,
+              "u_m_s": 11.634631156921387,
+              "v_m_s": 2.7450661659240723,
+              "wind_m_s": 11.954080073887198,
+              "specific_humidity_g_kg": 0.10535050183534622,
+              "geopotential_height_m": 10707.46484375
+            }
+          },
+          "wind10_m_s": 0.679930945677791
+        }
+      },
+      "surface_output_shapes": {
+        "lead_006_2t": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_006_10u": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_006_10v": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_006_msl": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "2t": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "10u": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "10v": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "msl": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_012_2t": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_012_10u": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_012_10v": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_012_msl": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_018_2t": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_018_10u": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_018_10v": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_018_msl": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_024_2t": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_024_10u": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_024_10v": [
+          1,
+          1,
+          48,
+          96
+        ],
+        "lead_024_msl": [
+          1,
+          1,
+          48,
+          96
+        ]
+      },
+      "atmos_output_shapes": {
+        "lead_006_atmos_t": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_006_atmos_u": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_006_atmos_v": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_006_atmos_q": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_006_atmos_z": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "atmos_t": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "atmos_u": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "atmos_v": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "atmos_q": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "atmos_z": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_012_atmos_t": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_012_atmos_u": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_012_atmos_v": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_012_atmos_q": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_012_atmos_z": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_018_atmos_t": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_018_atmos_u": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_018_atmos_v": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_018_atmos_q": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_018_atmos_z": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_024_atmos_t": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_024_atmos_u": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_024_atmos_v": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_024_atmos_q": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ],
+        "lead_024_atmos_z": [
+          1,
+          1,
+          13,
+          48,
+          96
+        ]
+      },
+      "interpretation_limit": "This is a large-scale environmental forecast; it is not a local VIL forecast."
+    },
+    "provenance": {
+      "model": "AuroraPretrained",
+      "input": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\R19062708588472\\06090dd5dc26ec7819eb15f29dd8e982"
+    },
+    "validation": {},
+    "limitations": [
+      "not_local_vil",
+      "not_official_warning"
+    ],
+    "status": "available"
+  }
+}

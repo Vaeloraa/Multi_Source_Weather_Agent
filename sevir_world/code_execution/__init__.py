@@ -1,5 +1,5 @@
-"""Restricted subprocess execution for model-generated analysis code."""
+"""Isolated standard-Python execution for Agent-generated code."""
 
-from .client import SafeExecutionClient
+from .client import ExecutionClient
 
-__all__ = ["SafeExecutionClient"]
+__all__ = ["ExecutionClient"]

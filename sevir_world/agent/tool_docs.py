@@ -1,21 +1,46 @@
 from __future__ import annotations
 
+"""Generate the Agent's capability description from the real tool code."""
+
 import ast
-import importlib
 from pathlib import Path
 from typing import Any
 
 from .contracts import CANONICAL_ARGUMENTS
 
 
-POLICY = """Execution rules:
-- Define exactly one function named run with the supplied arguments and return JSON-safe data.
-- Do not import modules, read files, use the network, launch commands, or access private attributes.
-- VIL value 255 is missing ground truth and is excluded from verification metrics.
-- VIL thresholds are encoded-value proxies, not rainfall or official warnings.
-- Ensemble member support is not a calibrated probability.
-- Catalog statistics describe metadata records, not unique disasters.
+POLICY = """Runtime notes:
+- Selected data and tool names are injected directly into the execution namespace.
+  Write ordinary Python and assign compact JSON-safe output to ``result``. A
+  synchronous ``run(...)`` function remains accepted for compatibility but is optional.
+- After a successful step, its JSON-safe ``result`` is injected into the next
+  execution, so follow-up code can refine it without recomputing successful work.
+- This is standard Python in an isolated worker. Imports, NumPy, xarray,
+  comprehensions, helper functions, normal array methods and matplotlib are available.
+- The complete public method names and signatures are listed below. Call only those
+  methods and do not spend an execution step rediscovering the interface.
+- Event methods with event_id=None use the request-bound event. Upload methods with
+  upload_id=None use the request-bound upload. Pass an explicit identity only when the
+  question deliberately switches to another event or upload.
+- Tool dictionaries use one stable read root: result.data. Status is available through
+  result.status/result.result_status. Raw arrays stay in the Worker.
+- Selected tools are available capabilities, not mandatory workflow steps. Choose the
+  data, calculations, thresholds and figures that answer the user's actual question.
+- Keep large arrays inside the worker and return compact evidence, conclusions and
+  artifact references. Never return an entire raster cube through JSON.
+- When the user asks for a figure, use ordinary matplotlib. Save PNG files below
+  os.environ['SEVIR_ARTIFACT_DIR'] and return their paths in ``result``. The runtime
+  registers stable artifact URLs automatically.
 """
+
+
+_CAPABILITY_SOURCE = Path(__file__).resolve().parents[1] / "tools" / "capabilities.py"
+TOOL_IMPLEMENTATIONS: dict[str, tuple[Path, str]] = {
+    "sevir": (_CAPABILITY_SOURCE, "SevirCapability"),
+    "geolocator": (_CAPABILITY_SOURCE, "GeolocatorCapability"),
+    "cascast": (_CAPABILITY_SOURCE, "CasCastCapability"),
+    "aurora": (_CAPABILITY_SOURCE, "AuroraCapability"),
+}
 
 
 def _format_arguments(node: ast.FunctionDef) -> str:
@@ -31,13 +56,30 @@ def _format_arguments(node: ast.FunctionDef) -> str:
         if default is not None:
             text += f" = {ast.unparse(default)}"
         values.append(text)
+    if node.args.vararg:
+        values.append(f"*{node.args.vararg.arg}")
+    for argument, default in zip(node.args.kwonlyargs, node.args.kw_defaults):
+        text = argument.arg
+        if default is not None:
+            text += f" = {ast.unparse(default)}"
+        values.append(text)
+    if node.args.kwarg:
+        values.append(f"**{node.args.kwarg.arg}")
     return ", ".join(values)
 
 
 def extract_function_docstrings(
-    path: str | Path, class_name: str
+    path: str | Path,
+    class_name: str,
+    allowed_methods: tuple[str, ...] | None = None,
 ) -> tuple[str, list[dict[str, str]]]:
-    """Extract one tool class's public API without importing generated documentation."""
+    """Read every public method from the implementation itself.
+
+    ``allowed_methods`` is accepted for source compatibility and intentionally
+    ignored: documentation must describe the real selected object, not a second
+    method-level permission protocol.
+    """
+
     path = Path(path)
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
     class_node = next(
@@ -57,31 +99,61 @@ def extract_function_docstrings(
     return ast.get_docstring(class_node, clean=True) or "", methods
 
 
-def class_api_docs(tool_name: str, tool_class: type[Any]) -> str:
-    """Format AST-extracted public methods as an LLM-facing API manual."""
-    module = importlib.import_module(tool_class.__module__)
-    path = Path(module.__file__ or "")
-    class_doc, methods = extract_function_docstrings(path, tool_class.__name__)
-    lines = [f"{tool_name}: {tool_class.__name__}"]
+def class_api_docs(
+    tool_name: str,
+    source_path: str | Path,
+    class_name: str,
+    *,
+    doc_limit: int | None = 900,
+) -> str:
+    """Render one capability contract directly from its source definition."""
+
+    class_doc, methods = extract_function_docstrings(source_path, class_name)
+    lines = [f"{tool_name}: {class_name}"]
     if class_doc:
-        lines.append(class_doc)
+        lines.append(class_doc[:600])
     for method in methods:
         lines.append(f"{tool_name}.{method['name']}({method['arguments']})")
-        lines.append(f"  {method['docstring']}")
+        docstring = " ".join(method["docstring"].split())
+        if doc_limit == -1:
+            docstring = ""
+        elif doc_limit is not None and len(docstring) > doc_limit:
+            docstring = docstring[:doc_limit] + " ..."
+        if docstring:
+            lines.append(f"  {docstring}")
     return "\n".join(lines)
 
 
 def selected_api_reference(
-    selected_tools: tuple[str, ...], registry: dict[str, type[Any]]
+    selected_tools: tuple[str, ...],
+    registry: dict[str, type[Any]] | None = None,
+    dataset_schema: dict[str, Any] | None = None,
+    *,
+    compact: bool = False,
+    include_policy: bool = True,
+    method_map: dict[str, tuple[str, ...]] | None = None,
 ) -> str:
-    """Generate documentation only for resources selected by the request."""
     sections = [
-        "Injected data:\n"
-        "ds is a list of dictionaries loaded from data_descs. Each SEVIR item includes "
-        "event_id and exact catalog metadata; each upload item includes upload_id and metadata."
+        "Injected request data:\n"
+        "ds is a Python list of request-bound records, not a tool. Each record identifies "
+        "its source and may contain event_id/upload_id, metadata, values/raw_data, dimensions, "
+        "relative_minutes and missing_value_code. Use normal dict/NumPy operations. The four "
+        "capability objects are lazy: merely receiving them imports no model or data backend."
     ]
+    if dataset_schema:
+        sections.append(
+            "Actual runtime dataset description (loaded before generation):\n"
+            + repr(dataset_schema)
+        )
     for name in CANONICAL_ARGUMENTS:
-        if name != "ds" and name in selected_tools:
-            sections.append(class_api_docs(name, registry[name]))
-    sections.append(POLICY.strip())
+        if name == "ds" or name not in selected_tools:
+            continue
+        implementation = TOOL_IMPLEMENTATIONS.get(name)
+        if implementation is None:
+            continue
+        sections.append(
+            class_api_docs(name, implementation[0], implementation[1], doc_limit=900)
+        )
+    if include_policy:
+        sections.append(POLICY.strip())
     return "\n\n".join(sections)

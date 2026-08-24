@@ -1,0 +1,224 @@
+{
+  "session_id": "reviewed-acceptance-q21",
+  "turns": [
+    {
+      "turn_id": "reviewed-q21-turn",
+      "created_at": "2026-08-22T01:27:05.948534+00:00",
+      "question": "【验收Q21】假设我准备在未来一小时开车经过图片所对应的地区，根据当前预测和Ensemble分歧，我应该做哪些准备？请给出直接建议、天气依据、备选方案和信息边界。",
+      "answer": "如果您计划在未来一小时驾车经过该区域，建议**按“可能遭遇强对流天气”进行防御性准备，并务必以官方实时预警和路况信息为最终决策依据**。\n模型集合预报显示未来1小时存在成员高度一致的强信号核心区，同时也存在局部预测分歧较大的不确定地带；\n但由于缺乏地理定位和道路实况数据，无法判断具体路段风险或推荐安全路线。\n\n-   **防御性驾驶：** 若进入图中高共识度区域，请降低车速、增大跟车距离并开启相应灯光。\n该区域是模型预测中最可能出现强信号的地方，但实际天气影响需以现场为准。\n由于当前分析无法识别具体道路、积水或管制信息，任何“避开红区”的建议仅是基于图像相对位置的数值参考，**不能证明某条替代路线更安全**。\n请务必结合导航地图和当地气象/交通部门的实时发布来规划路径。\n-   **非概率与非定位声明：** 本分析中的“共识度”仅反映10个模型成员的一致性，**不是**经过校准的天气发生概率；\n图中所有位置均为图像像素坐标，**无法对应**真实城市、高速或行政区。\nVIL编码值也不能换算为降雨量或冰雹尺寸。\n\n本次建议基于CasCast模型对未来1小时（T+60）的10个集合成员分析得出，关键量化证据如下：\n这表明在模型输出的可能性空间中，存在一个所有成员都预测会出现强信号的稳定区域，而非个别成员的随机噪声。\n对于驾驶者而言，这意味着在该图像区域内遇到较强雷达回波信号的可能性在模型层面是被广泛支持的。\n这些像素通常位于强信号区的边缘或过渡带，意味着不同成员对这里“是否有强信号”或“信号具体在哪”存在明显差异。\n在实际驾驶中，这类区域往往对应天气变化最快、最难提前预判的地带，需要保持更高警惕。\n-   **整体信号水平：** 全图集合平均强度为**56.0**（编码值0-255）。\n这个数值描述了本次预报样本的整体数值重心，说明除了上述高共识强区外，图像其余部分也存在一定强度的背景信号。\n请注意，56.0仅为本次分析的计算结果，**不代表**气象学上的“中等偏强”分级，也不直接对应任何降雨或危险等级。\n!\n[未来1小时(T+60)行车风险与预报不确定性分析](/api/artifacts/9e9b2610c5ad43d4478dd1fd1e179fd2.png)\n*上图三幅面板分别展示：左图为集合平均强度（数值重心分布）；\n中图为强信号共识度（红色越深代表成员一致性越高）；\n右图为集合标准差（亮色代表成员间分歧大）。\n三图共同勾勒出未来一小时模型预测的“信号预期”与“不确定性边界”，供您在结合官方信息时作为补充参考。\n*\n\n说明：本系统不能认证具体路线安全；出行请结合官方预警、实时雷达和道路信息。\n\n若以Sheridan County关注点47.7966°N、100.4214°W作为路线附近参照，+60分钟预测核心质心约在其东南偏东方向72.5 km，但该点本身仍位于多个成员的较高编码范围内。因此实际驾车分析应使用完整路线，而不能因核心质心已经移远就认定沿途安全。",
+      "observations": [
+        {
+          "step": 4,
+          "result": {
+            "image_url": "/api/artifacts/9e9b2610c5ad43d4478dd1fd1e179fd2.png"
+          }
+        }
+      ],
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "data",
+        "geolocator",
+        "forecaster",
+        "statistics",
+        "uncertainty",
+        "metrics",
+        "visualizer"
+      ],
+      "termination_reason": "finished",
+      "code_execution_count": 1,
+      "evidence_summary": {
+        "frame_layout": "records[member]['frames'][index] aligns with records[member]['lead_minutes'][index]",
+        "ground_truth_available": false,
+        "forecast_evidence": {
+          "ground_truth_attached": false,
+          "lead_minutes": [
+            5,
+            10,
+            15,
+            20,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "ensemble_count": 10,
+          "forecast_frame_count": 12,
+          "subject_id": "925d7ff63ef743efa2a76f0c75dc9f09",
+          "member_seeds": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "horizon_hours": 1.0,
+          "model_name": "cascast_live",
+          "cache_hit": true,
+          "selected_lead_minutes": [
+            60
+          ],
+          "subject_kind": "uploaded_sequence",
+          "id": "forecast-2621b2f9c308fd053e6967fc",
+          "rolling_segments": 1
+        },
+        "forecast_frame_count": 12,
+        "member_seeds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "upload_id": "925d7ff63ef743efa2a76f0c75dc9f09",
+        "horizon_hours": 1.0,
+        "model_name": "cascast_live",
+        "task": "uploaded_cascast_raw_ensemble",
+        "output_type": "stochastic_ensemble",
+        "forecast_evidence_id": "forecast-2621b2f9c308fd053e6967fc",
+        "cache_hit": true,
+        "ensemble_members": 10,
+        "ground_truth_requested": false,
+        "rolling_segments": 1
+      },
+      "presentation_result": {
+        "artifacts": [
+          {
+            "url": "/api/artifacts/9e9b2610c5ad43d4478dd1fd1e179fd2.png",
+            "image_url": "/api/artifacts/9e9b2610c5ad43d4478dd1fd1e179fd2.png",
+            "verified": true,
+            "size_bytes": 666976,
+            "title": "未来1小时(T+60)行车风险与预报不确定性分析",
+            "mime_type": "image/png",
+            "artifact_id": "9e9b2610c5ad43d4478dd1fd1e179fd2",
+            "chart_type": "agent_grid_panels",
+            "description": "Agent-selected spatial grids; comparable panels share a color scale by unit, while unlike quantities use separately labeled scales."
+          }
+        ],
+        "presentation": {
+          "requested_lead_minutes": 60
+        },
+        "status": "ok"
+      }
+    }
+  ],
+  "active_forecast_evidence": {
+    "ground_truth_attached": false,
+    "lead_minutes": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120,
+      125,
+      130,
+      135,
+      140,
+      145,
+      150,
+      155,
+      160,
+      165,
+      170,
+      175,
+      180
+    ],
+    "ensemble_count": 10,
+    "forecast_frame_count": 36,
+    "subject_id": "925d7ff63ef743efa2a76f0c75dc9f09",
+    "member_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "horizon_hours": 3.0,
+    "model_name": "cascast_live",
+    "cache_hit": true,
+    "selected_lead_minutes": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120,
+      125,
+      130,
+      135,
+      140,
+      145,
+      150,
+      155,
+      160,
+      165,
+      170,
+      175,
+      180
+    ],
+    "subject_kind": "uploaded_sequence",
+    "id": "forecast-ead896b3a6cccc18b1987b05",
+    "rolling_segments": 3
+  },
+  "active_upload": {
+    "upload_id": "",
+    "sequence_upload_id": "925d7ff63ef743efa2a76f0c75dc9f09",
+    "data_source": "upload_sequence"
+  }
+}

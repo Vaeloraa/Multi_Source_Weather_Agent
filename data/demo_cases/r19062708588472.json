@@ -1,0 +1,53 @@
+{
+  "case_id": "R19062708588472",
+  "title": "R190627 区域发现—局地追踪主案例",
+  "analysis_time_utc": "2019-06-27T08:58:20Z",
+  "location": {
+    "latitude": 47.0543161257054,
+    "longitude": -99.9760441976778,
+    "label": "SEVIR R19062708588472 覆盖区域"
+  },
+  "regional_domain": {
+    "north": 53.05,
+    "west": -111.98,
+    "south": 41.3,
+    "east": -88.23
+  },
+  "workflow": [
+    "ERA5 初始环境",
+    "Aurora 6/12/18/24 小时区域风险发现",
+    "按候选区域和时间匹配 SEVIR",
+    "提取目标时刻此前一小时 13 帧连续 VIL 观测",
+    "CasCast 未来 1—2 小时局地演变",
+    "跨尺度趋势解释（不是数值一致性比较）",
+    "CasCast 对后续 SEVIR、Aurora 对后续 ERA5 分别验证"
+  ],
+  "cache_contract": {
+    "foundation_root": "data/foundation_live_cache/R19062708588472",
+    "aurora_aligned": "data/foundation_live_cache/R19062708588472/06090dd5dc26ec7819eb15f29dd8e982/aurora_forecast_aligned_0300.npz",
+    "aurora_aligned_summary": "data/foundation_live_cache/R19062708588472/06090dd5dc26ec7819eb15f29dd8e982/aurora_forecast_aligned_0300.json",
+    "aurora_verification": "data/foundation_live_cache/R19062708588472/06090dd5dc26ec7819eb15f29dd8e982/verification/aurora_vs_era5_verification.json",
+    "cascast_primary": "data/live_cascast_cache/R19062708588472_s0_ens10.npz",
+    "cascast_boundary_demo": "data/live_cascast_cache/R19062708588472_s0_ens10_roll3.npz",
+    "sevir_event": "data/live_cascast_cache/R19062708588472_sevir_vil_49frames.npz",
+    "history_images": "data/examples/uploads/R19062708588472/history",
+    "verification_images": "data/examples/uploads/R19062708588472/ground_truth"
+  },
+  "time_contract": {
+    "aurora_initialization_utc": "2019-06-27T03:00:00Z",
+    "history_frames": 13,
+    "history_minutes": 60,
+    "cascast_primary_minutes": 60,
+    "cascast_supported_interpretation_minutes": 120,
+    "cascast_boundary_only_minutes": 180,
+    "aurora_lead_hours": [6, 12, 18, 24]
+  },
+  "online_source_status": {
+    "era5_cds_adapter": "implemented",
+    "sevir_public_s3_adapter": "implemented",
+    "generic_nexrad_adapter": "paused_by_user",
+    "generic_goes_adapter": "paused_by_user",
+    "projection_alignment": "paused_by_user",
+    "cascast_input_conversion": "paused_by_user"
+  }
+}

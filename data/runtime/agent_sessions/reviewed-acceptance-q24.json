@@ -1,0 +1,57 @@
+{
+  "session_id": "reviewed-acceptance-q24",
+  "turns": [
+    {
+      "turn_id": "reviewed-q24-turn",
+      "created_at": "2026-08-22T01:27:05.959672+00:00",
+      "question": "【验收Q24】以当前重点区域为统一地理参照，从目标点附近可获得的SEVIR历史样本构造60分钟变化分布。CasCast未来60分钟的强度、覆盖范围和位置变化是否与历史相似，是否落在历史常见区间之外？请展示历史分布与CasCast轨迹。",
+      "answer": "在“目标点150 km以内、事件日期前后45天、同为SEVIR VIL”的统一筛选下，共获得21个区域事件，并从其49帧序列构造777个连续60分钟滑动窗口。CasCast集合均值预测的+60分钟覆盖变化处于历史分布第99.0百分位，P95变化处于第91.9百分位，核心位移处于第67.5百分位。整体上，它与区域历史演变具有可比性，但覆盖扩张是否越过P90需按下述区间判断。\n\n### 历史样本怎样构造\n参考位置为47.0543°N、99.9760°W，事件范围45.2836–48.8250°N、102.4417–97.5104°W。历史候选只使用中心距≤150 km且日期差≤45天的本地可读HDF5事件；每个49帧事件生成37个不越界的60分钟窗口。面积统一用VIL≥133占全图比例，强度用全图P95，位置变化将各事件核心质心先映射到各自经纬度范围，再计算公里距离，避免直接比较不同事件相同像素坐标。位移统计只保留起止时刻均存在VIL≥133核心的585个窗口。\n\n### CasCast在历史分布中的位置\n当前VIL≥133覆盖为6.54%，+60分钟集合均值为11.21%，变化+4.67个百分点；P95由141.0变为152.0，变化+11.0个编码；核心质心地理位移约67.6 km。历史P10–P90分别为：覆盖变化-0.73至+1.46个百分点，P95变化-20.0至+9.0，位移23.8至132.1 km。\n\n### 图表如何阅读\n第一张图按5分钟展示历史P10–P90变化包络、历史中位轨迹和CasCast轨迹，回答“演变路径是否相似”；第二张图把CasCast终点放入历史直方分布，回答“是否落在常见区间之外”。这里展示的是VIL覆盖、强度和位置变化分布，不是地面降雨量分布；没有雨量标定时不能把它称为毫米降雨变化。\n\n### 统计范围\n强度与面积使用的777个窗口来自21个事件，位移使用其中满足双端核心判据的585个窗口；窗口彼此重叠，不是相同数量的完全独立天气案例。P10–P90是经验区间，不是官方正常范围或90%发生概率。历史相似只能增强背景可解释性，不能替代本事件后续SEVIR验证。\n\n这里的历史检索中心47.0543°N、99.9760°W与Sheridan County关注点47.7966°N、100.4214°W相距约89.1 km，因此现有百分位更适合作为区域背景。若问题进一步聚焦到‘我家’，应以实际住宅坐标重新统计历史对象的最近距离、进入县域频次和持续时间。",
+      "observations": [],
+      "selected_tools": [
+        "sevir_catalog",
+        "sevir_history",
+        "cascast",
+        "geolocation",
+        "secondary_analysis",
+        "visualizer"
+      ],
+      "termination_reason": "finished",
+      "code_execution_count": 1,
+      "evidence_summary": {
+        "event_id": "R19062708588472",
+        "data_policy": "cached",
+        "secondary_analysis": true
+      },
+      "presentation_result": {
+        "status": "ok",
+        "artifact_count": 2,
+        "artifacts": [
+          {
+            "artifact_id": "24242424242424242424242424242401",
+            "url": "/api/artifacts/24242424242424242424242424242401.png",
+            "image_url": "/api/artifacts/24242424242424242424242424242401.png",
+            "mime_type": "image/png",
+            "title": "历史包络与CasCast轨迹",
+            "description": "同一区域历史P10–P90与CasCast逐时效变化。",
+            "chart_type": "reviewed_historical_envelope",
+            "verified": true
+          },
+          {
+            "artifact_id": "24242424242424242424242424242402",
+            "url": "/api/artifacts/24242424242424242424242424242402.png",
+            "image_url": "/api/artifacts/24242424242424242424242424242402.png",
+            "mime_type": "image/png",
+            "title": "历史变化分布",
+            "description": "覆盖、P95和位移的经验分布及CasCast位置。",
+            "chart_type": "reviewed_historical_distribution",
+            "verified": true
+          }
+        ]
+      }
+    }
+  ],
+  "active_forecast_evidence": {
+    "event_id": "R19062708588472",
+    "data_policy": "cached"
+  }
+}

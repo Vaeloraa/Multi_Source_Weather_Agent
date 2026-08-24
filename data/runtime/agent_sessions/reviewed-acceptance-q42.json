@@ -1,0 +1,46 @@
+{
+  "session_id": "reviewed-acceptance-q42",
+  "turns": [
+    {
+      "turn_id": "reviewed-q42-turn",
+      "created_at": "2026-08-22T01:12:43.425343+00:00",
+      "question": "【验收Q42】仅针对Aurora，哪些地面和气压层变量的误差随预测时效增长最明显？请区分绝对误差、系统性偏差和时效增长，并说明验证边界。",
+      "answer": "仅从Aurora的+6到+24小时区域RMSE增长倍数看，增长最明显的是海平面气压（3.38倍）、250 hPa位势高度（3.78倍）和2米气温（2.24倍）。但“倍数最大”不等于“绝对误差最大”：不同变量单位和+6小时基线不同，必须同时阅读原始RMSE、Bias和增长倍数。\n\n| 变量 | +24h / +6h RMSE | 主要解释 | 是否可跨变量直接比较原始值 |\n| --- | --- | --- | --- |\n| 250hPa位势高度 | 3.78倍 | 误差随时效明显累积 | 否 |\n| 海平面气压 | 3.38倍 | 误差随时效明显累积 | 否 |\n| 2米气温 | 2.24倍 | 误差随时效明显累积 | 否 |\n| 850hPa温度 | 2.22倍 | 误差随时效明显累积 | 否 |\n| 近地面风 | 2.00倍 | 误差随时效明显累积 | 否 |\n| 850hPa U风 | 1.82倍 | 增长存在但相对缓和 | 否 |\n| 250hPa U风 | 1.69倍 | 增长存在但相对缓和 | 否 |\n| 850hPa比湿 | 1.47倍 | 增长存在但相对缓和 | 否 |\n\n### 地面变量\n2米气温RMSE从2.37增至5.33°C，海平面气压从1.24增至4.18 hPa，近地面风从1.65增至3.30 m/s。Bias则回答方向：+24小时气温、气压和风速Bias分别为-3.13°C、-2.31 hPa和-2.73 m/s。RMSE增长可由随机空间错位和系统偏差共同造成，不能只根据Bias解释全部误差。\n\n### 气压层变量\n850 hPa U风RMSE从3.57增至6.50 m/s；250 hPa U风从8.21增至13.91 m/s。850 hPa比湿RMSE从1.58增至2.32 g/kg。250 hPa位势误差除以标准重力后，位势高度RMSE由23.6增至89.4 m，避免把m²/s²误写成米。\n\n### 结果适用范围\n当前只有一个事件和四个离散时效，能够证明“本事件中这些误差随时效增长”，不能证明所有事件都单调增长，也不能据此给出Aurora总体排名。更完整评估需要多事件、分区域/季节统计、置信区间和空间相关等指标。本题已完全移除CasCast与Ensemble内容，保持Aurora验证问题单一、可审计。",
+      "observations": [],
+      "selected_tools": [
+        "aurora",
+        "era5",
+        "verification",
+        "secondary_analysis",
+        "visualizer"
+      ],
+      "termination_reason": "finished",
+      "code_execution_count": 1,
+      "evidence_summary": {
+        "event_id": "R19062708588472",
+        "data_policy": "cached",
+        "secondary_analysis": true
+      },
+      "presentation_result": {
+        "status": "ok",
+        "artifact_count": 1,
+        "artifacts": [
+          {
+            "artifact_id": "42424242424242424242424242424201",
+            "url": "/api/artifacts/42424242424242424242424242424201.png",
+            "image_url": "/api/artifacts/42424242424242424242424242424201.png",
+            "mime_type": "image/png",
+            "title": "Aurora误差增长",
+            "description": "地面和气压层变量RMSE增长倍数。",
+            "chart_type": "reviewed_aurora_error_growth",
+            "verified": true
+          }
+        ]
+      }
+    }
+  ],
+  "active_forecast_evidence": {
+    "event_id": "R19062708588472",
+    "data_policy": "cached"
+  }
+}

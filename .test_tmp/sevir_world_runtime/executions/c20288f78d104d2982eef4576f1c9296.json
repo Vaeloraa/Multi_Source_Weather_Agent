@@ -1,0 +1,52 @@
+{
+  "execution_id": "c20288f78d104d2982eef4576f1c9296",
+  "created_at_epoch_seconds": 1787585559.846,
+  "code": "result = {'value': result['value'] * 2}",
+  "data_descs": [],
+  "selected_tools": [
+    "ds"
+  ],
+  "execution": {
+    "status": "ok",
+    "result": {
+      "value": 40
+    },
+    "primary_result": {
+      "value": 40
+    },
+    "calls": [],
+    "stdout": "",
+    "result_json_characters": 13,
+    "runtime_schema": {
+      "schema_version": "sevir-contract-2",
+      "dataset": {
+        "schema_version": "sevir-contract-2",
+        "object": "ds",
+        "type": "list[DatasetRecord]",
+        "records": []
+      },
+      "tools": []
+    },
+    "evidence_ledger": {
+      "completed_evidence": [],
+      "reuse_rule": "reuse completed evidence unless arguments materially change"
+    },
+    "worker_session": {
+      "id": "d38e953e0d034df5910aa4cbd5687c6e",
+      "step": 2
+    },
+    "tool_result_cache": {
+      "entries": 0,
+      "updates": 0
+    },
+    "elapsed_ms": 1,
+    "limits": {
+      "timeout_seconds": 90.0,
+      "memory_limit_mb": 4096,
+      "budget_profile": "standard",
+      "network": "inherits worker process policy; weather tools own supported data access",
+      "filesystem": "temporary cwd; persistent figures use SEVIR_ARTIFACT_DIR",
+      "imports": "standard Python imports enabled"
+    }
+  }
+}

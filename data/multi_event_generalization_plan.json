@@ -1,0 +1,34 @@
+{
+  "status": "pilot_complete_next_cases_pending",
+  "pilot_event": "R19080121067677",
+  "target_event_count": 5,
+  "selection_strata": [
+    "CasCast表现较好",
+    "CasCast表现较差",
+    "强VIL核心",
+    "弱或分散事件",
+    "局地与ERA5/Aurora一致或不一致"
+  ],
+  "per_event_required": [
+    "SEVIR 13帧观测",
+    "CasCast未来60分钟与真值",
+    "ERA5事件时刻环境场",
+    "Aurora +6/+12/+18/+24h rollout",
+    "全区域与目标点验证",
+    "Agent模型选择日志",
+    "证据边界审计"
+  ],
+  "anti_leakage_checks": [
+    "记录事件时间与Aurora预训练数据时间范围",
+    "训练数据重叠时标记为集成演示，不作为独立泛化验证",
+    "所有模型使用事件时刻可获得的输入"
+  ],
+  "primary_metrics": ["routing_accuracy", "unnecessary_call_rate", "evidence_boundary_violation_rate", "cascast_mae", "aurora_surface_mae", "aurora_upper_air_rmse"]
+  ,"pilot_result": {
+    "event_id": "R19080121067677",
+    "foundation_validation": "full_domain_multi_lead",
+    "routing_accuracy": 1.0,
+    "training_overlap_status": "unknown_requires_official_aurora_metadata",
+    "next_blocker": "prepare ERA5/Aurora artifacts for four additional events"
+  }
+}

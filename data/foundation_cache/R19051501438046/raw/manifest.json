@@ -1,0 +1,78 @@
+{
+  "event_id": "R19051501438046",
+  "layer": "raw",
+  "request_key": "6eee093241d53517a67f2f557cbd8364",
+  "canonical": {
+    "analysis_time_utc": "2019-05-15T01:43:45Z",
+    "era5_time_utc": "2019-05-15T01:00:00Z",
+    "time_offset_minutes": 44,
+    "latitude": 42.02388393270566,
+    "longitude": -101.42668222582509,
+    "area_north_west_south_east": [
+      47.9,
+      -113.3,
+      36.15,
+      -89.55
+    ],
+    "grid": "0.25/0.25",
+    "surface_variables": [
+      "2m_temperature",
+      "10m_u_component_of_wind",
+      "10m_v_component_of_wind",
+      "mean_sea_level_pressure"
+    ],
+    "pressure_variables": [
+      "temperature",
+      "u_component_of_wind",
+      "v_component_of_wind",
+      "specific_humidity",
+      "geopotential"
+    ],
+    "pressure_levels_hpa": [
+      850,
+      500,
+      250
+    ],
+    "aurora_pressure_levels_hpa": [
+      50,
+      100,
+      150,
+      200,
+      250,
+      300,
+      400,
+      500,
+      600,
+      700,
+      850,
+      925,
+      1000
+    ],
+    "forecast_leads_hours": [
+      6,
+      12,
+      18,
+      24
+    ],
+    "input_window_hours": 6,
+    "history_before_hours": 24,
+    "history_after_hours": 24,
+    "data_policy": "live",
+    "event_id": "R19051501438046",
+    "model_version": "",
+    "request_key": "902992994825236dd87e",
+    "canonical_request_key": "6eee093241d53517a67f2f557cbd8364",
+    "artifact_dir": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\R19051501438046\\6eee093241d53517a67f2f557cbd8364",
+    "status": "normalized"
+  },
+  "status": "available",
+  "files": {
+    "surface": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\R19051501438046\\6eee093241d53517a67f2f557cbd8364\\surface.nc",
+    "pressure": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\R19051501438046\\6eee093241d53517a67f2f557cbd8364\\pressure.nc",
+    "static": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\R19051501438046\\6eee093241d53517a67f2f557cbd8364\\static.nc"
+  },
+  "provenance": {
+    "source": "CDS ERA5",
+    "request_key": "902992994825236dd87e"
+  }
+}

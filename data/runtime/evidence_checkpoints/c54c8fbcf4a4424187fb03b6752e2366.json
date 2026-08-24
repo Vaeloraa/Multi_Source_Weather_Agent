@@ -1,0 +1,488 @@
+{
+  "checkpoint_id": "c54c8fbcf4a4424187fb03b6752e2366",
+  "request_id": "cf48adb3c1f545139c231f4a31384462",
+  "created_at": "2026-08-21T16:27:18.302635+00:00",
+  "termination_reason": "finished",
+  "evidence_bundle": {
+    "version": "1.1",
+    "source_count": 7,
+    "successful_observation_count": 2,
+    "successful_tool_count": 4,
+    "sources": [
+      {
+        "ref": "tool:1:data.match_uploaded_event",
+        "api": "data.match_uploaded_event",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:2:data.event",
+        "api": "data.event",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:3:statistics.query_records",
+        "api": "statistics.query_records",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:4:statistics.compare_observed_event_history",
+        "api": "statistics.compare_observed_event_history",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "observation:2",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "observation:3",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "data:1",
+        "api": "data_desc",
+        "status": "available",
+        "source": "upload",
+        "event_id": null,
+        "upload_id": "795a51a9da6b41afbf07666deac4d32b"
+      }
+    ],
+    "facts": [
+      {
+        "observation_step": 2,
+        "upload_id": "795a51a9da6b41afbf07666deac4d32b"
+      }
+    ],
+    "numeric_evidence": [
+      {
+        "ref": "observation:2",
+        "path": "match_result.event_match.candidates[0].score",
+        "value": 1.0
+      },
+      {
+        "ref": "observation:2",
+        "path": "match_result.event_match.confidence",
+        "value": 1.0
+      },
+      {
+        "ref": "observation:3",
+        "path": "event_detail.record.file_index",
+        "value": 1250
+      },
+      "...",
+      {
+        "ref": "tool:4:statistics.compare_observed_event_history",
+        "path": "result.original_json_characters",
+        "value": 81331
+      }
+    ],
+    "verification_scope": {
+      "ground_truth_available": false,
+      "verified_event_count": 0,
+      "scope_kind": "none",
+      "single_event_only": false,
+      "subject_refs": [],
+      "forecast_max_lead_minutes": null,
+      "complete_truth_max_lead_minutes": null,
+      "any_truth_max_lead_minutes": null,
+      "frame_truth_max_lead_minutes": null,
+      "complete_truth_lead_minutes": [],
+      "partial_truth_lead_minutes": [],
+      "truth_completeness_unknown_lead_minutes": [],
+      "unverified_forecast_lead_minutes": [],
+      "coverage_reference_pixels": null,
+      "coverage_method": "none",
+      "cross_event_generalization_supported": false
+    },
+    "capabilities": {
+      "successful_execution": {
+        "available": true,
+        "evidence_refs": [
+          "observation:2",
+          "observation:3"
+        ]
+      },
+      "encoded_grid": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "temporal_sequence": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "geolocation": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "administrative_location": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "spatial_calibration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "compass_direction": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ground_truth": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "future_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "environment_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "era5_reanalysis": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "aurora_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ensemble_agreement": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "calibrated_probability": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "official_warning": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "rainfall_rate": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "meteorological_dynamics": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "hail": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "object_motion": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "centroid_change": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "observed_window_duration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "monotonic_interval_trend": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "complete_lifecycle": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "route_safety": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "multi_event_verification": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "cross_event_generalization": {
+        "available": false,
+        "evidence_refs": []
+      }
+    }
+  },
+  "observations": [
+    {
+      "step": 2,
+      "result": {
+        "upload_id": "795a51a9da6b41afbf07666deac4d32b",
+        "match_result": {
+          "status": "ok",
+          "task": "uploaded_event_match",
+          "upload_id": "795a51a9da6b41afbf07666deac4d32b",
+          "kind": "single_frame",
+          "event_match": {
+            "status": "...[truncated]",
+            "event_id": "...[truncated]",
+            "candidates": "...[truncated]",
+            "confidence": "...[truncated]",
+            "method": "...[truncated]",
+            "metadata_source": "...[truncated]",
+            "note": "...[truncated]"
+          },
+          "interpretation_limit": "匹配使用上传时提供的event_id/SEVIR文件名，或本地HDF5的哈希候选加逐像素完全一致验证；不会根据图像外观做近似猜测，无法唯一验证时不会给出地理位置。",
+          "schema_version": "sevir-contract-1",
+          "result_status": "ok",
+          "available": true
+        },
+        "resolved_event_id": null
+      },
+      "tool_calls": [
+        {
+          "step": 1,
+          "api": "data.match_uploaded_event",
+          "arguments": {
+            "upload_id": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "upload_id": "...[truncated]",
+            "kind": "...[truncated]",
+            "event_match": "...[truncated]",
+            "interpretation_limit": "...[truncated]",
+            "schema_version": "...[truncated]",
+            "result_status": "...[truncated]",
+            "available": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        }
+      ],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "statistics": "...[truncated]",
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    },
+    {
+      "step": 3,
+      "result": {
+        "event_detail": {
+          "status": "ok",
+          "task": "sevir_event_metadata",
+          "data_source": "data\\sevir_complete\\CATALOG.csv",
+          "record": {
+            "id": "...[truncated]",
+            "time_utc": "...[truncated]",
+            "event_type": "...[truncated]",
+            "file_name": "...[truncated]",
+            "file_index": "...[truncated]",
+            "data_min": "...[truncated]",
+            "data_max": "...[truncated]",
+            "pct_missing": "...[truncated]",
+            "local_hdf5_available": "...[truncated]",
+            "remote_hdf5_available": "...[truncated]",
+            "sevir_id": "...[truncated]",
+            "img_type": "...[truncated]",
+            "minute_offsets": "...[truncated]",
+            "frame_times_utc": "...[truncated]",
+            "noaa_episode_id": "...[truncated]",
+            "noaa_event_id": "...[truncated]",
+            "bounding_box": "...[truncated]",
+            "proj": "...[truncated]",
+            "size_x": "...[truncated]",
+            "size_y": "...[truncated]",
+            "height_m": "...[truncated]",
+            "width_m": "...[truncated]"
+          },
+          "interpretation_limit": "This is one exact VIL metadata record. Pixel values are only loaded when load_sevir_vil_event is called and the referenced HDF5 file is available locally.",
+          "schema_version": "sevir-contract-1",
+          "result_status": "ok",
+          "available": true
+        },
+        "catalog_record": null,
+        "observed_history": {
+          "status": "ok",
+          "task": "observed_event_historical_window_comparison",
+          "event_id": "R19062708588472",
+          "reference": {
+            "time_utc": "...[truncated]",
+            "event_type": "...[truncated]",
+            "source_hdf5": "...[truncated]",
+            "region_latlon_bounds": "...[truncated]",
+            "metrics": "...[truncated]",
+            "spatial_structure": "...[truncated]"
+          },
+          "historical": {
+            "candidate_count": "...[truncated]",
+            "sample_count": "...[truncated]",
+            "coverage_years": "...[truncated]",
+            "max_vil": "...[truncated]",
+            "p95_vil": "...[truncated]",
+            "threshold_coverage": "...[truncated]"
+          },
+          "historical_events": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "filters": {
+            "day_window": "...[truncated]",
+            "other_years_only": "...[truncated]",
+            "spatial_overlap": "...[truncated]",
+            "candidate_limit": "...[truncated]",
+            "display_limit": "...[truncated]"
+          },
+          "display": {
+            "displayed_count": "...[truncated]",
+            "details_truncated": "...[truncated]"
+          },
+          "provenance": {
+            "catalog": "...[truncated]",
+            "observations": "...[truncated]",
+            "region_alignment": "...[truncated]"
+          },
+          "interpretation_limit": "历史样本是SEVIR中可检索的有限样本，不是完整气候统计；百分位是经验分布，不是概率。",
+          "schema_version": "sevir-contract-1",
+          "result_status": "ok",
+          "available": true
+        }
+      },
+      "tool_calls": [
+        {
+          "step": 1,
+          "api": "data.event",
+          "arguments": {
+            "event_id": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "data_source": "...[truncated]",
+            "record": "...[truncated]",
+            "interpretation_limit": "...[truncated]",
+            "schema_version": "...[truncated]",
+            "result_status": "...[truncated]",
+            "available": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 2,
+          "api": "statistics.query_records",
+          "arguments": {
+            "year": "...[truncated]",
+            "event_type": "...[truncated]",
+            "fields": "...[truncated]",
+            "limit": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "capabilities": "...[truncated]",
+            "trace_truncated": "...[truncated]",
+            "original_json_characters": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 3,
+          "api": "statistics.compare_observed_event_history",
+          "arguments": {
+            "event_id": "...[truncated]",
+            "day_window": "...[truncated]",
+            "threshold": "...[truncated]",
+            "candidate_limit": "...[truncated]",
+            "display_limit": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "event_id": "...[truncated]",
+            "interpretation_limit": "...[truncated]",
+            "trace_truncated": "...[truncated]",
+            "original_json_characters": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        }
+      ],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "statistics": "...[truncated]",
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    }
+  ],
+  "tool_summary": {
+    "decision_steps": 6,
+    "call_count": 4,
+    "unique_tool_count": 4,
+    "cache_hits": 0
+  },
+  "limitations": {
+    "status": "not_run",
+    "covered_dimensions": [],
+    "missing_dimensions": [],
+    "needs_more_execution": false,
+    "next_analysis": "",
+    "reason": "claim_gate_convergence"
+  },
+  "content_hash": "f986ae61d47d0b8599a0f455ad67c96c3d61cb69005e4200726d9e70b5313692"
+}

@@ -1,0 +1,212 @@
+{
+  "checkpoint_id": "200b00f78d2d45708cddfa1a0f9ecddd",
+  "request_id": "6b368ea9103a4091af043435e8eb5d32",
+  "created_at": "2026-08-22T00:38:29.765749+00:00",
+  "termination_reason": "error_budget_exhausted",
+  "evidence_bundle": {
+    "version": "1.1",
+    "source_count": 6,
+    "successful_observation_count": 0,
+    "successful_tool_count": 5,
+    "sources": [
+      {
+        "ref": "tool:1:geolocator.latlon_box_to_pixel_box",
+        "api": "geolocator.latlon_box_to_pixel_box",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:2:data.load_hdf5",
+        "api": "data.load_hdf5",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:3:data.load_hdf5",
+        "api": "data.load_hdf5",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:4:data.load_hdf5",
+        "api": "data.load_hdf5",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:5:forecaster.rolling_raw",
+        "api": "forecaster.rolling_raw",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "data:1",
+        "api": "data_desc",
+        "status": "available",
+        "source": "sevir",
+        "event_id": "R19062708588472",
+        "upload_id": null
+      }
+    ],
+    "facts": [],
+    "numeric_evidence": [
+      {
+        "ref": "tool:1:geolocator.latlon_box_to_pixel_box",
+        "path": "arguments.bounds.south",
+        "value": 47.034316125705395
+      },
+      {
+        "ref": "tool:1:geolocator.latlon_box_to_pixel_box",
+        "path": "arguments.bounds.north",
+        "value": 47.0743161257054
+      },
+      {
+        "ref": "tool:1:geolocator.latlon_box_to_pixel_box",
+        "path": "arguments.bounds.west",
+        "value": -99.99604419767779
+      },
+      "...",
+      {
+        "ref": "tool:5:forecaster.rolling_raw",
+        "path": "result.forecast.horizon_minutes",
+        "value": 60
+      }
+    ],
+    "verification_scope": {
+      "ground_truth_available": false,
+      "verified_event_count": 0,
+      "scope_kind": "none",
+      "single_event_only": false,
+      "subject_refs": [],
+      "forecast_max_lead_minutes": 60,
+      "complete_truth_max_lead_minutes": null,
+      "any_truth_max_lead_minutes": null,
+      "frame_truth_max_lead_minutes": null,
+      "complete_truth_lead_minutes": [],
+      "partial_truth_lead_minutes": [],
+      "truth_completeness_unknown_lead_minutes": [],
+      "unverified_forecast_lead_minutes": [
+        60
+      ],
+      "coverage_reference_pixels": null,
+      "coverage_method": "none",
+      "cross_event_generalization_supported": false
+    },
+    "capabilities": {
+      "successful_execution": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "encoded_grid": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "temporal_sequence": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "geolocation": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "administrative_location": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "spatial_calibration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "compass_direction": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ground_truth": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "future_forecast": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "environment_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "era5_reanalysis": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "aurora_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ensemble_agreement": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "calibrated_probability": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "official_warning": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "rainfall_rate": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "meteorological_dynamics": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "hail": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "object_motion": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "centroid_change": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "observed_window_duration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "monotonic_interval_trend": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "complete_lifecycle": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "route_safety": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "multi_event_verification": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "cross_event_generalization": {
+        "available": false,
+        "evidence_refs": []
+      }
+    }
+  },
+  "observations": [],
+  "tool_summary": {},
+  "limitations": {},
+  "content_hash": "68079ac008ef5aecebc1bdb06fdad128a178398d34fc8f09b6e236ce079e9da5"
+}

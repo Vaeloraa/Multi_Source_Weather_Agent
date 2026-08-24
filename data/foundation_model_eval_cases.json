@@ -1,0 +1,18 @@
+{
+  "event_id": "R19080121067677",
+  "purpose": "Question-driven model-selection acceptance set",
+  "cases": [
+    {"id": "local_observation", "question": "事件 R19080121067677 的 13 帧局地 VIL 观测如何变化？", "expected_models": ["sevir"], "must_not_require": ["aurora"]},
+    {"id": "local_nowcast", "question": "事件 R19080121067677 未来 60 分钟 VIL 如何变化？", "expected_models": ["sevir", "cascast"], "must_not_require": ["aurora"]},
+    {"id": "environment_analysis", "question": "事件 R19080121067677 发生时的大尺度环境如何？", "expected_models": ["era5"], "must_not_require": ["aurora"]},
+    {"id": "environment_forecast", "question": "事件 R19080121067677 未来 6 到 24 小时的大尺度环境如何变化？", "expected_models": ["era5", "aurora"], "must_not_require": ["cascast"]},
+    {"id": "full_case", "question": "请解释事件 R19080121067677 的局地 VIL、大尺度环境和未来环境趋势，并区分四个模型的证据。", "expected_models": ["sevir", "cascast", "era5", "aurora"], "must_not_require": []},
+    {"id": "id_conflict", "question": "上传图像属于另一个事件，但请解释 R19080121067677 的完整 case。", "expected_models": [], "must_report": ["event_id_conflict"]},
+    {"id": "unavailable_model", "question": "如果 Aurora 预测文件不可用，仍请解释 R19080121067677。", "expected_models": ["sevir", "cascast", "era5"], "must_report": ["aurora_unavailable"]},
+    {"id": "evidence_conflict", "question": "针对事件 R19080121067677，如果 CasCast 显示 VIL 增强但 Aurora 环境趋势不明显，应如何调整结论强度？", "expected_models": ["cascast", "era5", "aurora"], "must_report": ["evidence_boundary"]}
+    ,{"id": "era5_profile", "question": "事件 R19080121067677 的 850、500、250 hPa 温度、风和位势高度环境如何？", "expected_models": ["era5"], "must_not_require": ["aurora"]}
+    ,{"id": "era5_timeseries", "question": "事件 R19080121067677 前后24小时目标区域的ERA5环境时间序列如何变化？", "expected_models": ["era5"], "must_not_require": ["cascast", "aurora"]}
+    ,{"id": "aurora_value", "question": "Aurora相比只使用ERA5，给事件 R19080121067677 增加了什么未来环境信息？", "expected_models": ["era5", "aurora"], "must_report": ["evidence_boundary"]}
+    ,{"id": "aurora_cost", "question": "只问事件 R19080121067677 未来30分钟局地VIL时，是否值得追加Aurora？请说明理由。", "expected_models": ["sevir", "cascast"], "must_not_require": ["aurora"]}
+  ]
+}

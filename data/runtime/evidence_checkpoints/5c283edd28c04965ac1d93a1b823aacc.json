@@ -1,0 +1,464 @@
+{
+  "checkpoint_id": "5c283edd28c04965ac1d93a1b823aacc",
+  "request_id": "6de3b9e83a1f48019679346a63fbffee",
+  "created_at": "2026-08-21T16:22:46.125401+00:00",
+  "termination_reason": "finished",
+  "evidence_bundle": {
+    "version": "1.1",
+    "source_count": 10,
+    "successful_observation_count": 1,
+    "successful_tool_count": 8,
+    "sources": [
+      {
+        "ref": "tool:1:advisor.interpretation_limits",
+        "api": "advisor.interpretation_limits",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:2:advisor.assess_hazard",
+        "api": "advisor.assess_hazard",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:3:advisor.interpretation_limits",
+        "api": "advisor.interpretation_limits",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:4:advisor.assess_hazard",
+        "api": "advisor.assess_hazard",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:5:advisor.interpretation_limits",
+        "api": "advisor.interpretation_limits",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:6:advisor.assess_hazard",
+        "api": "advisor.assess_hazard",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:7:visualizer.grid_panels",
+        "api": "visualizer.grid_panels",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:8:visualizer.distribution",
+        "api": "visualizer.distribution",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "observation:4",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "data:1",
+        "api": "data_desc",
+        "status": "available",
+        "source": "upload",
+        "event_id": null,
+        "upload_id": "795a51a9da6b41afbf07666deac4d32b"
+      }
+    ],
+    "facts": [],
+    "numeric_evidence": [
+      {
+        "ref": "observation:4",
+        "path": "image_shape[0]",
+        "value": 384
+      },
+      {
+        "ref": "observation:4",
+        "path": "image_shape[1]",
+        "value": 384
+      },
+      {
+        "ref": "observation:4",
+        "path": "total_pixels",
+        "value": 147456
+      },
+      "...",
+      {
+        "ref": "tool:8:visualizer.distribution",
+        "path": "result.data.bins",
+        "value": 30
+      }
+    ],
+    "verification_scope": {
+      "ground_truth_available": false,
+      "verified_event_count": 0,
+      "scope_kind": "none",
+      "single_event_only": false,
+      "subject_refs": [],
+      "forecast_max_lead_minutes": null,
+      "complete_truth_max_lead_minutes": null,
+      "any_truth_max_lead_minutes": null,
+      "frame_truth_max_lead_minutes": null,
+      "complete_truth_lead_minutes": [],
+      "partial_truth_lead_minutes": [],
+      "truth_completeness_unknown_lead_minutes": [],
+      "unverified_forecast_lead_minutes": [],
+      "coverage_reference_pixels": null,
+      "coverage_method": "none",
+      "cross_event_generalization_supported": false
+    },
+    "capabilities": {
+      "successful_execution": {
+        "available": true,
+        "evidence_refs": [
+          "observation:4"
+        ]
+      },
+      "encoded_grid": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "temporal_sequence": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "geolocation": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "administrative_location": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "spatial_calibration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "compass_direction": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ground_truth": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "future_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "environment_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "era5_reanalysis": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "aurora_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ensemble_agreement": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "calibrated_probability": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "official_warning": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "rainfall_rate": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "meteorological_dynamics": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "hail": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "object_motion": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "centroid_change": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "observed_window_duration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "monotonic_interval_trend": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "complete_lifecycle": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "route_safety": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "multi_event_verification": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "cross_event_generalization": {
+        "available": false,
+        "evidence_refs": []
+      }
+    }
+  },
+  "observations": [
+    {
+      "step": 4,
+      "result": {
+        "image_shape": [
+          384,
+          384
+        ],
+        "total_pixels": 147456,
+        "missing_pixels": 0,
+        "valid_pixels": 56475648,
+        "overall_max": 238.0,
+        "overall_mean": 51.536600748697914,
+        "overall_median": 36.0,
+        "p95": 144.0,
+        "p99": 188.0,
+        "coverage_by_threshold": {
+          "16": 22776237,
+          "74": 13420660,
+          "133": 2997479,
+          "160": 1339515,
+          "181": 614652,
+          "219": 46436
+        },
+        "peak_location": {
+          "row": 155,
+          "col": 158
+        },
+        "high_vil_count": 2997479,
+        "high_vil_mean": 0.5763776827127063,
+        "interpretation_limits": {
+          "status": "ok",
+          "threshold": 133.0,
+          "scale": "encoded VIL (0-255)",
+          "supports": [
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "does_not_support": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "task": "advisor.interpretation_limits",
+          "evidence": {},
+          "provenance": {
+            "tool": "...[truncated]",
+            "source": "...[truncated]"
+          },
+          "limitations": [
+            "...[truncated]"
+          ],
+          "cache": {
+            "hit": "...[truncated]",
+            "key": "...[truncated]"
+          }
+        },
+        "hazard_assessment": {
+          "status": "ok",
+          "level": "threshold_exceeded",
+          "reasons": [
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "interpretation": "encoded-VIL proxy only",
+          "limitations": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "task": "advisor.assess_hazard",
+          "evidence": {},
+          "provenance": {
+            "tool": "...[truncated]",
+            "source": "...[truncated]"
+          },
+          "cache": {
+            "hit": "...[truncated]",
+            "key": "...[truncated]"
+          }
+        },
+        "viz_artifact_id": "005c8842f405c94a2237dfbba46aa110",
+        "viz_image_url": "/api/artifacts/005c8842f405c94a2237dfbba46aa110.png",
+        "dist_artifact_id": "c30c3fd9a421ef638ddb7b3f645eb59b",
+        "dist_image_url": "/api/artifacts/c30c3fd9a421ef638ddb7b3f645eb59b.png"
+      },
+      "tool_calls": [
+        {
+          "step": 1,
+          "api": "advisor.interpretation_limits",
+          "arguments": {
+            "threshold": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "threshold": "...[truncated]",
+            "scale": "...[truncated]",
+            "supports": "...[truncated]",
+            "does_not_support": "...[truncated]",
+            "task": "...[truncated]",
+            "evidence": "...[truncated]",
+            "provenance": "...[truncated]",
+            "limitations": "...[truncated]",
+            "cache": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 2,
+          "api": "advisor.assess_hazard",
+          "arguments": {
+            "threshold": "...[truncated]",
+            "max_vil": "...[truncated]",
+            "support_fraction": "...[truncated]",
+            "duration_minutes": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "level": "...[truncated]",
+            "reasons": "...[truncated]",
+            "interpretation": "...[truncated]",
+            "limitations": "...[truncated]",
+            "task": "...[truncated]",
+            "evidence": "...[truncated]",
+            "provenance": "...[truncated]",
+            "cache": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 3,
+          "api": "visualizer.grid_panels",
+          "arguments": {
+            "title": "...[truncated]",
+            "labels": "...[truncated]",
+            "panel_count": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "chart_type": "...[truncated]",
+            "artifact_id": "...[truncated]",
+            "url": "...[truncated]",
+            "image_url": "...[truncated]",
+            "mime_type": "...[truncated]",
+            "title": "...[truncated]",
+            "description": "...[truncated]",
+            "size_bytes": "...[truncated]",
+            "verified": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 4,
+          "api": "visualizer.distribution",
+          "arguments": {
+            "title": "...[truncated]",
+            "series_labels": "...[truncated]",
+            "bins": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "chart_type": "...[truncated]",
+            "artifact_id": "...[truncated]",
+            "url": "...[truncated]",
+            "image_url": "...[truncated]",
+            "mime_type": "...[truncated]",
+            "title": "...[truncated]",
+            "description": "...[truncated]",
+            "size_bytes": "...[truncated]",
+            "verified": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        }
+      ],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "advise": "...[truncated]",
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    }
+  ],
+  "tool_summary": {
+    "decision_steps": 7,
+    "call_count": 8,
+    "unique_tool_count": 4,
+    "cache_hits": 0
+  },
+  "limitations": {
+    "status": "not_run",
+    "covered_dimensions": [],
+    "missing_dimensions": [],
+    "needs_more_execution": false,
+    "next_analysis": "",
+    "reason": "claim_gate_convergence"
+  },
+  "content_hash": "63a547440e99b9f3184784e27d4b2208eb92a70f992f5ec1ed9e293888fc9d29"
+}

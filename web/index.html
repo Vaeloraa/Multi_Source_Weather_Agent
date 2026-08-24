@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SEVIR Hazard Agent</title>
-    <link rel="stylesheet" href="/styles.css?v=20260808-minimal-ui" />
+    <link rel="stylesheet" href="/styles.css?v=20260823-location-workflow-1" />
   </head>
   <body>
     <main class="shell">
@@ -13,110 +13,129 @@
           <span class="brand-mark">S</span>
           <span>SEVIR HAZARD AGENT</span>
         </a>
+        <div class="conversation-actions">
+          <button id="new-chat-button" class="new-chat-button" type="button">＋ 新对话</button>
+          <details class="conversation-history">
+            <summary>对话记录</summary>
+            <div id="conversation-list" class="conversation-list"></div>
+          </details>
+          <span class="run-state" id="run-state">就绪</span>
+        </div>
       </nav>
 
       <header class="compact-intro">
         <div>
-          <h1>降雨预测与分析</h1>
+          <h1>多尺度天气分析</h1>
+          <p>从单张VIL观测、连续临近预报，到历史事件与ERA5/Aurora大尺度环境，直接用自然语言发起分析。</p>
         </div>
-        <section class="compact-status" aria-label="运行状态">
-          <article data-status><span class="status-icon ready"></span><div><strong id="qwen-status">Qwen</strong><small id="qwen-detail">检查中</small></div></article>
-          <article data-status><span class="status-icon ready"></span><div><strong>SEVIR</strong><small id="data-detail">检查中</small></div></article>
-          <article data-status><span class="status-icon pending"></span><div><strong>CasCast</strong><small id="cascast-detail">检查中</small></div></article>
-        </section>
       </header>
 
       <section class="lab-grid">
-        <form id="agent-form" class="control-panel panel">
+        <aside id="analysis-settings" class="control-panel panel">
           <div class="section-heading">
-            <h2>分析设置</h2>
+            <h2>认识这个 Agent</h2>
+            <p>它会按问题选择数据与工具，执行计算、核查证据，并明确区分观测事实、模型预测和能力边界。</p>
           </div>
 
-          <label class="question-box">
-            问题
-            <textarea id="question" rows="5" placeholder="输入问题"></textarea>
-          </label>
-
-          <section class="context-card">
-            <div class="form-row">
-              <label>数据<select id="data-source"><option value="cascast" selected>CasCast预测事件</option><option value="upload">上传单帧VIL</option><option value="upload_sequence">上传13帧VIL</option><option value="catalog">SEVIR目录</option></select></label>
-              <label>事件<select id="event-id"><option value="R19100105107994" selected>R19100105107994</option></select></label>
+          <section class="context-card agent-introduction">
+            <div class="context-card-topline"><small>CAPABILITIES</small><span>多源 · 多尺度</span></div>
+            <strong>从天气图到可核查的分析结论</strong>
+            <p>不必指定工具。说明想了解的地点、时段或天气问题，Agent 会组合当前可用的数据完成分析。</p>
+            <div class="capability-list" aria-label="Agent能力">
+              <div><b>VIL</b><span><strong>当前观测</strong><small>强度、范围、空间结构与地理定位</small></span></div>
+              <div><b>NOW</b><span><strong>临近预测</strong><small>13帧演变、CasCast预测、集合分歧与真实值验证</small></span></div>
+              <div><b>HIS</b><span><strong>历史检索</strong><small>按时间、地点和半径查找并比较SEVIR事件，无需上传</small></span></div>
+              <div><b>ENV</b><span><strong>大尺度环境</strong><small>ERA5再分析、Aurora环境趋势及大尺度到局地联动</small></span></div>
             </div>
-            <label>模型名称<input id="model" value="" placeholder="输入模型名称" autocomplete="off" required /></label>
-            <small id="data-source-note" class="data-source-note">读取已保存的13帧历史、10路CasCast预测和12帧ground truth；不是现场运行模型。</small>
-            <select id="task" class="hidden" aria-hidden="true" tabindex="-1"><option value="auto" selected>自动选择</option></select>
-            <div id="prediction-controls" class="prediction-controls hidden">
-              <div class="context-subheading"><strong>预测模型</strong></div>
-              <div class="prediction-parameter-grid">
-                <label class="parameter-field"><span>模型</span><select id="weather-model"><option value="cascast" selected>CasCast · 已保存集合预测</option><option value="persistence_baseline">Persistence · 最后观测帧持续</option></select></label>
-                <label class="parameter-field"><span>预测时效</span><select id="lead-minutes"><option value="60" selected>未来60分钟 · 12帧</option><option value="120" disabled>未来120分钟 · 未执行</option><option value="180" disabled>未来180分钟 · 未执行</option></select></label>
-              </div>
-              <small id="weather-model-note" class="weather-model-note">读取同学提供的10路CasCast集合均值；不是现场重新推理。</small>
-            </div>
-            <label id="threshold-control">回波等级<select id="threshold"><option value="noticeable">明显回波</option><option value="strong" selected>较强回波</option><option value="very_strong">很强回波</option><option value="extreme">极强回波</option><option value="extreme_candidate">极端强回波候选</option></select></label>
+            <small class="evidence-note">回答会标注数据来源与不确定性；VIL不能单独证明道路积水或地面安全状况。</small>
           </section>
 
-          <details id="upload-panel" class="input-panel">
-            <summary><span>上传数据</span></summary>
-            <section class="upload-box">
-              <div class="upload-heading">
-                <div><strong>单帧VIL</strong></div>
-                <label class="upload-button" for="vil-upload">选择本地图片<input id="vil-upload" type="file" accept="image/png" /></label>
-              </div>
-              <small id="upload-status">单张图不会被解释成未来预测；未来预测需要连续13帧。</small>
-              <img id="upload-preview" class="hidden" alt="上传的SEVIR VIL预览" />
-              <div class="sequence-upload-row">
-                <div><strong>连续13帧</strong></div>
-                <label class="upload-button" for="vil-sequence-upload">选择13张图片<input id="vil-sequence-upload" type="file" accept="image/png" multiple /></label>
-              </div>
-              <small id="sequence-upload-status">可分析历史演变并运行Persistence；任意序列CasCast仍需EarthFormer链路。</small>
-            </section>
-          </details>
-
-          <details class="advanced-panel">
-            <summary><span>运行设置</span></summary>
-            <div class="advanced-content">
-              <div class="agent-mode">
-                <div><strong>执行方式</strong><small id="provider-state">正在检查API配置…</small></div>
-                <select id="mode" aria-label="运行模式"><option value="reflective" selected>Reflective</option><option value="direct">Direct</option></select>
-              </div>
-              <div class="api-fields hidden" id="api-fields">
-                <label>大模型<select id="provider"><option value="qwen">Qwen</option><option value="deepseek">DeepSeek</option><option value="kimi">Kimi</option></select></label>
-              </div>
+          <section class="context-card live-context-card" aria-labelledby="live-context-heading">
+            <div class="context-card-topline"><small>OPTIONAL CONTEXT</small><span>无需上传图片</span></div>
+            <strong id="live-context-heading">定点天气查询（可选功能）</strong>
+            <p>这里用于单独演示“指定地点和时间”的查询能力，不是 R190 Study Case 的起点；留空即可直接提问。</p>
+            <div class="live-context-fields">
+              <label class="place-field">
+                <span>地点</span>
+                <input id="analysis-place" type="text" autocomplete="off" placeholder="例如 Springfield, Missouri" />
+              </label>
+              <label>
+                <span>UTC 时间</span>
+                <input id="analysis-time-utc" type="datetime-local" step="1" value="" />
+              </label>
+              <label>
+                <span>纬度（可选）</span>
+                <input id="analysis-latitude" type="number" min="-90" max="90" step="0.000001" inputmode="decimal" placeholder="37.208957" />
+              </label>
+              <label>
+                <span>经度（可选）</span>
+                <input id="analysis-longitude" type="number" min="-180" max="180" step="0.000001" inputmode="decimal" placeholder="-93.292299" />
+              </label>
             </div>
-          </details>
+            <small class="context-help">地点可自动解析；“Springfield”请同时写州名，避免同名城市歧义。</small>
+          </section>
 
-          <button id="run-button" type="submit">
-            <span>让Agent分析</span>
-            <span class="button-arrow">↗</span>
-          </button>
-        </form>
+          <div class="hidden" aria-hidden="true">
+            <span id="mode-description"></span>
+            <select id="mode" tabindex="-1"><option value="unified" selected>Unified Agent</option></select>
+            <select id="data-source" tabindex="-1"><option value="upload" selected>单张</option><option value="upload_sequence">13张</option></select>
+            <select id="event-id" tabindex="-1"><option value="">用户上传</option></select>
+            <select id="task" tabindex="-1"><option value="auto" selected>自动选择</option></select>
+            <select id="weather-model" tabindex="-1"><option value="cascast_live" selected>现场预测</option><option value="persistence_baseline">持续性基线</option></select>
+            <select id="lead-minutes" tabindex="-1"><option value="60" selected>60</option><option value="120">120</option><option value="180">180</option></select>
+            <select id="threshold" tabindex="-1" aria-label="CasCast VIL阈值">
+              <option value="16">CasCast VIL≥16</option>
+              <option value="74">CasCast VIL≥74</option>
+              <option value="133" selected>CasCast VIL≥133</option>
+              <option value="160">CasCast VIL≥160</option>
+              <option value="181">CasCast VIL≥181</option>
+              <option value="219">CasCast VIL≥219</option>
+            </select>
+            <span id="data-source-note"></span>
+            <span id="weather-model-note"></span>
+            <span id="prediction-controls"></span>
+            <span id="threshold-control" class="hidden"></span>
+          </div>
+
+        </aside>
 
         <section class="result-panel panel">
           <div class="result-head">
             <div class="section-heading">
-              <h2>分析结果</h2>
+              <h2>和 SEVIR Agent 聊聊</h2>
+              <p id="conversation-status">直接提问，或补充地点、时间与VIL观测。</p>
             </div>
-            <span class="run-state" id="run-state">WAITING</span>
           </div>
+
+          <div class="conversation-content-layout">
+          <div class="conversation-column">
 
           <div id="empty-state" class="empty-state">
             <div class="radar-visual"><i></i><b></b><b></b><b></b></div>
-            <strong>等待你的问题</strong>
+            <strong>直接开始对话</strong>
+            <p>询问系统能力、指定地点和时间，或上传1张/13张VIL图片进行分析。</p>
           </div>
 
+          <div id="chat-thread" class="chat-thread" aria-live="polite"></div>
+
+          <dialog id="delete-turn-dialog" class="delete-turn-dialog">
+            <form method="dialog">
+              <strong>删除这轮对话？</strong>
+              <p>问题和对应回答都会从当前会话中移除，之后的追问也不会再使用它。</p>
+              <div class="delete-turn-actions">
+                <button value="cancel" type="submit">取消</button>
+                <button id="confirm-delete-turn" value="confirm" type="submit" class="danger-button">删除</button>
+              </div>
+            </form>
+          </dialog>
+
+          <details id="turn-details" class="turn-details hidden" aria-hidden="true">
+            <summary><span>本轮渲染模板</span><b id="turn-details-source">SEVIR</b></summary>
           <div id="result-content" class="result-content hidden">
             <article class="answer-card">
               <div class="answer-heading"><div><small>ANALYSIS SUMMARY</small><strong id="result-title">分析结论</strong></div><span id="result-source">SEVIR</span></div>
-              <div id="answer" class="answer-body"></div>
+              <div id="answer" class="answer-body" data-markdown-version="markdown-10"></div>
             </article>
-
-            <div class="metric-grid">
-              <article><small id="metric-label-lead">预测时效</small><strong id="metric-lead">—</strong></article>
-              <article><small id="metric-label-regions">危险区域</small><strong id="metric-regions">—</strong></article>
-              <article><small id="metric-label-duration">持续时间</small><strong id="metric-duration">—</strong></article>
-              <article><small id="metric-label-model">运行模型</small><strong id="metric-model">—</strong></article>
-            </div>
 
             <article id="evaluation-card" class="evaluation-card hidden">
               <div class="card-topline">
@@ -162,16 +181,16 @@
               <div class="vil-color-legend"><span>0 弱</span><i></i><span>254 强</span></div>
               <div class="sequence-section"><strong>历史观测 · 13帧</strong><small>−60分钟至当前时刻</small></div>
               <div id="history-sequence" class="history-sequence"></div>
-              <div class="sequence-section"><strong>模型预测原图 · 12帧</strong><small>每张均来自实际384×384预测场，缩略显示</small></div>
+              <div class="sequence-section"><strong id="forecast-sequence-heading">模型预测原图 · 12帧</strong><small>每张均来自实际384×384预测场，缩略显示</small></div>
               <div id="forecast-sequence" class="forecast-sequence"></div>
               <div id="ground-truth-heading" class="sequence-section hidden"><strong>真实未来 · 12帧</strong><small>SEVIR ground truth，+5至+60分钟</small></div>
               <div id="ground-truth-sequence" class="ground-truth-sequence hidden"></div>
-              <div class="sequence-legend"><span id="sequence-threshold-label">阈值以上面积占比</span><i></i><span>未来60分钟</span></div>
+              <div class="sequence-legend"><span id="sequence-threshold-label">阈值以上面积占比</span><i></i><span id="sequence-horizon-label">未来60分钟</span></div>
             </article>
 
             <article id="uncertainty-card" class="uncertainty-card hidden">
               <div class="card-topline">
-                <div><small>ENSEMBLE UNCERTAINTY</small><strong>10路CasCast预测分歧</strong></div>
+                <div><small>ENSEMBLE UNCERTAINTY</small><strong>集合预测分歧</strong></div>
                 <span>PIXEL + STORM OBJECT</span>
               </div>
               <div class="uncertainty-metrics">
@@ -185,7 +204,7 @@
                 <button type="button" data-uncertainty-image="std"><span>Pixel-wise std · 60 min内最大</span><img id="uncertainty-std-map" alt="Pixel-wise标准差完整图像" /></button>
                 <button type="button" data-uncertainty-image="probability"><span>超阈值概率 · 60 min内最大</span><img id="uncertainty-probability-map" alt="超阈值概率完整图像" /></button>
               </div>
-              <div class="sequence-section"><strong id="ensemble-member-heading">10路Ensemble成员 · +60分钟</strong><small>点击任意成员放大查看384×384预测图</small></div>
+              <div class="sequence-section"><strong id="ensemble-member-heading">Ensemble成员 · +60分钟</strong><small>点击任意成员放大查看384×384预测图</small></div>
               <label class="ensemble-lead-control" for="ensemble-lead-slider"><span>成员展示时效</span><output id="ensemble-lead-value">+60分钟</output><input id="ensemble-lead-slider" type="range" min="0" max="11" step="1" value="11" /></label>
               <div id="ensemble-member-images" class="ensemble-member-images"></div>
               <div><small class="member-chart-label">各ensemble成员：峰值强回波面积 / 活跃时长</small><div id="ensemble-member-bars" class="ensemble-member-bars"></div></div>
@@ -206,12 +225,10 @@
                   <span id="visual-resolution-label">FULL 384×384</span>
                 </div>
                 <div class="hazard-map-grid">
-                  <button type="button" class="hazard-map-panel"><span>最大VIL合成</span><div class="heatmap-stage"><img id="hazard-overview-image" class="hazard-overview-image hidden" alt="未来60分钟最大VIL合成" /><div id="heatmap" class="heatmap"></div><div id="hazard-overlay" class="hazard-overlay" aria-label="强回波候选区域标注"></div></div><div class="legend"><span>弱</span><i></i><span>强</span></div><small>原总体VIL场；中心预测的时间最大值</small></button>
-                  <button type="button" class="hazard-map-panel"><span>成员支持率</span><img id="hazard-probability-image" alt="未来60分钟超阈值成员支持率" /><small>成员中至少一次超过阈值的比例</small></button>
-                  <button type="button" class="hazard-map-panel"><span>平均持续时间</span><img id="hazard-duration-image" alt="未来60分钟平均超阈值持续时间" /><small>10路成员的像素累计时长均值</small></button>
+                  <button type="button" class="hazard-map-panel"><span>最大VIL合成</span><div class="hazard-map-image-stage"><img id="hazard-overview-image" class="hidden" alt="未来60分钟最大VIL合成" /></div><small>未来12帧逐像素最大VIL，显示一小时内曾出现的最强回波</small></button>
+                  <button type="button" class="hazard-map-panel"><span>成员支持率</span><div class="hazard-map-image-stage"><img id="hazard-probability-image" alt="未来60分钟超阈值成员支持率" /></div><small>ensemble成员中预测该像素至少一次超阈值的比例</small></button>
+                  <button type="button" class="hazard-map-panel"><span>平均持续时间</span><div class="hazard-map-image-stage"><img id="hazard-duration-image" alt="未来60分钟平均超阈值持续时间" /></div><small>各成员像素超阈值时长的ensemble均值</small></button>
                 </div>
-                <p id="region-note" class="region-note hidden"></p>
-                <div id="region-list" class="region-list hidden"></div>
             </article>
 
             <dialog id="frame-dialog" class="frame-dialog">
@@ -220,34 +237,78 @@
               <div class="vil-color-legend"><span>0 弱</span><i></i><span>255 强</span></div>
             </dialog>
 
-            <article id="limit-card" class="limit-card hidden">
-              <small>INTERPRETATION LIMIT</small>
-              <p id="limit-text"></p>
-            </article>
-
             <details class="trace-card">
-              <summary><span>技术详情与工具记录</span><b id="meta-time">—</b></summary>
+              <summary><span>本轮做了什么</span><b id="meta-time">—</b></summary>
               <div class="trace-content">
-                <div class="card-topline"><div><small>TOOL</small><strong id="tool-name">—</strong></div></div>
-                <small>调用参数</small><pre id="tool-arguments"></pre>
-                <small>完整工具返回</small><pre id="tool-result"></pre>
-                <div id="direct-analysis" class="hidden">
-                  <small>Agent代码执行记录</small>
-                  <div id="direct-trace"></div>
+                <div class="card-topline"><div><small>EXECUTION</small><strong id="tool-name">—</strong></div></div>
+                <section id="run-diagnostic" class="run-diagnostic hidden" aria-live="polite">
+                  <div class="diagnostic-heading"><strong>执行概览</strong><span id="diagnostic-status">—</span></div>
+                  <div id="diagnostic-grid" class="diagnostic-grid"></div>
+                  <ol id="diagnostic-stages" class="diagnostic-stages"></ol>
+                </section>
+                <div id="agent-analysis" class="agent-analysis hidden">
+                  <small>Agent 执行步骤</small>
+                  <div class="agent-plan-summary">
+                    <small>当前模式</small><div id="agent-execution-mode">—</div>
+                    <small>执行流程</small><div id="agent-execution-flow">—</div>
+                    <small>会话与预算</small><div id="agent-session-budget">—</div>
+                  </div>
+                  <div id="agent-trace"></div>
                 </div>
-                <div id="agent-artifacts" class="hidden">
+                <div id="agent-artifacts" class="agent-artifacts hidden">
                   <small>Agent生成图表</small>
                   <div id="artifact-list"></div>
                 </div>
               </div>
             </details>
           </div>
+          </details>
 
           <div id="error-box" class="error-box hidden"></div>
+
+          <form id="agent-form" class="chat-composer">
+            <div id="attachment-tray" class="attachment-tray hidden">
+              <img id="upload-preview" class="hidden" alt="准备发送的VIL图片" />
+              <div>
+                <strong id="attachment-title">正在读取图片…</strong>
+                <small id="upload-status">请选择1张或13张384×384灰度PNG。</small>
+                <small id="sequence-upload-status" class="hidden"></small>
+              </div>
+              <button id="remove-attachment" type="button" aria-label="移除上传图片">×</button>
+            </div>
+            <div class="composer-row">
+              <label class="composer-attach-button" for="vil-upload" title="上传1张或13张VIL图片">
+                <span>＋</span>
+                <input id="vil-upload" type="file" accept="image/png" multiple />
+              </label>
+              <textarea id="question" rows="2" placeholder="询问系统能力，或输入地点、时间与天气问题…" required></textarea>
+              <button id="run-button" type="submit" aria-label="发送消息">
+                <span>发送</span>
+                <span class="button-arrow">↑</span>
+              </button>
+            </div>
+          </form>
+          </div>
+
+          <aside id="conversation-visual-pane" class="conversation-visual-pane hidden" aria-live="polite" aria-label="对话图片页框">
+            <header>
+              <div><small>GENERATED VISUALS</small><strong>对话图片</strong></div>
+              <span id="conversation-visual-count">0张</span>
+            </header>
+            <button id="conversation-visual-stage" class="conversation-visual-stage" type="button" aria-label="放大当前图片">
+              <img id="conversation-visual-image" alt="当前对话生成的图片" />
+            </button>
+            <div class="conversation-visual-copy">
+              <strong id="conversation-visual-title">Agent生成图表</strong>
+              <p id="conversation-visual-description"></p>
+            </div>
+            <div id="conversation-visual-thumbnails" class="conversation-visual-thumbnails" role="list" aria-label="对话图片列表"></div>
+          </aside>
+          </div>
         </section>
       </section>
 
     </main>
-    <script src="/app.js?v=20260807-clean-input-controls"></script>
+    <script src="/app.js?v=20260822-conversation-visual-pane-3"></script>
   </body>
 </html>

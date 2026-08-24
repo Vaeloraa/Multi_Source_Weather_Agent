@@ -1,0 +1,579 @@
+{
+  "checkpoint_id": "9ba1648fab5f492dac15f20fa4cda7f9",
+  "request_id": "56d4728498c54d9b849b9f0a0b7f069c",
+  "created_at": "2026-08-21T16:19:17.261556+00:00",
+  "termination_reason": "tool_call_budget_exhausted",
+  "evidence_bundle": {
+    "version": "1.1",
+    "source_count": 13,
+    "successful_observation_count": 2,
+    "successful_tool_count": 5,
+    "sources": [
+      {
+        "ref": "tool:1:data.match_uploaded_event",
+        "api": "data.match_uploaded_event",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:2:foundation.case",
+        "api": "foundation.case",
+        "status": "unavailable",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:3:data.match_uploaded_event",
+        "api": "data.match_uploaded_event",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:4:foundation.case",
+        "api": "foundation.case",
+        "status": "unavailable",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:5:foundation.case",
+        "api": "foundation.case",
+        "status": "unavailable",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:6:data.event",
+        "api": "data.event",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:7:foundation.forecast_aurora",
+        "api": "foundation.forecast_aurora",
+        "status": "error",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:8:data.event",
+        "api": "data.event",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:9:foundation.live_preflight",
+        "api": "foundation.live_preflight",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:10:foundation.fetch_era5",
+        "api": "foundation.fetch_era5",
+        "status": "error",
+        "cache_hit": false
+      },
+      {
+        "ref": "observation:3",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "observation:5",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "data:1",
+        "api": "data_desc",
+        "status": "available",
+        "source": "upload",
+        "event_id": null,
+        "upload_id": "795a51a9da6b41afbf07666deac4d32b"
+      }
+    ],
+    "facts": [
+      {
+        "observation_step": 3,
+        "event_id": "R19062708588472"
+      },
+      {
+        "observation_step": 5,
+        "event_id": "R19062708588472"
+      }
+    ],
+    "numeric_evidence": [
+      {
+        "ref": "observation:5",
+        "path": "bbox.south",
+        "value": 45.283591627891646
+      },
+      {
+        "ref": "observation:5",
+        "path": "bbox.west",
+        "value": -102.44166025945844
+      },
+      {
+        "ref": "observation:5",
+        "path": "bbox.north",
+        "value": 48.82504062351925
+      },
+      "...",
+      {
+        "ref": "tool:9:foundation.live_preflight",
+        "path": "result.history_after_hours",
+        "value": 0
+      }
+    ],
+    "verification_scope": {
+      "ground_truth_available": false,
+      "verified_event_count": 0,
+      "scope_kind": "none",
+      "single_event_only": false,
+      "subject_refs": [],
+      "forecast_max_lead_minutes": null,
+      "complete_truth_max_lead_minutes": null,
+      "any_truth_max_lead_minutes": null,
+      "frame_truth_max_lead_minutes": null,
+      "complete_truth_lead_minutes": [],
+      "partial_truth_lead_minutes": [],
+      "truth_completeness_unknown_lead_minutes": [],
+      "unverified_forecast_lead_minutes": [],
+      "coverage_reference_pixels": null,
+      "coverage_method": "none",
+      "cross_event_generalization_supported": false
+    },
+    "capabilities": {
+      "successful_execution": {
+        "available": true,
+        "evidence_refs": [
+          "observation:3",
+          "observation:5"
+        ]
+      },
+      "encoded_grid": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "temporal_sequence": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "geolocation": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "administrative_location": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "spatial_calibration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "compass_direction": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ground_truth": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "future_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "environment_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "era5_reanalysis": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "aurora_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ensemble_agreement": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "calibrated_probability": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "official_warning": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "rainfall_rate": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "meteorological_dynamics": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "hail": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "object_motion": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "centroid_change": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "observed_window_duration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "monotonic_interval_trend": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "complete_lifecycle": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "route_safety": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "multi_event_verification": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "cross_event_generalization": {
+        "available": false,
+        "evidence_refs": []
+      }
+    }
+  },
+  "observations": [
+    {
+      "step": 3,
+      "result": {
+        "event_id": "R19062708588472",
+        "case_keys": [
+          "status",
+          "task",
+          "event_id",
+          "evidence",
+          "case_evidence",
+          "evidence_bundle",
+          "cache",
+          "validation",
+          "artifacts",
+          "manifest",
+          "interpretation_limit",
+          "role",
+          "capabilities",
+          "provenance",
+          "data",
+          "limitations",
+          "schema_version",
+          "result_status",
+          "available"
+        ],
+        "case": {
+          "status": "not_found",
+          "task": "foundation_case",
+          "event_id": "R19062708588472",
+          "evidence": null,
+          "case_evidence": null,
+          "evidence_bundle": {
+            "status": "...[truncated]",
+            "event_id": "...[truncated]",
+            "evidence": "...[truncated]",
+            "raw_evidence": "...[truncated]",
+            "artifacts": "...[truncated]",
+            "validation": "...[truncated]"
+          },
+          "cache": {
+            "event_id": "...[truncated]",
+            "cache_root": "...[truncated]",
+            "evidence_available": "...[truncated]",
+            "files": "...[truncated]",
+            "cache_hit": "...[truncated]",
+            "source": "...[truncated]"
+          },
+          "validation": {
+            "status": "...[truncated]",
+            "errors": "...[truncated]",
+            "warnings": "...[truncated]"
+          },
+          "artifacts": [],
+          "manifest": null,
+          "interpretation_limit": "SEVIR/CasCast describe local encoded VIL; ERA5 describes retrospective environment; Aurora predicts large-scale environmental fields. These roles must remain separate, and Aurora verification status must be stated.",
+          "role": "environmental_evidence",
+          "capabilities": [],
+          "provenance": {
+            "source": "...[truncated]",
+            "request_key": "...[truncated]"
+          },
+          "limitations": [
+            "...[truncated]"
+          ],
+          "schema_version": "sevir-contract-1",
+          "result_status": "not_found",
+          "available": false
+        }
+      },
+      "tool_calls": [
+        {
+          "step": 1,
+          "api": "foundation.case",
+          "arguments": {
+            "event_id": "...[truncated]"
+          },
+          "status": "unavailable",
+          "result_status": "not_found",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "event_id": "...[truncated]",
+            "evidence": "...[truncated]",
+            "case_evidence": "...[truncated]",
+            "evidence_bundle": "...[truncated]",
+            "cache": "...[truncated]",
+            "validation": "...[truncated]",
+            "artifacts": "...[truncated]",
+            "manifest": "...[truncated]",
+            "interpretation_limit": "...[truncated]",
+            "role": "...[truncated]",
+            "capabilities": "...[truncated]",
+            "provenance": "...[truncated]",
+            "limitations": "...[truncated]",
+            "schema_version": "...[truncated]",
+            "result_status": "...[truncated]",
+            "available": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        }
+      ],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "geolocator": "...[truncated]",
+            "history": "...[truncated]",
+            "advise": "...[truncated]",
+            "forecaster": "...[truncated]",
+            "foundation": "...[truncated]",
+            "statistics": "...[truncated]",
+            "uncertainty": "...[truncated]",
+            "metrics": "...[truncated]",
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    },
+    {
+      "step": 5,
+      "result": {
+        "event_id": "R19062708588472",
+        "time_utc": "2019-06-27 08:58:20",
+        "bbox": {
+          "south": 45.283591627891646,
+          "west": -102.44166025945844,
+          "north": 48.82504062351925,
+          "east": -97.51042813589711
+        },
+        "center_lat": 47.05431612570545,
+        "center_lon": -99.97604419767778,
+        "preflight": {
+          "analysis_time_utc": "2019-06-27T08:58:20Z",
+          "era5_time_utc": "2019-06-27T08:00:00Z",
+          "time_offset_minutes": 58,
+          "latitude": 47.05431612570545,
+          "longitude": -99.97604419767778,
+          "area_north_west_south_east": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "grid": "0.25/0.25",
+          "surface_variables": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "pressure_variables": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "pressure_levels_hpa": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "aurora_pressure_levels_hpa": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "forecast_leads_hours": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "input_window_hours": 6,
+          "history_before_hours": 6,
+          "history_after_hours": 0,
+          "data_policy": "live",
+          "request_key": "86dfe5dfc9af7ad32bd6",
+          "artifact_dir": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_live_foundation\\86dfe5dfc9af7ad32bd6",
+          "status": "normalized",
+          "schema_version": "sevir-contract-1",
+          "result_status": "normalized",
+          "available": true,
+          "role": "live_request",
+          "capabilities": [
+            "...[truncated]"
+          ],
+          "provenance": {
+            "source": "...[truncated]",
+            "request_key": "...[truncated]"
+          },
+          "limitations": []
+        }
+      },
+      "tool_calls": [
+        {
+          "step": 1,
+          "api": "data.event",
+          "arguments": {
+            "event_id": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "data_source": "...[truncated]",
+            "record": "...[truncated]",
+            "interpretation_limit": "...[truncated]",
+            "schema_version": "...[truncated]",
+            "result_status": "...[truncated]",
+            "available": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 2,
+          "api": "foundation.live_preflight",
+          "arguments": {
+            "analysis_time_utc": "...[truncated]",
+            "latitude": "...[truncated]",
+            "longitude": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "normalized",
+          "cache_hit": false,
+          "result": {
+            "analysis_time_utc": "...[truncated]",
+            "era5_time_utc": "...[truncated]",
+            "time_offset_minutes": "...[truncated]",
+            "latitude": "...[truncated]",
+            "longitude": "...[truncated]",
+            "area_north_west_south_east": "...[truncated]",
+            "grid": "...[truncated]",
+            "surface_variables": "...[truncated]",
+            "pressure_variables": "...[truncated]",
+            "pressure_levels_hpa": "...[truncated]",
+            "aurora_pressure_levels_hpa": "...[truncated]",
+            "forecast_leads_hours": "...[truncated]",
+            "input_window_hours": "...[truncated]",
+            "history_before_hours": "...[truncated]",
+            "history_after_hours": "...[truncated]",
+            "data_policy": "...[truncated]",
+            "request_key": "...[truncated]",
+            "artifact_dir": "...[truncated]",
+            "status": "...[truncated]",
+            "schema_version": "...[truncated]",
+            "result_status": "...[truncated]",
+            "available": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        }
+      ],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "geolocator": "...[truncated]",
+            "history": "...[truncated]",
+            "advise": "...[truncated]",
+            "forecaster": "...[truncated]",
+            "foundation": "...[truncated]",
+            "statistics": "...[truncated]",
+            "uncertainty": "...[truncated]",
+            "metrics": "...[truncated]",
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    }
+  ],
+  "tool_summary": {
+    "decision_steps": 7,
+    "call_count": 10,
+    "unique_tool_count": 6,
+    "cache_hits": 0
+  },
+  "limitations": {
+    "status": "not_run",
+    "covered_dimensions": [],
+    "missing_dimensions": [],
+    "needs_more_execution": false,
+    "next_analysis": ""
+  },
+  "content_hash": "6a2c232919ec53b06e4bd1fba30aa581d8de65871e5ed1c3f10c26041aab16bf"
+}

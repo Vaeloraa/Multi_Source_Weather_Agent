@@ -1,0 +1,117 @@
+{
+  "source_hdf5": "D:\\Profile\\\u4e13\u4e1a\u5b9e\u4e60\\sevir-agent-demo\\data\\sevir_complete\\data\\vil\\2019\\SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5",
+  "sequences": [
+    {
+      "event_id": "R19083106078086",
+      "strength_label": "very_weak",
+      "hdf5_row": 1350,
+      "folder": "R19083106078086_13frames",
+      "frame_count": 13,
+      "shape": [
+        384,
+        384
+      ],
+      "min_vil": 0,
+      "max_vil": 157,
+      "mean_vil": 6.9376,
+      "vil_ge_133_area_ratio": 5e-06,
+      "order": "frame_01 (-60 min) through frame_13 (0 min)"
+    },
+    {
+      "event_id": "R19071402077478",
+      "strength_label": "weak_to_moderate",
+      "hdf5_row": 1050,
+      "folder": "R19071402077478_13frames",
+      "frame_count": 13,
+      "shape": [
+        384,
+        384
+      ],
+      "min_vil": 0,
+      "max_vil": 197,
+      "mean_vil": 22.2746,
+      "vil_ge_133_area_ratio": 0.014485,
+      "order": "frame_01 (-60 min) through frame_13 (0 min)"
+    },
+    {
+      "event_id": "R19082500047459",
+      "strength_label": "moderate",
+      "hdf5_row": 0,
+      "folder": "R19082500047459_13frames",
+      "frame_count": 13,
+      "shape": [
+        384,
+        384
+      ],
+      "min_vil": 0,
+      "max_vil": 254,
+      "mean_vil": 17.3127,
+      "vil_ge_133_area_ratio": 0.025569,
+      "order": "frame_01 (-60 min) through frame_13 (0 min)"
+    },
+    {
+      "event_id": "R19072809278237",
+      "strength_label": "moderate_to_strong",
+      "hdf5_row": 1950,
+      "folder": "R19072809278237_13frames",
+      "frame_count": 13,
+      "shape": [
+        384,
+        384
+      ],
+      "min_vil": 0,
+      "max_vil": 244,
+      "mean_vil": 29.9766,
+      "vil_ge_133_area_ratio": 0.036479,
+      "order": "frame_01 (-60 min) through frame_13 (0 min)"
+    },
+    {
+      "event_id": "R19052208228065",
+      "strength_label": "strong",
+      "hdf5_row": 750,
+      "folder": "R19052208228065_13frames",
+      "frame_count": 13,
+      "shape": [
+        384,
+        384
+      ],
+      "min_vil": 0,
+      "max_vil": 247,
+      "mean_vil": 48.7534,
+      "vil_ge_133_area_ratio": 0.083499,
+      "order": "frame_01 (-60 min) through frame_13 (0 min)"
+    },
+    {
+      "event_id": "R19051909487533",
+      "strength_label": "very_strong",
+      "hdf5_row": 1200,
+      "folder": "R19051909487533_13frames",
+      "frame_count": 13,
+      "shape": [
+        384,
+        384
+      ],
+      "min_vil": 0,
+      "max_vil": 254,
+      "mean_vil": 67.8912,
+      "vil_ge_133_area_ratio": 0.158084,
+      "order": "frame_01 (-60 min) through frame_13 (0 min)"
+    },
+    {
+      "event_id": "R19050920557536",
+      "strength_label": "very_strong_widespread",
+      "hdf5_row": 1800,
+      "folder": "R19050920557536_13frames",
+      "frame_count": 13,
+      "shape": [
+        384,
+        384
+      ],
+      "min_vil": 0,
+      "max_vil": 254,
+      "mean_vil": 77.7911,
+      "vil_ge_133_area_ratio": 0.184892,
+      "order": "frame_01 (-60 min) through frame_13 (0 min)"
+    }
+  ]
+}

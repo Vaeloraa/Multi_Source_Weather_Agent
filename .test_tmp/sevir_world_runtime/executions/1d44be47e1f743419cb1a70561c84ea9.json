@@ -1,0 +1,63 @@
+{
+  "execution_id": "1d44be47e1f743419cb1a70561c84ea9",
+  "created_at_epoch_seconds": 1787585565.506,
+  "code": "import os\nimport matplotlib.pyplot as plt\npath = os.path.join(os.environ['SEVIR_ARTIFACT_DIR'], 'plain-test-name.png')\nplt.plot([0, 1], [1, 0])\nplt.savefig(path)\nplt.close()\nresult = {'plot': path}",
+  "data_descs": [],
+  "selected_tools": [
+    "ds"
+  ],
+  "execution": {
+    "status": "ok",
+    "result": {
+      "plot": "/api/artifacts/27bb3dc0ce3d42a8bdce81ee8e10b87a.png"
+    },
+    "primary_result": {
+      "plot": "D:\\Profile\\专业实习\\sevir-agent-demo\\.test_tmp\\sevir_world_runtime\\artifacts\\plain-test-name.png"
+    },
+    "calls": [],
+    "stdout": "",
+    "result_json_characters": 131,
+    "runtime_schema": {
+      "schema_version": "sevir-contract-2",
+      "dataset": {
+        "schema_version": "sevir-contract-2",
+        "object": "ds",
+        "type": "list[DatasetRecord]",
+        "records": []
+      },
+      "tools": []
+    },
+    "evidence_ledger": {
+      "completed_evidence": [],
+      "reuse_rule": "reuse completed evidence unless arguments materially change"
+    },
+    "worker_session": {
+      "id": "f0c92340d7ec4cfd9338b649b1774feb",
+      "step": 1
+    },
+    "tool_result_cache": {
+      "entries": 0,
+      "updates": 0
+    },
+    "elapsed_ms": 3046,
+    "generated_artifacts": [
+      {
+        "artifact_id": "27bb3dc0ce3d42a8bdce81ee8e10b87a",
+        "url": "/api/artifacts/27bb3dc0ce3d42a8bdce81ee8e10b87a.png",
+        "image_url": "/api/artifacts/27bb3dc0ce3d42a8bdce81ee8e10b87a.png",
+        "title": "plain-test-name",
+        "description": "由本轮执行代码生成。",
+        "chart_type": "agent_generated",
+        "status": "completed"
+      }
+    ],
+    "limits": {
+      "timeout_seconds": 30.0,
+      "memory_limit_mb": 2048,
+      "budget_profile": "standard",
+      "network": "inherits worker process policy; weather tools own supported data access",
+      "filesystem": "temporary cwd; persistent figures use SEVIR_ARTIFACT_DIR",
+      "imports": "standard Python imports enabled"
+    }
+  }
+}

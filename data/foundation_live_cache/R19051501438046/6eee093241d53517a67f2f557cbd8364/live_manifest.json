@@ -1,0 +1,70 @@
+{
+  "analysis_time_utc": "2019-05-15T01:43:45Z",
+  "era5_time_utc": "2019-05-15T01:00:00Z",
+  "time_offset_minutes": 44,
+  "latitude": 42.02388393270566,
+  "longitude": -101.42668222582509,
+  "area_north_west_south_east": [
+    47.9,
+    -113.3,
+    36.15,
+    -89.55
+  ],
+  "grid": "0.25/0.25",
+  "surface_variables": [
+    "2m_temperature",
+    "10m_u_component_of_wind",
+    "10m_v_component_of_wind",
+    "mean_sea_level_pressure"
+  ],
+  "pressure_variables": [
+    "temperature",
+    "u_component_of_wind",
+    "v_component_of_wind",
+    "specific_humidity",
+    "geopotential"
+  ],
+  "pressure_levels_hpa": [
+    850,
+    500,
+    250
+  ],
+  "aurora_pressure_levels_hpa": [
+    50,
+    100,
+    150,
+    200,
+    250,
+    300,
+    400,
+    500,
+    600,
+    700,
+    850,
+    925,
+    1000
+  ],
+  "forecast_leads_hours": [
+    6,
+    12,
+    18,
+    24
+  ],
+  "input_window_hours": 6,
+  "history_before_hours": 24,
+  "history_after_hours": 24,
+  "data_policy": "live",
+  "event_id": "R19051501438046",
+  "model_version": "",
+  "request_key": "902992994825236dd87e",
+  "canonical_request_key": "6eee093241d53517a67f2f557cbd8364",
+  "artifact_dir": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\R19051501438046\\6eee093241d53517a67f2f557cbd8364",
+  "status": "ok",
+  "files": {
+    "surface": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\R19051501438046\\6eee093241d53517a67f2f557cbd8364\\surface.nc",
+    "pressure": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\R19051501438046\\6eee093241d53517a67f2f557cbd8364\\pressure.nc",
+    "static": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\R19051501438046\\6eee093241d53517a67f2f557cbd8364\\static.nc"
+  },
+  "target_timeseries_status": "extraction_failed",
+  "target_timeseries_error": "ent-demo\\scripts\\summarize_era5_live.py\", line 122, in <module>\n    main()\n  File \"D:\\Profile\\专业实习\\sevir-agent-demo\\scripts\\summarize_era5_live.py\", line 43, in main\n    with xr.open_dataset(args.surface) as surface, xr.open_dataset(args.pressure) as pressure:\n  File \"D:\\Profile\\专业实习\\CasCast\\.venv\\lib\\site-packages\\xarray\\backends\\api.py\", line 687, in open_dataset\n    backend_ds = backend.open_dataset(\n  File \"D:\\Profile\\专业实习\\CasCast\\.venv\\lib\\site-packages\\xarray\\backends\\netCDF4_.py\", line 666, in open_dataset\n    store = NetCDF4DataStore.open(\n  File \"D:\\Profile\\专业实习\\CasCast\\.venv\\lib\\site-packages\\xarray\\backends\\netCDF4_.py\", line 452, in open\n    return cls(manager, group=group, mode=mode, lock=lock, autoclose=autoclose)\n  File \"D:\\Profile\\专业实习\\CasCast\\.venv\\lib\\site-packages\\xarray\\backends\\netCDF4_.py\", line 393, in __init__\n    self.format = self.ds.data_model\n  File \"D:\\Profile\\专业实习\\CasCast\\.venv\\lib\\site-packages\\xarray\\backends\\netCDF4_.py\", line 461, in ds\n    return self._acquire()\n  File \"D:\\Profile\\专业实习\\CasCast\\.venv\\lib\\site-packages\\xarray\\backends\\netCDF4_.py\", line 455, in _acquire\n    with self._manager.acquire_context(needs_lock) as root:\n  File \"C:\\Users\\zhaor\\AppData\\Roaming\\uv\\python\\cpython-3.10-windows-x86_64-none\\lib\\contextlib.py\", line 135, in __enter__\n    return next(self.gen)\n  File \"D:\\Profile\\专业实习\\CasCast\\.venv\\lib\\site-packages\\xarray\\backends\\file_manager.py\", line 199, in acquire_context\n    file, cached = self._acquire_with_cache_info(needs_lock)\n  File \"D:\\Profile\\专业实习\\CasCast\\.venv\\lib\\site-packages\\xarray\\backends\\file_manager.py\", line 217, in _acquire_with_cache_info\n    file = self._opener(*self._args, **kwargs)\n  File \"src/netCDF4/_netCDF4.pyx\", line 2521, in netCDF4._netCDF4.Dataset.__init__\n  File \"src/netCDF4/_netCDF4.pyx\", line 2158, in netCDF4._netCDF4._ensure_nc_success\nOSError: [Errno -101] NetCDF: HDF error: 'C:\\\\Users\\\\zhaor\\\\AppData\\\\Local\\\\Temp\\\\sevir_foundation_6eee093241d53517a67f2f557cbd8364\\\\pressure.nc'\n"
+}

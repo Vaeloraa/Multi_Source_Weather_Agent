@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "source_classes": {
+    "sevir": {"class": "direct_observation", "may_support": ["past_local_encoded_vil"], "may_not_support": ["future_trend", "physical_cause", "official_warning"]},
+    "cascast": {"class": "local_model_forecast", "may_support": ["short_term_encoded_vil", "forecast_vs_truth_error", "ensemble_spread"], "may_not_support": ["large_scale_environment", "official_warning"]},
+    "era5": {"class": "retrospective_environment", "may_support": ["event_time_environment", "multi_level_context"], "may_not_support": ["local_vil_forecast", "causal_certainty"]},
+    "aurora": {"class": "large_scale_model_forecast", "may_support": ["future_environment", "forecast_vs_era5_error"], "may_not_support": ["local_vil", "local_hazard_warning"]}
+  },
+  "required_conclusion_fields": ["claim", "source", "evidence_class", "time_scope", "spatial_scope", "limit"]
+}

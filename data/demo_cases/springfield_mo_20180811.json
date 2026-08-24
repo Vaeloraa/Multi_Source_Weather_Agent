@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0",
+  "case_id": "springfield_mo_20180811_s781667",
+  "title": "Springfield, Missouri regional-discovery/local-tracking demo",
+  "intent": "A reproducible case definition and readiness contract; it is not evidence that data or model outputs have already been downloaded.",
+  "event": {
+    "sevir_id": "S781667",
+    "reference_time_utc": "2018-08-11T00:05:00Z",
+    "event_type": "Thunderstorm Wind",
+    "noaa_episode_id": 129420,
+    "noaa_event_id": 781667,
+    "bounding_box": {
+      "south": 35.545211626685884,
+      "west": -95.52433236538715,
+      "north": 38.8175945856249,
+      "east": -90.97288313572244
+    },
+    "catalog_center": {
+      "latitude": 37.18140310615539,
+      "longitude": -93.2486077505548
+    }
+  },
+  "location": {
+    "display_name": "Springfield, Missouri, USA",
+    "latitude": 37.2089572,
+    "longitude": -93.2922989,
+    "relationship_to_event": "inside the SEVIR catalog bounding box and approximately 4.9 km from its geographic center",
+    "disambiguation": "Always include Missouri or the coordinates; Springfield alone is ambiguous."
+  },
+  "cascast_window": {
+    "segment": 1,
+    "source_channel": "vil",
+    "frame_cadence_minutes": 5,
+    "segment_slice_zero_based": {
+      "start_inclusive": 12,
+      "stop_exclusive": 37
+    },
+    "history": {
+      "frame_count": 13,
+      "relative_minutes": [-60, -55, -50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0],
+      "start_utc": "2018-08-10T23:05:00Z",
+      "end_utc": "2018-08-11T00:05:00Z"
+    },
+    "verification": {
+      "frame_count": 12,
+      "relative_minutes": [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60],
+      "start_utc": "2018-08-11T00:10:00Z",
+      "end_utc": "2018-08-11T01:05:00Z"
+    },
+    "rationale": "Segment 1 maps the previous hour through the event reference time to the following hour used for verification."
+  },
+  "sevir_catalog_records": [
+    {
+      "img_type": "vil",
+      "file_name": "vil/2018/SEVIR_VIL_STORMEVENTS_2018_0701_1231.h5",
+      "file_index": 105,
+      "frame_count": 49,
+      "role": "CasCast-native VIL history and later VIL verification",
+      "integration_status": "supported_by_current_vil_loader"
+    },
+    {
+      "img_type": "vis",
+      "file_name": "vis/2018/SEVIR_VIS_STORMEVENTS_2018_0801_0831.h5",
+      "file_index": 63,
+      "frame_count": 49,
+      "role": "aligned satellite context",
+      "integration_status": "catalog_metadata_only_not_wired_to_case_loader"
+    },
+    {
+      "img_type": "ir107",
+      "file_name": "ir107/2018/SEVIR_IR107_STORMEVENTS_2018_0701_1231.h5",
+      "file_index": 108,
+      "frame_count": 49,
+      "role": "aligned infrared satellite context",
+      "integration_status": "catalog_metadata_only_not_wired_to_case_loader"
+    },
+    {
+      "img_type": "ir069",
+      "file_name": "ir069/2018/SEVIR_IR069_STORMEVENTS_2018_0701_1231.h5",
+      "file_index": 108,
+      "frame_count": 49,
+      "role": "aligned infrared satellite context",
+      "integration_status": "catalog_metadata_only_not_wired_to_case_loader",
+      "catalog_note": "The source row ends with a duplicated +115 minute offset instead of +120; preserve the catalog row and do not silently repair it."
+    },
+    {
+      "img_type": "lght",
+      "file_name": "lght/2018/SEVIR_LGHT_ALLEVENTS_2018_0801_0901.h5",
+      "file_index": 0,
+      "frame_count": null,
+      "role": "aligned lightning context",
+      "integration_status": "catalog_metadata_only_not_wired_to_case_loader"
+    }
+  ],
+  "regional_discovery": {
+    "model": "Aurora",
+    "target_valid_time_utc": "2018-08-11T00:05:00Z",
+    "requested_lead_hours": [6, 12, 18, 24],
+    "input": "ERA5",
+    "case_artifact_status": "not_prepared_or_asserted_by_this_definition",
+    "initialization_policy": "Choose an ERA5-hour-aligned initialization time during preparation and record the exact valid-time mapping in the generated manifest."
+  },
+  "adapter_boundary": {
+    "available_now": [
+      "Local SEVIR CATALOG metadata for all five listed channels",
+      "The repository's VIL-only local/remote SEVIR loader",
+      "The repository's CasCast live inference path once VIL data and model assets are available"
+    ],
+    "not_claimed_ready": [
+      "Downloaded local HDF5 data for this event",
+      "A cached S781667 CasCast segment-1 prediction",
+      "A cached ERA5/Aurora result aligned to this case",
+      "A generic NEXRAD Level II or Level III downloader and radar-to-CasCast converter",
+      "A generic GOES object-store downloader and GOES-to-case preprocessing adapter",
+      "An end-to-end arbitrary time/place workflow"
+    ],
+    "interpretation": "SEVIR VIL and aligned VIS/IR are suitable historical demo inputs, but they must not be described as a completed arbitrary-time NEXRAD/GOES adapter."
+  },
+  "expected_case_artifacts": {
+    "vil_event_cache": "data/sevir_event_cache/S781667_105.npz",
+    "cascast_cache_glob": "data/live_cascast_cache/S781667_s1_ens*.npz",
+    "aurora_case_manifest": "data/demo_cases/cache/springfield_mo_20180811/aurora_manifest.json"
+  },
+  "recorded_workspace_state": {
+    "checked_on": "2026-08-23",
+    "catalog_rows": "present",
+    "target_local_hdf5_files": "not_found",
+    "vil_event_cache": "not_found",
+    "cascast_segment_1_cache": "not_found",
+    "aurora_case_manifest": "not_found",
+    "warning": "This snapshot can become stale; run scripts/preflight_springfield_demo.py before every demo."
+  }
+}

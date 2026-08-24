@@ -1,0 +1,70 @@
+{
+  "analysis_time_utc": "2019-08-01T21:00:00Z",
+  "era5_time_utc": "2019-08-01T21:00:00Z",
+  "time_offset_minutes": 0,
+  "latitude": 34.7807024,
+  "longitude": -84.7833916,
+  "area_north_west_south_east": [
+    40.78,
+    -96.78,
+    29.03,
+    -73.03
+  ],
+  "grid": "0.25/0.25",
+  "surface_variables": [
+    "2m_temperature",
+    "10m_u_component_of_wind",
+    "10m_v_component_of_wind",
+    "mean_sea_level_pressure"
+  ],
+  "pressure_variables": [
+    "temperature",
+    "u_component_of_wind",
+    "v_component_of_wind",
+    "specific_humidity",
+    "geopotential"
+  ],
+  "pressure_levels_hpa": [
+    850,
+    500,
+    250
+  ],
+  "aurora_pressure_levels_hpa": [
+    50,
+    100,
+    150,
+    200,
+    250,
+    300,
+    400,
+    500,
+    600,
+    700,
+    850,
+    925,
+    1000
+  ],
+  "forecast_leads_hours": [
+    6,
+    12,
+    18,
+    24
+  ],
+  "input_window_hours": 6,
+  "history_before_hours": 6,
+  "history_after_hours": 24,
+  "data_policy": "live",
+  "event_id": "CHATSWORTH_20190801",
+  "model_version": "",
+  "request_key": "b0cb6ab5897e1b452347",
+  "canonical_request_key": "b36c06d1b27d135a50274638ec9020cb",
+  "artifact_dir": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\CHATSWORTH_20190801\\b36c06d1b27d135a50274638ec9020cb",
+  "status": "ok",
+  "files": {
+    "surface": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\CHATSWORTH_20190801\\b36c06d1b27d135a50274638ec9020cb\\surface.nc",
+    "pressure": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\CHATSWORTH_20190801\\b36c06d1b27d135a50274638ec9020cb\\pressure.nc",
+    "static": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\CHATSWORTH_20190801\\b36c06d1b27d135a50274638ec9020cb\\static.nc"
+  },
+  "target_timeseries_status": "extraction_failed",
+  "target_timeseries_error": "-agent-demo\\vendor\\numpy\\_core\\multiarray.py\", line 11, in <module>\n    from . import _multiarray_umath, overrides\n  File \"D:\\Profile\\专业实习\\sevir-agent-demo\\vendor\\numpy\\_core\\overrides.py\", line 6, in <module>\n    from numpy._core._multiarray_umath import (\nModuleNotFoundError: No module named 'numpy._core._multiarray_umath'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"D:\\Profile\\专业实习\\sevir-agent-demo\\scripts\\summarize_era5_live.py\", line 9, in <module>\n    import numpy as np\n  File \"D:\\Profile\\专业实习\\sevir-agent-demo\\vendor\\numpy\\__init__.py\", line 122, in <module>\n    from numpy.__config__ import show_config\n  File \"D:\\Profile\\专业实习\\sevir-agent-demo\\vendor\\numpy\\__config__.py\", line 4, in <module>\n    from numpy._core._multiarray_umath import (\n  File \"D:\\Profile\\专业实习\\sevir-agent-demo\\vendor\\numpy\\_core\\__init__.py\", line 85, in <module>\n    raise ImportError(msg) from exc\nImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-310' or the platform 'win32':\n\n  * _multiarray_umath.cp314-win_amd64.lib\n  * _multiarray_umath.cp314-win_amd64.pyd\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.10 from \"D:\\Profile\\专业实习\\CasCast\\.venv\\Scripts\\python.exe\"\n  * The NumPy version is: \"2.5.1\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n\n"
+}

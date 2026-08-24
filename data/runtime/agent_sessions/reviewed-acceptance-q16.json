@@ -1,0 +1,226 @@
+{
+  "session_id": "reviewed-acceptance-q16",
+  "turns": [
+    {
+      "turn_id": "reviewed-q16-turn",
+      "created_at": "2026-08-22T01:27:05.930700+00:00",
+      "question": "【验收Q16】如果不同成员预测的重点区域发生位置偏移，请把当前观测、集合共识区域和主要偏移范围叠加在同一张图上。",
+      "answer": "已生成叠加图（见附图），将当前观测、集合共识区域和主要偏移范围绘制在同一张图上。\n图中不同颜色代表不同含义：**深色/低值区**为当前观测到的强对流位置（T=0）；\n**中间色调**为10个成员中至少5个共同预测到的T+60分钟核心区域（集合共识）；\n**亮色/高值区**为仅有少数成员预测到、未达成共识的“偏移带”，即模型分歧最大的潜在影响范围。\n\n| 区域类型 | 质心行坐标 | 质心列坐标 | 有效像素数 | 说明 |\n| :--- | :--- | :--- | :--- | :--- |\n| 当前观测 (T=0) | 111.4 | 166.2 | 10,797 | 当前实际强信号中心 |\n| 偏移带 (T+60) | 123.1 | 214.9 | 12,224 | 仅少数成员预测的边缘区 |\n| 全集合覆盖 (T+60) | 131.9 | 220.6 | 29,520 | 任意成员预测到的总范围 |\n- **观测与共识的位移**：两者质心相距约 **64.3像素**。\n这表明模型整体预测未来1小时强对流核心将向东南方向（行增加、列增加）显著移动。\n- **共识与偏移带的距离**：两者质心仅相距约 **18.0像素**。\n这说明“偏移”并非完全脱离主系统的独立预测，而是紧贴共识核心区边缘的不确定性扩展，通常对应系统发展前沿或消散尾迹的方向分歧。\n- **偏移带的离散度更大**：偏移区域的行列标准差（78.4 / 90.0）明显高于共识区（61.6 / 63.2），证实该区域在空间上更分散、形态更不规则，是成员间位置和结构分歧最集中的地带。\n\n- **叠加而非概率**：图中的“共识”指10个CasCast成员中有半数以上在该像素生成了超过阈值133的信号，“偏移带”指有成员预测但未达半数同意。\n这反映的是**模型内部的空间分歧程度**，不是经过校准的真实天气发生概率。\n- **VIL编码尺度**：阈值133是本次分析选定的对流信号分界点，属于SEVIR编码产品（0–255）的内部刻度，不等于降雨量、dBZ或官方预警等级。\n- **实用建议**：如果您关注未来1小时的可能影响范围，应以“共识区”为核心参考，同时将“偏移带”视为需要额外留意的不确定边界。\n\n说明：集合离散度只能表述为成员分歧大小，不能据此划分预测把握或趋势可信度的高、中、低。\n\n**配套图表已按本题重新生成，并显示在本回答下方。**\n\n按事件目录地理范围换算，当前观测质心约为47.7950°N、100.3018°W，距离Sheridan County关注点47.7966°N、100.4214°W约8.9 km；+60分钟全成员覆盖质心约为47.6054°N、99.6014°W，距离约64.9 km。居民使用时仍应同时查看关注点是否位于共识区或成员偏移包络内，而不能只看质心距离。",
+      "observations": [
+        {
+          "step": 4,
+          "result": {
+            "member_count": 10,
+            "threshold": 133.0
+          }
+        }
+      ],
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "data",
+        "geolocator",
+        "forecaster",
+        "statistics",
+        "uncertainty",
+        "metrics",
+        "visualizer"
+      ],
+      "termination_reason": "finished",
+      "code_execution_count": 2,
+      "evidence_summary": {
+        "member_seeds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "forecast_evidence_id": "forecast-e1f8df2258512c15172f73b8",
+        "upload_id": "f675c02604bd4ce79b366bcae6098d20",
+        "member_count": 10,
+        "forecast_evidence": {
+          "member_seeds": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "selected_lead_minutes": [
+            60
+          ],
+          "model_name": "cascast_live",
+          "horizon_hours": 1.0,
+          "ground_truth_attached": false,
+          "subject_id": "f675c02604bd4ce79b366bcae6098d20",
+          "id": "forecast-e1f8df2258512c15172f73b8",
+          "subject_kind": "uploaded_sequence",
+          "forecast_frame_count": 12,
+          "ensemble_count": 10,
+          "lead_minutes": [
+            5,
+            10,
+            15,
+            20,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "rolling_segments": 1,
+          "cache_hit": true
+        },
+        "ensemble_members": 10,
+        "model_name": "cascast_live",
+        "horizon_hours": 1.0,
+        "frame_layout": "records[member]['frames'][index] aligns with records[member]['lead_minutes'][index]",
+        "output_type": "stochastic_ensemble",
+        "ground_truth_requested": false,
+        "forecast_frame_count": 12,
+        "rolling_segments": 1,
+        "cache_hit": true,
+        "ground_truth_available": false,
+        "task": "uploaded_cascast_raw_ensemble"
+      },
+      "presentation_result": {
+        "artifacts": [
+          {
+            "artifact_id": "16161616161616161616161616161601",
+            "title": "观测、共识与成员偏移范围叠加",
+            "description": "当前观测VIL≥133、+60分钟集合共识、成员可能范围和核心质心偏移。",
+            "chart_type": "reviewed_position_overlay",
+            "url": "/api/artifacts/16161616161616161616161616161601.png",
+            "image_url": "/api/artifacts/16161616161616161616161616161601.png",
+            "mime_type": "image/png",
+            "verified": true
+          }
+        ],
+        "presentation": {
+          "requested_lead_minutes": 60
+        },
+        "status": "ok",
+        "artifact_count": 1
+      }
+    }
+  ],
+  "active_forecast_evidence": {
+    "member_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "selected_lead_minutes": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120,
+      125,
+      130,
+      135,
+      140,
+      145,
+      150,
+      155,
+      160,
+      165,
+      170,
+      175,
+      180
+    ],
+    "model_name": "cascast_live",
+    "horizon_hours": 3.0,
+    "ground_truth_attached": false,
+    "subject_id": "f675c02604bd4ce79b366bcae6098d20",
+    "id": "forecast-5d98b4f178ce0d3471632ecf",
+    "subject_kind": "uploaded_sequence",
+    "forecast_frame_count": 36,
+    "ensemble_count": 10,
+    "lead_minutes": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100,
+      105,
+      110,
+      115,
+      120,
+      125,
+      130,
+      135,
+      140,
+      145,
+      150,
+      155,
+      160,
+      165,
+      170,
+      175,
+      180
+    ],
+    "rolling_segments": 3,
+    "cache_hit": false
+  },
+  "active_upload": {
+    "upload_id": "",
+    "sequence_upload_id": "f675c02604bd4ce79b366bcae6098d20",
+    "data_source": "upload_sequence"
+  }
+}

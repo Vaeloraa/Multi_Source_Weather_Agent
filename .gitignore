@@ -18,6 +18,8 @@ data/evaluation_exports/
 data/cascast_ensemble_cache/*.npz
 data/sevir_complete/
 data/model_inputs/earthformer/**/*.npy
+data/live_cascast_cache/*.npz
+data/sevir_event_cache/*.npz
 
 # Reproducible dependencies and generated workspace artifacts
 vendor/

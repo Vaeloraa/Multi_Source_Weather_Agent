@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "bundle": "foundation_case_evidence",
+  "required_fields": {
+    "event_id": "string",
+    "event_resolution": "object",
+    "sources": "array",
+    "claims": "array",
+    "limitations": "array",
+    "verification": "object"
+  },
+  "source_roles": [
+    "sevir_direct_observation",
+    "cascast_local_prediction",
+    "era5_reanalysis_environment",
+    "aurora_environment_prediction",
+    "aurora_era5_verification"
+  ],
+  "claim_schema": {
+    "claim": "string",
+    "source": "one or more source_roles",
+    "evidence_type": "direct_observation|prediction|environment_support|verification|insufficient",
+    "strength": "strong|moderate|weak|unsupported",
+    "scope": "space/time/variable scope",
+    "caveat": "string"
+  },
+  "rules": [
+    "A missing source is unavailable, never zero-valued evidence.",
+    "SEVIR and CasCast VIL evidence is not numerically mixed with ERA5/Aurora environment fields.",
+    "Forecast claims require a forecast artifact; verification claims require a later ERA5 target.",
+    "An event-id or upload conflict must be resolved before any model call.",
+    "Conflicting sources lower claim strength and must identify the missing evidence needed next."
+  ]
+}

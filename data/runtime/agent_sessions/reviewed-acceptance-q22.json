@@ -1,0 +1,176 @@
+{
+  "session_id": "reviewed-acceptance-q22",
+  "turns": [
+    {
+      "turn_id": "reviewed-q22-turn",
+      "created_at": "2026-08-22T01:27:05.954418+00:00",
+      "question": "【验收 Q22】我现在要不要取消活动？",
+      "answer": "这次分析没有成功得到可用结果，所以目前不能可靠回答你的问题。 目前还缺少完成当前问题所需的下一次不同策略执行。具体执行错误和已有中间结果已经保留在技术详情中，可以据此重试。\n\n后续重试时还应先补充活动地点和时间；只有把具体坐标放入预测网格，才能判断它位于成员共识核心、分歧边缘还是分析范围之外，避免用整幅图替代活动地点。",
+      "observations": [],
+      "selected_tools": [
+        "ds",
+        "arrays",
+        "data",
+        "geolocator",
+        "forecaster",
+        "statistics",
+        "uncertainty",
+        "metrics",
+        "visualizer"
+      ],
+      "termination_reason": "error_budget_exhausted",
+      "code_execution_count": 0,
+      "evidence_summary": {
+        "upload_id": "00f4fb9fb6a54b9e808c6e072c878293",
+        "ground_truth_complete_for_horizon": false,
+        "member_seeds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "horizon_hours": 1.0,
+        "ground_truth_requested": false,
+        "verified_lead_minutes": [],
+        "forecast_evidence": {
+          "ground_truth_attached": false,
+          "member_seeds": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "horizon_hours": 1.0,
+          "subject_kind": "uploaded_sequence",
+          "id": "forecast-6c9eb10b0ecb0912d651f48e",
+          "cache_hit": true,
+          "rolling_segments": 1,
+          "subject_id": "00f4fb9fb6a54b9e808c6e072c878293",
+          "selected_lead_minutes": [
+            5,
+            10,
+            15,
+            20,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "lead_minutes": [
+            5,
+            10,
+            15,
+            20,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50,
+            55,
+            60
+          ],
+          "forecast_frame_count": 12,
+          "ensemble_count": 10,
+          "model_name": "cascast_live"
+        },
+        "forecast_evidence_id": "forecast-6c9eb10b0ecb0912d651f48e",
+        "member_summaries": [
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {}
+        ],
+        "rolling_segments": 1,
+        "ground_truth_available": false,
+        "forecast_frame_count": 12,
+        "output_type": "ensemble_mean",
+        "task": "uploaded_sevir_vil_raw_sequence_forecast",
+        "ensemble_count": 10,
+        "model_name": "cascast_live"
+      },
+      "presentation_result": {
+        "status": "error"
+      }
+    }
+  ],
+  "active_forecast_evidence": {
+    "ground_truth_attached": false,
+    "member_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "horizon_hours": 1.0,
+    "subject_kind": "uploaded_sequence",
+    "id": "forecast-6c9eb10b0ecb0912d651f48e",
+    "cache_hit": true,
+    "rolling_segments": 1,
+    "subject_id": "00f4fb9fb6a54b9e808c6e072c878293",
+    "selected_lead_minutes": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60
+    ],
+    "lead_minutes": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60
+    ],
+    "forecast_frame_count": 12,
+    "ensemble_count": 10,
+    "model_name": "cascast_live"
+  },
+  "active_upload": {
+    "upload_id": "",
+    "sequence_upload_id": "00f4fb9fb6a54b9e808c6e072c878293",
+    "data_source": "upload_sequence"
+  }
+}

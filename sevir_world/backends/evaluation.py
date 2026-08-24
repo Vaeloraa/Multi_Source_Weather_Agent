@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from ..data_access.config import *
+from ..domain.thresholds import DEFAULT_CASCAST_VIL_THRESHOLD
 from ..data_access.ensemble import _ensemble_manifest, _load_cascast_ensemble
 from .forecast import (
     _deterministic_metrics,
@@ -84,7 +85,7 @@ def _finalize_metrics(accumulator: dict[str, float], threshold: float) -> dict[s
     }
 
 
-def build_cascast_evaluation_report(primary_threshold: float = 133.0) -> dict[str, Any]:
+def build_cascast_evaluation_report(primary_threshold: float = DEFAULT_CASCAST_VIL_THRESHOLD) -> dict[str, Any]:
     """Evaluate all locally available CasCast events against their aligned ground truth."""
     manifest = _ensemble_manifest()
     thresholds = list(SEVIR_EVALUATION_THRESHOLDS)
@@ -287,7 +288,7 @@ def build_cascast_evaluation_report(primary_threshold: float = 133.0) -> dict[st
         },
         "storm_object_evaluation": {
             "threshold": float(primary_threshold),
-            "minimum_region_pixels": 16,
+            "minimum_region_pixels": 1,
             "hits": aggregate_object["hits"],
             "misses": aggregate_object["misses"],
             "false_alarms": aggregate_object["false_alarms"],
@@ -352,7 +353,7 @@ def _evaluation_report_summary(report: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def evaluate_cascast_dataset(primary_threshold: float = 133.0) -> dict[str, Any]:
+def evaluate_cascast_dataset(primary_threshold: float = DEFAULT_CASCAST_VIL_THRESHOLD) -> dict[str, Any]:
     """Load a reproducible cached report and return an agent-friendly summary."""
     if CASCAST_EVALUATION_REPORT.exists():
         report = json.loads(CASCAST_EVALUATION_REPORT.read_text(encoding="utf-8"))

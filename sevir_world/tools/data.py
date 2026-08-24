@@ -14,6 +14,8 @@ class SevirDataIndexer(WorldComponent):
     times are UTC/relative minutes. HDF5 pixel access only succeeds when the
     catalog-selected file exists below the configured local SEVIR data root.
     Returned dictionaries are JSON serializable and never expose open files.
+    Upload contents are injected into ``ds`` by the runtime; generated analyses
+    should use ``ds[0]`` rather than listing persisted uploads.
     """
 
     def event(self, event_id: str) -> dict[str, Any]:
@@ -40,13 +42,42 @@ class SevirDataIndexer(WorldComponent):
         }
         return self._call("data.search", arguments, catalog.search_sevir_catalog)
 
+    def search_region(
+        self,
+        latitude: float,
+        longitude: float,
+        radius_km: float = 100.0,
+        month: int | None = None,
+        year: int | None = None,
+        event_type: str = "",
+        limit: int = 50,
+    ) -> dict[str, Any]:
+        """Find metadata candidates within a physical WGS84 radius.
+
+        ``limit`` controls only the records returned for display.  The catalog
+        response still reports the full matched count and year distribution;
+        pixel statistics must be computed separately from the selected HDF5
+        events.
+        """
+        arguments = {
+            "latitude": latitude,
+            "longitude": longitude,
+            "radius_km": radius_km,
+            "month": month,
+            "year": year,
+            "event_type": event_type,
+            "limit": limit,
+        }
+        return self._call("data.search_region", arguments, catalog.search_sevir_catalog_by_region)
+
     def load_hdf5(
         self, event_id: str, start_frame: int = 0, end_frame: int = 49
     ) -> dict[str, Any]:
-        """Load real uint8 VIL frames from local HDF5 and return frame summaries.
+        """Load VIL frames plus aligned relative_minutes and frame_statistics.
 
-        Frames are 384x384 for official VIL. Pixel value 255 is the SEVIR
-        missing-value code and must be excluded from verification metrics.
+        ``frames``/``values`` is a read-only ``[time,row,column]`` array for
+        generated calculations. Large pixels are omitted from the LLM/trace
+        serialization. Pixel value 255 is missing and must be excluded.
         """
         arguments = {
             "event_id": event_id,
@@ -54,6 +85,30 @@ class SevirDataIndexer(WorldComponent):
             "end_frame": end_frame,
         }
         return self._call("data.load_hdf5", arguments, catalog.load_sevir_vil_event)
+
+    def hdf5_frame_histograms(
+        self,
+        event_ids: list[str],
+        start_frame: int = 0,
+        end_frame: int = 49,
+    ) -> dict[str, Any]:
+        """Return exact per-frame VIL histograms for up to 10 local HDF5 events.
+
+        The Agent selects event IDs, encoded-value thresholds, active-pixel
+        criteria, continuity rules, and duration statistics in generated Python.
+        Each histogram has 256 counts aligned to encoded VIL values 0..255;
+        bin 255 is missing. This primitive intentionally computes no duration.
+        """
+        arguments = {
+            "event_ids": event_ids,
+            "start_frame": start_frame,
+            "end_frame": end_frame,
+        }
+        return self._call(
+            "data.hdf5_frame_histograms",
+            arguments,
+            catalog.load_sevir_vil_frame_histograms,
+        )
 
     def cascast_cache(self, event_id: str) -> dict[str, Any]:
         """Describe one cached CasCast event without returning full arrays."""
@@ -74,3 +129,20 @@ class SevirDataIndexer(WorldComponent):
     def uploads(self) -> dict[str, Any]:
         """List persisted single-frame and 13-frame uploads."""
         return self._call("data.uploads", {}, uploads.list_uploaded_records)
+
+    def match_uploaded_event(self, upload_id: str) -> dict[str, Any]:
+        """Resolve an uploaded file to a SEVIR event without visual guessing.
+
+        Explicit metadata/filename IDs are preferred. Otherwise, locally
+        available HDF5 rows are looked up by SHA-256 and then verified by exact
+        pixels: 13 history frames for a sequence, or canonical frame 24 for a
+        single image. Read the stable nested ``event_match`` object: its
+        ``status`` is matched, not_provided, not_found, or ambiguous; when
+        matched, ``event_id``, ``method`` and ``confidence`` describe the match.
+        Ambiguous and absent matches remain unmatched.
+        """
+        return self._call(
+            "data.match_uploaded_event",
+            {"upload_id": upload_id},
+            uploads.match_uploaded_event,
+        )

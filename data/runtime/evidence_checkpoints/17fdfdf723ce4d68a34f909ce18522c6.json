@@ -1,0 +1,368 @@
+{
+  "checkpoint_id": "17fdfdf723ce4d68a34f909ce18522c6",
+  "request_id": "e84e2358b7a5434894d55bceb1c7e40c",
+  "created_at": "2026-08-21T17:11:13.683490+00:00",
+  "termination_reason": "step_budget_exhausted",
+  "evidence_bundle": {
+    "version": "1.1",
+    "source_count": 4,
+    "successful_observation_count": 3,
+    "successful_tool_count": 0,
+    "sources": [
+      {
+        "ref": "observation:2",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "observation:3",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "observation:5",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "data:1",
+        "api": "data_desc",
+        "status": "available",
+        "source": "sevir",
+        "event_id": "R19051501438046",
+        "upload_id": null
+      }
+    ],
+    "facts": [
+      {
+        "observation_step": 3,
+        "event_id": "R19051501438046"
+      },
+      {
+        "observation_step": 5,
+        "event_id": "R19051501438046"
+      }
+    ],
+    "numeric_evidence": [
+      {
+        "ref": "observation:2",
+        "path": "ds_records[0].index",
+        "value": 0
+      },
+      {
+        "ref": "observation:3",
+        "path": "bounding_box.south",
+        "value": 40.23238177938592
+      },
+      {
+        "ref": "observation:3",
+        "path": "bounding_box.west",
+        "value": -103.65837541531324
+      },
+      {
+        "ref": "observation:3",
+        "path": "bounding_box.north",
+        "value": 43.81538608602539
+      },
+      {
+        "ref": "observation:3",
+        "path": "bounding_box.east",
+        "value": -99.19498903633692
+      },
+      {
+        "ref": "observation:5",
+        "path": "bounding_box.south",
+        "value": 40.23238177938592
+      },
+      {
+        "ref": "observation:5",
+        "path": "bounding_box.west",
+        "value": -103.65837541531324
+      },
+      {
+        "ref": "observation:5",
+        "path": "bounding_box.north",
+        "value": 43.81538608602539
+      },
+      {
+        "ref": "observation:5",
+        "path": "bounding_box.east",
+        "value": -99.19498903633692
+      }
+    ],
+    "verification_scope": {
+      "ground_truth_available": false,
+      "verified_event_count": 0,
+      "scope_kind": "none",
+      "single_event_only": false,
+      "subject_refs": [],
+      "forecast_max_lead_minutes": null,
+      "complete_truth_max_lead_minutes": null,
+      "any_truth_max_lead_minutes": null,
+      "frame_truth_max_lead_minutes": null,
+      "complete_truth_lead_minutes": [],
+      "partial_truth_lead_minutes": [],
+      "truth_completeness_unknown_lead_minutes": [],
+      "unverified_forecast_lead_minutes": [],
+      "coverage_reference_pixels": null,
+      "coverage_method": "none",
+      "cross_event_generalization_supported": false
+    },
+    "capabilities": {
+      "successful_execution": {
+        "available": true,
+        "evidence_refs": [
+          "observation:2",
+          "observation:3",
+          "observation:5"
+        ]
+      },
+      "encoded_grid": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "temporal_sequence": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "geolocation": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "administrative_location": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "spatial_calibration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "compass_direction": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ground_truth": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "future_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "environment_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "era5_reanalysis": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "aurora_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ensemble_agreement": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "calibrated_probability": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "official_warning": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "rainfall_rate": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "meteorological_dynamics": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "hail": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "object_motion": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "centroid_change": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "observed_window_duration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "monotonic_interval_trend": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "complete_lifecycle": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "route_safety": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "multi_event_verification": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "cross_event_generalization": {
+        "available": false,
+        "evidence_refs": []
+      }
+    }
+  },
+  "observations": [
+    {
+      "step": 2,
+      "result": {
+        "ds_records": [
+          {
+            "index": "...[truncated]",
+            "source": "...[truncated]",
+            "event_id": "...[truncated]",
+            "upload_id": "...[truncated]",
+            "keys": "...[truncated]"
+          }
+        ]
+      },
+      "tool_calls": [],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    },
+    {
+      "step": 3,
+      "result": {
+        "metadata_keys": [
+          "id",
+          "time_utc",
+          "event_type",
+          "file_name",
+          "file_index",
+          "data_min",
+          "data_max",
+          "pct_missing",
+          "local_hdf5_available",
+          "remote_hdf5_available",
+          "sevir_id",
+          "img_type",
+          "minute_offsets",
+          "frame_times_utc",
+          "noaa_episode_id",
+          "noaa_event_id",
+          "bounding_box",
+          "proj",
+          "size_x",
+          "size_y",
+          "height_m",
+          "width_m"
+        ],
+        "has_pressure_data": false,
+        "event_id": "R19051501438046",
+        "time_utc": "2019-05-15 01:43:45",
+        "event_type": "Unlabeled",
+        "bounding_box": {
+          "south": 40.23238177938592,
+          "west": -103.65837541531324,
+          "north": 43.81538608602539,
+          "east": -99.19498903633692
+        }
+      },
+      "tool_calls": [],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    },
+    {
+      "step": 5,
+      "result": {
+        "event_id": "R19051501438046",
+        "time_utc": "2019-05-15 01:43:45",
+        "bounding_box": {
+          "south": 40.23238177938592,
+          "west": -103.65837541531324,
+          "north": 43.81538608602539,
+          "east": -99.19498903633692
+        },
+        "available_capabilities": [
+          "event_metadata",
+          "event_time",
+          "event_location"
+        ],
+        "has_pressure_level_data": false,
+        "pressure_levels_available": [],
+        "era5_fields_available": []
+      },
+      "tool_calls": [],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    }
+  ],
+  "tool_summary": {
+    "decision_steps": 8,
+    "call_count": 0,
+    "unique_tool_count": 0,
+    "cache_hits": 0
+  },
+  "limitations": {
+    "status": "not_run",
+    "covered_dimensions": [],
+    "missing_dimensions": [],
+    "needs_more_execution": false,
+    "next_analysis": ""
+  },
+  "content_hash": "f672a54770015e68b4a756817da0b331f6a6642add94002e11776bcc57799ed8"
+}

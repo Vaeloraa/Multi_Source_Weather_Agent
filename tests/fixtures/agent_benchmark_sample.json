@@ -1,0 +1,21 @@
+{
+  "results": [
+    {
+      "scenario_id": "S01",
+      "result": {
+        "status": "ok",
+        "mode": "direct",
+        "route_mode": "zephyrus_direct",
+        "analysis_plan": "Compute only the requested median",
+        "selected_statistics": ["median"],
+        "code_result": {"median": 235.0, "valid_value_count": 20390},
+        "direct_trace": [
+          {
+            "action": "execute",
+            "code": "def run(ds, statistics): return statistics.aggregate_catalog(field='data_max', operations=['median'])"
+          }
+        ]
+      }
+    }
+  ]
+}

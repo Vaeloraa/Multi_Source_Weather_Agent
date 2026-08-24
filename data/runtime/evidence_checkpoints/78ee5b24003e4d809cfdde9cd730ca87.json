@@ -1,0 +1,614 @@
+{
+  "checkpoint_id": "78ee5b24003e4d809cfdde9cd730ca87",
+  "request_id": "13589e17191847a4b7512dafda3a88f0",
+  "created_at": "2026-08-20T17:46:17.772124+00:00",
+  "termination_reason": "finished",
+  "evidence_bundle": {
+    "version": "1.1",
+    "source_count": 14,
+    "successful_observation_count": 3,
+    "successful_tool_count": 10,
+    "sources": [
+      {
+        "ref": "tool:1:uncertainty.uploaded_raw",
+        "api": "uncertainty.uploaded_raw",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:2:uncertainty.uploaded_raw",
+        "api": "uncertainty.uploaded_raw",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:3:uncertainty.uploaded_raw",
+        "api": "uncertainty.uploaded_raw",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:4:uncertainty.uploaded_raw",
+        "api": "uncertainty.uploaded_raw",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:5:uncertainty.uploaded_raw",
+        "api": "uncertainty.uploaded_raw",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:6:uncertainty.uploaded_raw",
+        "api": "uncertainty.uploaded_raw",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:7:visualizer.grid_panels",
+        "api": "visualizer.grid_panels",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:8:uncertainty.uploaded_raw",
+        "api": "uncertainty.uploaded_raw",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:9:uncertainty.uploaded_raw",
+        "api": "uncertainty.uploaded_raw",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:10:visualizer.plan_spec",
+        "api": "visualizer.plan_spec",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "observation:1",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "observation:6",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "observation:10",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "data:1",
+        "api": "data_desc",
+        "status": "available",
+        "source": "upload",
+        "event_id": null,
+        "upload_id": "3e4060c7d26f4b2b9d48651523dcb76e"
+      }
+    ],
+    "facts": [
+      {
+        "observation_step": 10,
+        "status": "heatmap_planned_with_chart_type"
+      }
+    ],
+    "numeric_evidence": [
+      {
+        "ref": "observation:6",
+        "path": "stats.valid_members",
+        "value": 10
+      },
+      {
+        "ref": "observation:6",
+        "path": "stats.lead_minute",
+        "value": 60
+      },
+      {
+        "ref": "observation:6",
+        "path": "stats.max_pixel_std",
+        "value": 64.10970306396484
+      },
+      "...",
+      {
+        "ref": "tool:10:visualizer.plan_spec",
+        "path": "result.render_spec.data.elements",
+        "value": 147456
+      }
+    ],
+    "verification_scope": {
+      "ground_truth_available": false,
+      "verified_event_count": 0,
+      "scope_kind": "none",
+      "single_event_only": false,
+      "subject_refs": [],
+      "forecast_max_lead_minutes": null,
+      "complete_truth_max_lead_minutes": null,
+      "any_truth_max_lead_minutes": null,
+      "frame_truth_max_lead_minutes": null,
+      "complete_truth_lead_minutes": [],
+      "partial_truth_lead_minutes": [],
+      "truth_completeness_unknown_lead_minutes": [],
+      "unverified_forecast_lead_minutes": [],
+      "coverage_reference_pixels": null,
+      "coverage_method": "none",
+      "cross_event_generalization_supported": false
+    },
+    "capabilities": {
+      "successful_execution": {
+        "available": true,
+        "evidence_refs": [
+          "observation:1",
+          "observation:6",
+          "observation:10"
+        ]
+      },
+      "encoded_grid": {
+        "available": true,
+        "evidence_refs": [
+          "data:1",
+          "executed-data"
+        ]
+      },
+      "temporal_sequence": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "geolocation": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "administrative_location": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "spatial_calibration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "compass_direction": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ground_truth": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "future_forecast": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "ensemble_agreement": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "calibrated_probability": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "official_warning": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "rainfall_rate": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "meteorological_dynamics": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "hail": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "object_motion": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "centroid_change": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "observed_window_duration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "monotonic_interval_trend": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "complete_lifecycle": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "route_safety": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "multi_event_verification": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "cross_event_generalization": {
+        "available": false,
+        "evidence_refs": []
+      }
+    }
+  },
+  "observations": [
+    {
+      "step": 1,
+      "result": {
+        "error": "No ensemble members found"
+      },
+      "tool_calls": [
+        {
+          "step": 1,
+          "api": "uncertainty.uploaded_raw",
+          "arguments": {
+            "upload_id": "...[truncated]",
+            "lead_minutes": "...[truncated]",
+            "ensemble_members": "...[truncated]",
+            "horizon_hours": "...[truncated]",
+            "include_ground_truth": "...[truncated]",
+            "force_live": "...[truncated]",
+            "array_transport": "...[truncated]"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "capabilities": "...[truncated]",
+            "forecast_evidence_id": "...[truncated]",
+            "forecast_evidence": "...[truncated]",
+            "upload_id": "...[truncated]",
+            "model_name": "...[truncated]",
+            "output_type": "...[truncated]",
+            "is_deterministic": "...[truncated]",
+            "ensemble_members": "...[truncated]",
+            "member_seeds": "...[truncated]",
+            "selected_lead_minutes": "...[truncated]",
+            "horizon_hours": "...[truncated]",
+            "rolling_segments": "...[truncated]",
+            "forecast_frame_count": "...[truncated]",
+            "shape": "...[truncated]",
+            "dtype": "...[truncated]",
+            "analysis_value_space": "...[truncated]",
+            "frame_layout": "...[truncated]",
+            "display_conversion": "...[truncated]",
+            "records": "...[truncated]",
+            "statistics_computed": "...[truncated]",
+            "fields_computed": "...[truncated]",
+            "threshold_applied": "...[truncated]",
+            "region_parameters_applied": "...[truncated]",
+            "cache_hit": "...[truncated]",
+            "ground_truth_requested": "...[truncated]",
+            "ground_truth_available": "...[truncated]",
+            "ground_truth": "...[truncated]",
+            "provenance": "...[truncated]",
+            "verification_rule": "...[truncated]",
+            "backend_chunk_count": "...[truncated]",
+            "ensemble_semantics": "...[truncated]",
+            "decision_capabilities": "...[truncated]",
+            "interpretation_limit": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        }
+      ],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "geolocator": "...[truncated]",
+            "history": "...[truncated]",
+            "advise": "...[truncated]",
+            "forecaster": "...[truncated]",
+            "statistics": "...[truncated]",
+            "uncertainty": "...[truncated]",
+            "metrics": "...[truncated]",
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    },
+    {
+      "step": 6,
+      "result": {
+        "stats": {
+          "valid_members": 10,
+          "lead_minute": 60,
+          "max_pixel_std": 64.10970306396484,
+          "mean_pixel_std": 8.728472709655762,
+          "high_vil_area_mean_std": 17.154430389404297,
+          "high_vil_pixel_count": 16883
+        },
+        "viz_artifact": {
+          "status": "ok",
+          "task": "sevir_chart",
+          "chart_type": "agent_grid_panels",
+          "artifact_id": "74c8dd112cf5eafd6a20828179a923a5",
+          "url": "/api/artifacts/74c8dd112cf5eafd6a20828179a923a5.png",
+          "image_url": "/api/artifacts/74c8dd112cf5eafd6a20828179a923a5.png",
+          "mime_type": "image/png",
+          "title": "CasCast 10-Member Ensemble Disagreement Heatmap",
+          "description": "Agent-selected spatial grids; comparable panels share a color scale by unit, while unlike quantities use separately labeled scales.",
+          "size_bytes": 276797,
+          "verified": true
+        },
+        "evidence_id": "forecast-5fd91cc7893be4c4eaabb493"
+      },
+      "tool_calls": [
+        {
+          "step": 1,
+          "api": "uncertainty.uploaded_raw",
+          "arguments": {
+            "upload_id": "...[truncated]",
+            "lead_minutes": "...[truncated]",
+            "ensemble_members": "...[truncated]",
+            "horizon_hours": "...[truncated]",
+            "include_ground_truth": "...[truncated]",
+            "force_live": "...[truncated]",
+            "array_transport": "...[truncated]"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "capabilities": "...[truncated]",
+            "forecast_evidence_id": "...[truncated]",
+            "forecast_evidence": "...[truncated]",
+            "upload_id": "...[truncated]",
+            "model_name": "...[truncated]",
+            "output_type": "...[truncated]",
+            "is_deterministic": "...[truncated]",
+            "ensemble_members": "...[truncated]",
+            "member_seeds": "...[truncated]",
+            "selected_lead_minutes": "...[truncated]",
+            "horizon_hours": "...[truncated]",
+            "rolling_segments": "...[truncated]",
+            "forecast_frame_count": "...[truncated]",
+            "shape": "...[truncated]",
+            "dtype": "...[truncated]",
+            "analysis_value_space": "...[truncated]",
+            "frame_layout": "...[truncated]",
+            "display_conversion": "...[truncated]",
+            "records": "...[truncated]",
+            "statistics_computed": "...[truncated]",
+            "fields_computed": "...[truncated]",
+            "threshold_applied": "...[truncated]",
+            "region_parameters_applied": "...[truncated]",
+            "cache_hit": "...[truncated]",
+            "ground_truth_requested": "...[truncated]",
+            "ground_truth_available": "...[truncated]",
+            "ground_truth": "...[truncated]",
+            "provenance": "...[truncated]",
+            "verification_rule": "...[truncated]",
+            "backend_chunk_count": "...[truncated]",
+            "ensemble_semantics": "...[truncated]",
+            "decision_capabilities": "...[truncated]",
+            "interpretation_limit": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 2,
+          "api": "visualizer.grid_panels",
+          "arguments": {
+            "title": "...[truncated]",
+            "labels": "...[truncated]",
+            "panel_count": "...[truncated]"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "chart_type": "...[truncated]",
+            "artifact_id": "...[truncated]",
+            "url": "...[truncated]",
+            "image_url": "...[truncated]",
+            "mime_type": "...[truncated]",
+            "title": "...[truncated]",
+            "description": "...[truncated]",
+            "size_bytes": "...[truncated]",
+            "verified": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        }
+      ],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "geolocator": "...[truncated]",
+            "history": "...[truncated]",
+            "advise": "...[truncated]",
+            "forecaster": "...[truncated]",
+            "statistics": "...[truncated]",
+            "uncertainty": "...[truncated]",
+            "metrics": "...[truncated]",
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    },
+    {
+      "step": 10,
+      "result": {
+        "viz_artifact": {
+          "status": "planned",
+          "task": "sevir_render_plan",
+          "chart_type": "heatmap",
+          "render_spec": {
+            "chart_type": "...[truncated]",
+            "render_spec": "...[truncated]",
+            "title": "...[truncated]",
+            "colorbar_label": "...[truncated]",
+            "colormap": "...[truncated]"
+          },
+          "render_deferred": true
+        },
+        "status": "heatmap_planned_with_chart_type"
+      },
+      "tool_calls": [
+        {
+          "step": 1,
+          "api": "uncertainty.uploaded_raw",
+          "arguments": {
+            "upload_id": "...[truncated]",
+            "lead_minutes": "...[truncated]",
+            "ensemble_members": "...[truncated]",
+            "horizon_hours": "...[truncated]",
+            "include_ground_truth": "...[truncated]",
+            "force_live": "...[truncated]",
+            "array_transport": "...[truncated]"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "capabilities": "...[truncated]",
+            "forecast_evidence_id": "...[truncated]",
+            "forecast_evidence": "...[truncated]",
+            "upload_id": "...[truncated]",
+            "model_name": "...[truncated]",
+            "output_type": "...[truncated]",
+            "is_deterministic": "...[truncated]",
+            "ensemble_members": "...[truncated]",
+            "member_seeds": "...[truncated]",
+            "selected_lead_minutes": "...[truncated]",
+            "horizon_hours": "...[truncated]",
+            "rolling_segments": "...[truncated]",
+            "forecast_frame_count": "...[truncated]",
+            "shape": "...[truncated]",
+            "dtype": "...[truncated]",
+            "analysis_value_space": "...[truncated]",
+            "frame_layout": "...[truncated]",
+            "display_conversion": "...[truncated]",
+            "records": "...[truncated]",
+            "statistics_computed": "...[truncated]",
+            "fields_computed": "...[truncated]",
+            "threshold_applied": "...[truncated]",
+            "region_parameters_applied": "...[truncated]",
+            "cache_hit": "...[truncated]",
+            "ground_truth_requested": "...[truncated]",
+            "ground_truth_available": "...[truncated]",
+            "ground_truth": "...[truncated]",
+            "provenance": "...[truncated]",
+            "verification_rule": "...[truncated]",
+            "backend_chunk_count": "...[truncated]",
+            "ensemble_semantics": "...[truncated]",
+            "decision_capabilities": "...[truncated]",
+            "interpretation_limit": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 2,
+          "api": "visualizer.plan_spec",
+          "arguments": {
+            "spec": "...[truncated]"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "chart_type": "...[truncated]",
+            "render_spec": "...[truncated]",
+            "render_deferred": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        }
+      ],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "geolocator": "...[truncated]",
+            "history": "...[truncated]",
+            "advise": "...[truncated]",
+            "forecaster": "...[truncated]",
+            "statistics": "...[truncated]",
+            "uncertainty": "...[truncated]",
+            "metrics": "...[truncated]",
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    }
+  ],
+  "tool_summary": {
+    "decision_steps": 12,
+    "call_count": 10,
+    "unique_tool_count": 3,
+    "cache_hits": 0
+  },
+  "limitations": {
+    "status": "not_run",
+    "covered_dimensions": [],
+    "missing_dimensions": [],
+    "needs_more_execution": false,
+    "next_analysis": "",
+    "reason": "claim_gate_convergence"
+  },
+  "content_hash": "a448ed0c86c7c097faffd21c0a09074e7b9e5726a9e9067aab8eb13b4c8ee41f"
+}

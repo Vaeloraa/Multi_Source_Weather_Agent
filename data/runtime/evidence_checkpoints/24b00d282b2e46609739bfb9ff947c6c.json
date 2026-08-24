@@ -1,0 +1,419 @@
+{
+  "checkpoint_id": "24b00d282b2e46609739bfb9ff947c6c",
+  "request_id": "c4de8a9e7528424e871fa8ba30a0c823",
+  "created_at": "2026-08-20T18:50:27.245447+00:00",
+  "termination_reason": "finished",
+  "evidence_bundle": {
+    "version": "1.1",
+    "source_count": 4,
+    "successful_observation_count": 1,
+    "successful_tool_count": 2,
+    "sources": [
+      {
+        "ref": "tool:1:forecaster.uploaded_sequence",
+        "api": "forecaster.uploaded_sequence",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:2:advisor.interpretation_limits",
+        "api": "advisor.interpretation_limits",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "observation:1",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "data:1",
+        "api": "data_desc",
+        "status": "available",
+        "source": "upload",
+        "event_id": null,
+        "upload_id": "0d3dc23105d74b33b371fdddb166701f"
+      }
+    ],
+    "facts": [],
+    "numeric_evidence": [
+      {
+        "ref": "observation:1",
+        "path": "forecast_stats.target_leads[0]",
+        "value": 90
+      },
+      {
+        "ref": "observation:1",
+        "path": "forecast_stats.target_leads[1]",
+        "value": 100
+      },
+      {
+        "ref": "observation:1",
+        "path": "forecast_stats.target_leads[2]",
+        "value": 110
+      },
+      "...",
+      {
+        "ref": "tool:2:advisor.interpretation_limits",
+        "path": "result.threshold",
+        "value": 74.0
+      }
+    ],
+    "verification_scope": {
+      "ground_truth_available": false,
+      "verified_event_count": 0,
+      "scope_kind": "none",
+      "single_event_only": false,
+      "subject_refs": [],
+      "forecast_max_lead_minutes": 120,
+      "complete_truth_max_lead_minutes": null,
+      "any_truth_max_lead_minutes": null,
+      "frame_truth_max_lead_minutes": null,
+      "complete_truth_lead_minutes": [],
+      "partial_truth_lead_minutes": [],
+      "truth_completeness_unknown_lead_minutes": [],
+      "unverified_forecast_lead_minutes": [
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        100,
+        105,
+        110,
+        115,
+        120
+      ],
+      "coverage_reference_pixels": null,
+      "coverage_method": "none",
+      "cross_event_generalization_supported": false
+    },
+    "capabilities": {
+      "successful_execution": {
+        "available": true,
+        "evidence_refs": [
+          "observation:1"
+        ]
+      },
+      "encoded_grid": {
+        "available": true,
+        "evidence_refs": [
+          "data:1",
+          "executed-data"
+        ]
+      },
+      "temporal_sequence": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "geolocation": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "administrative_location": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "spatial_calibration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "compass_direction": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ground_truth": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "future_forecast": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "ensemble_agreement": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "calibrated_probability": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "official_warning": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "rainfall_rate": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "meteorological_dynamics": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "hail": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "object_motion": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "centroid_change": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "observed_window_duration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "monotonic_interval_trend": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "complete_lifecycle": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "route_safety": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "multi_event_verification": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "cross_event_generalization": {
+        "available": false,
+        "evidence_refs": []
+      }
+    }
+  },
+  "observations": [
+    {
+      "step": 1,
+      "result": {
+        "forecast_stats": {
+          "target_leads": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "mean_intensity": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "max_intensity": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "high_vil_coverage_pct": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "member_spread_std": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ]
+        },
+        "current_obs": {
+          "max": 238.0,
+          "high_vil_cov": 34.979248046875
+        },
+        "limits": {
+          "status": "ok",
+          "threshold": 74.0,
+          "scale": "encoded VIL (0-255)",
+          "supports": [
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "does_not_support": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "task": "advisor.interpretation_limits",
+          "evidence": {},
+          "provenance": {
+            "tool": "...[truncated]",
+            "source": "...[truncated]"
+          },
+          "limitations": [
+            "...[truncated]"
+          ],
+          "cache": {
+            "hit": "...[truncated]",
+            "key": "...[truncated]"
+          }
+        },
+        "evidence_id": "forecast-6a4fbdff4aab5b68343b2e56"
+      },
+      "tool_calls": [
+        {
+          "step": 1,
+          "api": "forecaster.uploaded_sequence",
+          "arguments": {
+            "upload_id": "...[truncated]",
+            "model_name": "...[truncated]",
+            "ensemble_members": "...[truncated]",
+            "horizon_hours": "...[truncated]",
+            "include_ground_truth": "...[truncated]",
+            "force_live": "...[truncated]",
+            "array_transport": "...[truncated]"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "capabilities": "...[truncated]",
+            "forecast_evidence_id": "...[truncated]",
+            "forecast_evidence": "...[truncated]",
+            "upload_id": "...[truncated]",
+            "data_source": "...[truncated]",
+            "model_name": "...[truncated]",
+            "inference_mode": "...[truncated]",
+            "cache_hit": "...[truncated]",
+            "prediction_source": "...[truncated]",
+            "ensemble_count": "...[truncated]",
+            "ensemble_members_available": "...[truncated]",
+            "ensemble": "...[truncated]",
+            "member_summaries": "...[truncated]",
+            "member_seeds": "...[truncated]",
+            "output_type": "...[truncated]",
+            "is_deterministic": "...[truncated]",
+            "history_shape": "...[truncated]",
+            "forecast_shape": "...[truncated]",
+            "forecast_dtype": "...[truncated]",
+            "analysis_value_space": "...[truncated]",
+            "history_relative_minutes": "...[truncated]",
+            "forecast_relative_minutes": "...[truncated]",
+            "history_frames": "...[truncated]",
+            "forecast_frames": "...[truncated]",
+            "history_frame_count": "...[truncated]",
+            "forecast_frame_count": "...[truncated]",
+            "lead_minutes": "...[truncated]",
+            "forecast_mode": "...[truncated]",
+            "statistics_computed": "...[truncated]",
+            "fields_computed": "...[truncated]",
+            "threshold_applied": "...[truncated]",
+            "region_parameters_applied": "...[truncated]",
+            "ground_truth_requested": "...[truncated]",
+            "ground_truth_available": "...[truncated]",
+            "ground_truth": "...[truncated]",
+            "sample_identity": "...[truncated]",
+            "validation_manifest": "...[truncated]",
+            "verified_lead_minutes": "...[truncated]",
+            "unverified_lead_minutes": "...[truncated]",
+            "ground_truth_complete_for_horizon": "...[truncated]",
+            "provenance": "...[truncated]",
+            "horizon_hours": "...[truncated]",
+            "rolling_segments": "...[truncated]",
+            "interpretation_limit": "...[truncated]",
+            "schema_version": "...[truncated]",
+            "forecast": "...[truncated]",
+            "contracts_applied": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        },
+        {
+          "step": 2,
+          "api": "advisor.interpretation_limits",
+          "arguments": {
+            "threshold": "...[truncated]"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "threshold": "...[truncated]",
+            "scale": "...[truncated]",
+            "supports": "...[truncated]",
+            "does_not_support": "...[truncated]",
+            "task": "...[truncated]",
+            "evidence": "...[truncated]",
+            "provenance": "...[truncated]",
+            "limitations": "...[truncated]",
+            "cache": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        }
+      ],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "geolocator": "...[truncated]",
+            "history": "...[truncated]",
+            "advise": "...[truncated]",
+            "forecaster": "...[truncated]",
+            "statistics": "...[truncated]",
+            "uncertainty": "...[truncated]",
+            "metrics": "...[truncated]",
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    }
+  ],
+  "tool_summary": {
+    "decision_steps": 3,
+    "call_count": 2,
+    "unique_tool_count": 2,
+    "cache_hits": 0
+  },
+  "limitations": {
+    "status": "not_run",
+    "covered_dimensions": [],
+    "missing_dimensions": [],
+    "needs_more_execution": false,
+    "next_analysis": "",
+    "reason": "claim_gate_convergence"
+  },
+  "content_hash": "716095be66763a7a7ef3489bd0204f5483d5749b18a4c2bfc6ee7d9444268a4f"
+}

@@ -1,0 +1,268 @@
+{
+  "checkpoint_id": "cbfa5cc815da4431ba052a00739ad9a9",
+  "request_id": "2bca8bda52384385b47e8fb6a99ef0b7",
+  "created_at": "2026-08-21T17:40:17.131467+00:00",
+  "termination_reason": "era5_snapshot_loaded",
+  "evidence_bundle": {
+    "era5": {
+      "status": "ok",
+      "source": "ERA5 live CDS retrieval",
+      "requested_target": {
+        "latitude": 42.02388393270566,
+        "longitude": -101.42668222582509
+      },
+      "selected_target": {
+        "latitude": 41.9,
+        "longitude": -101.55
+      },
+      "analysis_time_utc": "2019-05-15T01:00:00Z",
+      "coverage": {
+        "start_utc": "2019-05-14T19:00:00Z",
+        "end_utc": "2019-05-15T01:00:00Z",
+        "time_count": 7,
+        "history_before_hours": 6,
+        "history_after_hours": 0,
+        "event_nearest_index": 6,
+        "event_nearest_time_utc": "2019-05-15T01:00:00Z"
+      },
+      "times_utc": [
+        "2019-05-14T19:00:00Z",
+        "2019-05-14T20:00:00Z",
+        "2019-05-14T21:00:00Z",
+        "2019-05-14T22:00:00Z",
+        "2019-05-14T23:00:00Z",
+        "2019-05-15T00:00:00Z",
+        "2019-05-15T01:00:00Z"
+      ],
+      "surface": {
+        "t2m_c": [
+          26.4813,
+          26.7396,
+          26.7809,
+          24.5307,
+          23.7709,
+          22.2528,
+          22.0668
+        ],
+        "u10_m_s": [
+          -2.7148,
+          -2.3892,
+          -2.4596,
+          -3.6386,
+          -4.8651,
+          -5.0699,
+          -6.7132
+        ],
+        "v10_m_s": [
+          0.3192,
+          1.1422,
+          1.3995,
+          -2.6943,
+          -3.655,
+          -2.8828,
+          0.7288
+        ],
+        "wind10_m_s": [
+          2.7335,
+          2.6482,
+          2.8299,
+          4.5276,
+          6.0851,
+          5.8322,
+          6.7527
+        ],
+        "mslp_hpa": [
+          1010.3511,
+          1009.7616,
+          1009.5297,
+          1008.7525,
+          1009.4412,
+          1009.5963,
+          1011.5022
+        ]
+      },
+      "pressure_levels": {
+        "850": {
+          "temperature_c": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "u_m_s": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "v_m_s": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "wind_m_s": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "specific_humidity_g_kg": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "geopotential_height_m": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ]
+        },
+        "500": {
+          "temperature_c": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "u_m_s": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "v_m_s": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "wind_m_s": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "specific_humidity_g_kg": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "geopotential_height_m": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ]
+        },
+        "250": {
+          "temperature_c": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "u_m_s": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "v_m_s": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "wind_m_s": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "specific_humidity_g_kg": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ],
+          "geopotential_height_m": [
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]",
+            "...[truncated]"
+          ]
+        }
+      },
+      "endpoint_change": {
+        "t2m_c": -4.4146,
+        "wind10_m_s": 4.0192,
+        "mslp_hpa": 1.1511
+      },
+      "interpretation_limit": "ERA5 is retrospective reanalysis; it describes environmental fields and does not directly predict local VIL."
+    },
+    "aurora": null,
+    "evidence_type": "live_reanalysis"
+  },
+  "observations": [],
+  "tool_summary": {},
+  "limitations": {},
+  "content_hash": "e02d82815a66a8fc14d6b4c6a4ffbbac1dfa39f762dc90eca8eae71347a24619"
+}

@@ -1,0 +1,613 @@
+{
+  "execution_id": "4663c4ab5dcd4ba69beaf462d6ddd142",
+  "created_at_epoch_seconds": 1787585556.315,
+  "code": "def run(ds, data):\n    event = data.event('R19062708588472')\n    return missing_after_tool_call",
+  "data_descs": [],
+  "selected_tools": [
+    "ds",
+    "data"
+  ],
+  "execution": {
+    "status": "error",
+    "error_type": "NameError",
+    "error": "name 'missing_after_tool_call' is not defined",
+    "error_phase": "generated_run",
+    "traceback": "Traceback (most recent call last):\n  File \"D:\\Profile\\专业实习\\sevir-agent-demo\\sevir_world\\code_execution\\worker.py\", line 169, in _execute_payload\n    result_value = environment.invoke(run_function)\n  File \"D:\\Profile\\专业实习\\sevir-agent-demo\\sevir_world\\agent\\runtime.py\", line 576, in invoke\n    return run_function(*self.arguments())\n  File \"<sevir-agent>\", line 3, in run\nNameError: name 'missing_after_tool_call' is not defined\n",
+    "error_location": {
+      "line": 3,
+      "source": "return missing_after_tool_call",
+      "function": "run"
+    },
+    "calls": [
+      {
+        "step": 1,
+        "api": "data.event",
+        "arguments": {
+          "event_id": "R19062708588472"
+        },
+        "status": "ok",
+        "result_status": "ok",
+        "cache_hit": false,
+        "cache_key": "aa4bb1dd034f32529e6e23f0d07f4c3d2b154080ec435f4b00e56c0407266204",
+        "tool_contract": {
+          "name": "data.event",
+          "output_role": "analysis",
+          "retry_policy": "transient_only",
+          "cache_policy": "request_key"
+        },
+        "result": {
+          "status": "ok",
+          "task": "sevir_event_metadata",
+          "data_source": "data\\sevir_complete\\CATALOG.csv",
+          "record": {
+            "id": "R19062708588472",
+            "time_utc": "2019-06-27 08:58:20",
+            "event_type": "Unlabeled",
+            "file_name": "vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5",
+            "file_index": 1250,
+            "data_min": 0.0,
+            "data_max": 254.0,
+            "pct_missing": 0.0688666172849348,
+            "local_hdf5_available": true,
+            "remote_hdf5_available": true,
+            "sevir_id": "R19062708588472",
+            "img_type": "vil",
+            "minute_offsets": [
+              -120,
+              -115,
+              -110,
+              -105,
+              -100,
+              -95,
+              -90,
+              -85,
+              -80,
+              -75,
+              -70,
+              -65,
+              -60,
+              -55,
+              -50,
+              -45,
+              -40,
+              -35,
+              -30,
+              -25,
+              -20,
+              -15,
+              -10,
+              -5,
+              0,
+              5,
+              10,
+              15,
+              20,
+              25,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85,
+              90,
+              95,
+              100,
+              105,
+              110,
+              115,
+              120
+            ],
+            "frame_times_utc": [
+              "2019-06-27T06:58:20Z",
+              "2019-06-27T07:03:20Z",
+              "2019-06-27T07:08:20Z",
+              "2019-06-27T07:13:20Z",
+              "2019-06-27T07:18:20Z",
+              "2019-06-27T07:23:20Z",
+              "2019-06-27T07:28:20Z",
+              "2019-06-27T07:33:20Z",
+              "2019-06-27T07:38:20Z",
+              "2019-06-27T07:43:20Z",
+              "2019-06-27T07:48:20Z",
+              "2019-06-27T07:53:20Z",
+              "2019-06-27T07:58:20Z",
+              "2019-06-27T08:03:20Z",
+              "2019-06-27T08:08:20Z",
+              "2019-06-27T08:13:20Z",
+              "2019-06-27T08:18:20Z",
+              "2019-06-27T08:23:20Z",
+              "2019-06-27T08:28:20Z",
+              "2019-06-27T08:33:20Z",
+              "2019-06-27T08:38:20Z",
+              "2019-06-27T08:43:20Z",
+              "2019-06-27T08:48:20Z",
+              "2019-06-27T08:53:20Z",
+              "2019-06-27T08:58:20Z",
+              "2019-06-27T09:03:20Z",
+              "2019-06-27T09:08:20Z",
+              "2019-06-27T09:13:20Z",
+              "2019-06-27T09:18:20Z",
+              "2019-06-27T09:23:20Z",
+              "2019-06-27T09:28:20Z",
+              "2019-06-27T09:33:20Z",
+              "2019-06-27T09:38:20Z",
+              "2019-06-27T09:43:20Z",
+              "2019-06-27T09:48:20Z",
+              "2019-06-27T09:53:20Z",
+              "2019-06-27T09:58:20Z",
+              "2019-06-27T10:03:20Z",
+              "2019-06-27T10:08:20Z",
+              "2019-06-27T10:13:20Z",
+              "2019-06-27T10:18:20Z",
+              "2019-06-27T10:23:20Z",
+              "2019-06-27T10:28:20Z",
+              "2019-06-27T10:33:20Z",
+              "2019-06-27T10:38:20Z",
+              "2019-06-27T10:43:20Z",
+              "2019-06-27T10:48:20Z",
+              "2019-06-27T10:53:20Z",
+              "2019-06-27T10:58:20Z"
+            ],
+            "noaa_episode_id": null,
+            "noaa_event_id": null,
+            "bounding_box": {
+              "south": 45.283591627891646,
+              "west": -102.44166025945844,
+              "north": 48.82504062351925,
+              "east": -97.51042813589711
+            },
+            "proj": "+proj=laea +lat_0=38 +lon_0=-98 +units=m +a=6370997.0 +ellps=sphere",
+            "size_x": 384,
+            "size_y": 384,
+            "height_m": 384000.0,
+            "width_m": 384000.0
+          },
+          "interpretation_limit": "This is one exact VIL metadata record. Pixel values are only loaded when load_sevir_vil_event is called and the referenced HDF5 file is available locally.",
+          "schema_version": "sevir-contract-2",
+          "result_status": "ok",
+          "available": true,
+          "data": {
+            "task": "sevir_event_metadata",
+            "data_source": "data\\sevir_complete\\CATALOG.csv",
+            "record": {
+              "id": "R19062708588472",
+              "time_utc": "2019-06-27 08:58:20",
+              "event_type": "Unlabeled",
+              "file_name": "vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5",
+              "file_index": 1250,
+              "data_min": 0.0,
+              "data_max": 254.0,
+              "pct_missing": 0.0688666172849348,
+              "local_hdf5_available": true,
+              "remote_hdf5_available": true,
+              "sevir_id": "R19062708588472",
+              "img_type": "vil",
+              "minute_offsets": [
+                -120,
+                -115,
+                -110,
+                -105,
+                -100,
+                -95,
+                -90,
+                -85,
+                -80,
+                -75,
+                -70,
+                -65,
+                -60,
+                -55,
+                -50,
+                -45,
+                -40,
+                -35,
+                -30,
+                -25,
+                -20,
+                -15,
+                -10,
+                -5,
+                0,
+                5,
+                10,
+                15,
+                20,
+                25,
+                30,
+                35,
+                40,
+                45,
+                50,
+                55,
+                60,
+                65,
+                70,
+                75,
+                80,
+                85,
+                90,
+                95,
+                100,
+                105,
+                110,
+                115,
+                120
+              ],
+              "frame_times_utc": [
+                "2019-06-27T06:58:20Z",
+                "2019-06-27T07:03:20Z",
+                "2019-06-27T07:08:20Z",
+                "2019-06-27T07:13:20Z",
+                "2019-06-27T07:18:20Z",
+                "2019-06-27T07:23:20Z",
+                "2019-06-27T07:28:20Z",
+                "2019-06-27T07:33:20Z",
+                "2019-06-27T07:38:20Z",
+                "2019-06-27T07:43:20Z",
+                "2019-06-27T07:48:20Z",
+                "2019-06-27T07:53:20Z",
+                "2019-06-27T07:58:20Z",
+                "2019-06-27T08:03:20Z",
+                "2019-06-27T08:08:20Z",
+                "2019-06-27T08:13:20Z",
+                "2019-06-27T08:18:20Z",
+                "2019-06-27T08:23:20Z",
+                "2019-06-27T08:28:20Z",
+                "2019-06-27T08:33:20Z",
+                "2019-06-27T08:38:20Z",
+                "2019-06-27T08:43:20Z",
+                "2019-06-27T08:48:20Z",
+                "2019-06-27T08:53:20Z",
+                "2019-06-27T08:58:20Z",
+                "2019-06-27T09:03:20Z",
+                "2019-06-27T09:08:20Z",
+                "2019-06-27T09:13:20Z",
+                "2019-06-27T09:18:20Z",
+                "2019-06-27T09:23:20Z",
+                "2019-06-27T09:28:20Z",
+                "2019-06-27T09:33:20Z",
+                "2019-06-27T09:38:20Z",
+                "2019-06-27T09:43:20Z",
+                "2019-06-27T09:48:20Z",
+                "2019-06-27T09:53:20Z",
+                "2019-06-27T09:58:20Z",
+                "2019-06-27T10:03:20Z",
+                "2019-06-27T10:08:20Z",
+                "2019-06-27T10:13:20Z",
+                "2019-06-27T10:18:20Z",
+                "2019-06-27T10:23:20Z",
+                "2019-06-27T10:28:20Z",
+                "2019-06-27T10:33:20Z",
+                "2019-06-27T10:38:20Z",
+                "2019-06-27T10:43:20Z",
+                "2019-06-27T10:48:20Z",
+                "2019-06-27T10:53:20Z",
+                "2019-06-27T10:58:20Z"
+              ],
+              "noaa_episode_id": null,
+              "noaa_event_id": null,
+              "bounding_box": {
+                "south": 45.283591627891646,
+                "west": -102.44166025945844,
+                "north": 48.82504062351925,
+                "east": -97.51042813589711
+              },
+              "proj": "+proj=laea +lat_0=38 +lon_0=-98 +units=m +a=6370997.0 +ellps=sphere",
+              "size_x": 384,
+              "size_y": 384,
+              "height_m": 384000.0,
+              "width_m": 384000.0
+            },
+            "interpretation_limit": "This is one exact VIL metadata record. Pixel values are only loaded when load_sevir_vil_event is called and the referenced HDF5 file is available locally.",
+            "dimensions": []
+          },
+          "data_kind": "tool_result",
+          "meta": {
+            "tool_api": "data.event",
+            "cache_hit": false
+          }
+        },
+        "result_schema": {
+          "type": "object",
+          "fields": {
+            "status": {
+              "type": "str"
+            },
+            "task": {
+              "type": "str"
+            },
+            "data_source": {
+              "type": "str"
+            },
+            "record": {
+              "type": "object",
+              "fields": {
+                "id": {
+                  "type": "str"
+                },
+                "time_utc": {
+                  "type": "str"
+                },
+                "event_type": {
+                  "type": "str"
+                },
+                "file_name": {
+                  "type": "str"
+                },
+                "file_index": {
+                  "type": "int"
+                },
+                "data_min": {
+                  "type": "float"
+                },
+                "data_max": {
+                  "type": "float"
+                },
+                "pct_missing": {
+                  "type": "float"
+                },
+                "local_hdf5_available": {
+                  "type": "bool"
+                },
+                "remote_hdf5_available": {
+                  "type": "bool"
+                },
+                "sevir_id": {
+                  "type": "str"
+                },
+                "img_type": {
+                  "type": "str"
+                },
+                "minute_offsets": {
+                  "type": "array",
+                  "length": 49,
+                  "items": {
+                    "type": "int"
+                  }
+                },
+                "frame_times_utc": {
+                  "type": "array",
+                  "length": 49,
+                  "items": {
+                    "type": "str"
+                  }
+                },
+                "noaa_episode_id": {
+                  "type": "null"
+                },
+                "noaa_event_id": {
+                  "type": "null"
+                },
+                "bounding_box": {
+                  "type": "object",
+                  "fields": {
+                    "south": {
+                      "type": "float"
+                    },
+                    "west": {
+                      "type": "float"
+                    },
+                    "north": {
+                      "type": "float"
+                    },
+                    "east": {
+                      "type": "float"
+                    }
+                  }
+                },
+                "proj": {
+                  "type": "str"
+                },
+                "size_x": {
+                  "type": "int"
+                },
+                "size_y": {
+                  "type": "int"
+                },
+                "height_m": {
+                  "type": "float"
+                },
+                "width_m": {
+                  "type": "float"
+                }
+              }
+            },
+            "interpretation_limit": {
+              "type": "str"
+            },
+            "schema_version": {
+              "type": "str"
+            },
+            "result_status": {
+              "type": "str"
+            },
+            "available": {
+              "type": "bool"
+            },
+            "data": {
+              "type": "object",
+              "fields": {
+                "task": {
+                  "type": "str"
+                },
+                "data_source": {
+                  "type": "str"
+                },
+                "record": {
+                  "type": "object",
+                  "fields": {
+                    "id": {
+                      "type": "str"
+                    },
+                    "time_utc": {
+                      "type": "str"
+                    },
+                    "event_type": {
+                      "type": "str"
+                    },
+                    "file_name": {
+                      "type": "str"
+                    },
+                    "file_index": {
+                      "type": "int"
+                    },
+                    "data_min": {
+                      "type": "float"
+                    },
+                    "data_max": {
+                      "type": "float"
+                    },
+                    "pct_missing": {
+                      "type": "float"
+                    },
+                    "local_hdf5_available": {
+                      "type": "bool"
+                    },
+                    "remote_hdf5_available": {
+                      "type": "bool"
+                    },
+                    "sevir_id": {
+                      "type": "str"
+                    },
+                    "img_type": {
+                      "type": "str"
+                    },
+                    "minute_offsets": {
+                      "type": "array",
+                      "length": 49,
+                      "items": {
+                        "type": "int"
+                      }
+                    },
+                    "frame_times_utc": {
+                      "type": "array",
+                      "length": 49,
+                      "items": {
+                        "type": "str"
+                      }
+                    },
+                    "noaa_episode_id": {
+                      "type": "null"
+                    },
+                    "noaa_event_id": {
+                      "type": "null"
+                    },
+                    "bounding_box": {
+                      "type": "object",
+                      "fields": {
+                        "south": {
+                          "type": "float"
+                        },
+                        "west": {
+                          "type": "float"
+                        },
+                        "north": {
+                          "type": "float"
+                        },
+                        "east": {
+                          "type": "float"
+                        }
+                      }
+                    },
+                    "proj": {
+                      "type": "str"
+                    },
+                    "size_x": {
+                      "type": "int"
+                    },
+                    "size_y": {
+                      "type": "int"
+                    },
+                    "height_m": {
+                      "type": "float"
+                    },
+                    "width_m": {
+                      "type": "float"
+                    }
+                  }
+                },
+                "interpretation_limit": {
+                  "type": "str"
+                },
+                "dimensions": {
+                  "type": "array",
+                  "length": 0
+                }
+              }
+            },
+            "data_kind": {
+              "type": "str"
+            },
+            "meta": {
+              "type": "object",
+              "fields": {
+                "tool_api": {
+                  "type": "str"
+                },
+                "cache_hit": {
+                  "type": "bool"
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "runtime_schema": {
+      "schema_version": "sevir-contract-2",
+      "dataset": {
+        "schema_version": "sevir-contract-2",
+        "object": "ds",
+        "type": "list[DatasetRecord]",
+        "records": []
+      },
+      "tools": [
+        "data"
+      ]
+    },
+    "evidence_ledger": {
+      "completed_evidence": [
+        {
+          "key": "aa4bb1dd034f32529e6e",
+          "api": "data.event",
+          "arguments": {
+            "event_id": "R19062708588472"
+          },
+          "status": "ok",
+          "schema_version": "sevir-contract-2",
+          "evidence_id": null
+        }
+      ],
+      "reuse_rule": "reuse completed evidence unless arguments materially change"
+    },
+    "repair": {
+      "category": "program",
+      "action": "rewrite the failing program using the complete traceback and the actual runtime_schema/result_schema; change the computation strategy, not just formatting",
+      "must_change": true,
+      "message": "name 'missing_after_tool_call' is not defined"
+    },
+    "worker_session": {
+      "id": "76c4490fa6c14cea843fbacfd1f08204",
+      "step": 0
+    },
+    "tool_result_cache": {
+      "entries": 1,
+      "updates": 1
+    },
+    "elapsed_ms": 2193,
+    "limits": {
+      "timeout_seconds": 15.0,
+      "memory_limit_mb": 512,
+      "budget_profile": "standard",
+      "network": "inherits worker process policy; weather tools own supported data access",
+      "filesystem": "temporary cwd; persistent figures use SEVIR_ARTIFACT_DIR",
+      "imports": "standard Python imports enabled"
+    }
+  }
+}

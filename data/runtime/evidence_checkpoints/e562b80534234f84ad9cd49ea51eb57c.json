@@ -1,0 +1,311 @@
+{
+  "checkpoint_id": "e562b80534234f84ad9cd49ea51eb57c",
+  "request_id": "031d06af4e9447e9ad73b7cf2556dbbf",
+  "created_at": "2026-08-21T16:22:05.330275+00:00",
+  "termination_reason": "finished",
+  "evidence_bundle": {
+    "version": "1.1",
+    "source_count": 5,
+    "successful_observation_count": 1,
+    "successful_tool_count": 2,
+    "sources": [
+      {
+        "ref": "tool:1:forecaster.uploaded_sequence",
+        "api": "forecaster.uploaded_sequence",
+        "status": "error",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:2:forecaster.uploaded_values",
+        "api": "forecaster.uploaded_values",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "tool:3:visualizer.frame_montage",
+        "api": "visualizer.frame_montage",
+        "status": "ok",
+        "cache_hit": false
+      },
+      {
+        "ref": "observation:3",
+        "api": "generated_run",
+        "status": "ok"
+      },
+      {
+        "ref": "data:1",
+        "api": "data_desc",
+        "status": "available",
+        "source": "upload",
+        "event_id": null,
+        "upload_id": "795a51a9da6b41afbf07666deac4d32b"
+      }
+    ],
+    "facts": [],
+    "numeric_evidence": [
+      {
+        "ref": "observation:3",
+        "path": "image_shape[0]",
+        "value": 384
+      },
+      {
+        "ref": "observation:3",
+        "path": "image_shape[1]",
+        "value": 384
+      },
+      {
+        "ref": "observation:3",
+        "path": "total_pixels",
+        "value": 147456
+      },
+      "...",
+      {
+        "ref": "tool:3:visualizer.frame_montage",
+        "path": "result.data.frame_count",
+        "value": 1
+      }
+    ],
+    "verification_scope": {
+      "ground_truth_available": false,
+      "verified_event_count": 0,
+      "scope_kind": "none",
+      "single_event_only": false,
+      "subject_refs": [],
+      "forecast_max_lead_minutes": null,
+      "complete_truth_max_lead_minutes": null,
+      "any_truth_max_lead_minutes": null,
+      "frame_truth_max_lead_minutes": null,
+      "complete_truth_lead_minutes": [],
+      "partial_truth_lead_minutes": [],
+      "truth_completeness_unknown_lead_minutes": [],
+      "unverified_forecast_lead_minutes": [],
+      "coverage_reference_pixels": null,
+      "coverage_method": "none",
+      "cross_event_generalization_supported": false
+    },
+    "capabilities": {
+      "successful_execution": {
+        "available": true,
+        "evidence_refs": [
+          "observation:3"
+        ]
+      },
+      "encoded_grid": {
+        "available": true,
+        "evidence_refs": [
+          "executed-data"
+        ]
+      },
+      "temporal_sequence": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "geolocation": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "administrative_location": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "spatial_calibration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "compass_direction": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ground_truth": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "future_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "environment_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "era5_reanalysis": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "aurora_forecast": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "ensemble_agreement": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "calibrated_probability": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "official_warning": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "rainfall_rate": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "meteorological_dynamics": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "hail": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "object_motion": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "centroid_change": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "observed_window_duration": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "monotonic_interval_trend": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "complete_lifecycle": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "route_safety": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "multi_event_verification": {
+        "available": false,
+        "evidence_refs": []
+      },
+      "cross_event_generalization": {
+        "available": false,
+        "evidence_refs": []
+      }
+    }
+  },
+  "observations": [
+    {
+      "step": 3,
+      "result": {
+        "image_shape": [
+          384,
+          384
+        ],
+        "total_pixels": 147456,
+        "valid_pixels": 147456,
+        "missing_pixels": 0,
+        "overall_max": 238.0,
+        "overall_mean": 51.53660202026367,
+        "overall_median": 36.0,
+        "p95": 144.0,
+        "p99": 188.0,
+        "threshold_coverage": {
+          "16": 81620,
+          "74": 52220,
+          "133": 10797,
+          "160": 4610,
+          "181": 2109,
+          "219": 154
+        },
+        "high_value_centroid": {
+          "row": 111.39649902750764,
+          "col": 166.22496989904604,
+          "row_min": 0,
+          "row_max": 206,
+          "col_min": 0,
+          "col_max": 303,
+          "high_count": 10797
+        },
+        "spatial_gradient": {
+          "top_mean": 79.78414154052734,
+          "bottom_mean": 23.2890625,
+          "left_mean": 69.93655395507812,
+          "right_mean": 33.13665008544922
+        },
+        "row_col_profile_nonzero": {
+          "row_nonzero": 198,
+          "col_nonzero": 292
+        },
+        "forecast_available": false,
+        "forecast_note": "forecaster.uploaded_values returned raw pixel values only (no forecast_frames or ensemble members). CasCast prediction is not available for this single-frame upload.",
+        "viz_artifact_id": "a2505ea1765835b8215c4adb751873ae",
+        "viz_image_url": "/api/artifacts/a2505ea1765835b8215c4adb751873ae.png"
+      },
+      "tool_calls": [
+        {
+          "step": 1,
+          "api": "visualizer.frame_montage",
+          "arguments": {
+            "labels": "...[truncated]",
+            "frame_count": "...[truncated]",
+            "data_kind": "...[truncated]"
+          },
+          "status": "ok",
+          "result_status": "ok",
+          "cache_hit": false,
+          "result": {
+            "status": "...[truncated]",
+            "task": "...[truncated]",
+            "chart_type": "...[truncated]",
+            "artifact_id": "...[truncated]",
+            "url": "...[truncated]",
+            "image_url": "...[truncated]",
+            "mime_type": "...[truncated]",
+            "title": "...[truncated]",
+            "description": "...[truncated]",
+            "size_bytes": "...[truncated]",
+            "verified": "...[truncated]"
+          },
+          "result_schema": {
+            "type": "...[truncated]",
+            "fields": "...[truncated]"
+          }
+        }
+      ],
+      "runtime_schema": {
+        "schema_version": "sevir-contract-1",
+        "dataset": {
+          "schema_version": "sevir-contract-1",
+          "object": "ds",
+          "type": "list[DatasetRecord]",
+          "records": [
+            "...[truncated]"
+          ]
+        },
+        "tools": {
+          "schema_version": "sevir-contract-1",
+          "tools": {
+            "forecaster": "...[truncated]",
+            "visualizer": "...[truncated]"
+          }
+        }
+      }
+    }
+  ],
+  "tool_summary": {
+    "decision_steps": 6,
+    "call_count": 3,
+    "unique_tool_count": 3,
+    "cache_hits": 0
+  },
+  "limitations": {
+    "status": "not_run",
+    "covered_dimensions": [],
+    "missing_dimensions": [],
+    "needs_more_execution": false,
+    "next_analysis": "",
+    "reason": "claim_gate_convergence"
+  },
+  "content_hash": "a7d05eb0190fc68315be2a9f524170ed1283058ed24be6acbb557e78fa1e961a"
+}

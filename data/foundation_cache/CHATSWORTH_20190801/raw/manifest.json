@@ -1,0 +1,78 @@
+{
+  "event_id": "CHATSWORTH_20190801",
+  "layer": "raw",
+  "request_key": "b36c06d1b27d135a50274638ec9020cb",
+  "canonical": {
+    "analysis_time_utc": "2019-08-01T21:00:00Z",
+    "era5_time_utc": "2019-08-01T21:00:00Z",
+    "time_offset_minutes": 0,
+    "latitude": 34.7807024,
+    "longitude": -84.7833916,
+    "area_north_west_south_east": [
+      40.78,
+      -96.78,
+      29.03,
+      -73.03
+    ],
+    "grid": "0.25/0.25",
+    "surface_variables": [
+      "2m_temperature",
+      "10m_u_component_of_wind",
+      "10m_v_component_of_wind",
+      "mean_sea_level_pressure"
+    ],
+    "pressure_variables": [
+      "temperature",
+      "u_component_of_wind",
+      "v_component_of_wind",
+      "specific_humidity",
+      "geopotential"
+    ],
+    "pressure_levels_hpa": [
+      850,
+      500,
+      250
+    ],
+    "aurora_pressure_levels_hpa": [
+      50,
+      100,
+      150,
+      200,
+      250,
+      300,
+      400,
+      500,
+      600,
+      700,
+      850,
+      925,
+      1000
+    ],
+    "forecast_leads_hours": [
+      6,
+      12,
+      18,
+      24
+    ],
+    "input_window_hours": 6,
+    "history_before_hours": 6,
+    "history_after_hours": 24,
+    "data_policy": "live",
+    "event_id": "CHATSWORTH_20190801",
+    "model_version": "",
+    "request_key": "b0cb6ab5897e1b452347",
+    "canonical_request_key": "b36c06d1b27d135a50274638ec9020cb",
+    "artifact_dir": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\CHATSWORTH_20190801\\b36c06d1b27d135a50274638ec9020cb",
+    "status": "normalized"
+  },
+  "status": "available",
+  "files": {
+    "surface": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\CHATSWORTH_20190801\\b36c06d1b27d135a50274638ec9020cb\\surface.nc",
+    "pressure": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\CHATSWORTH_20190801\\b36c06d1b27d135a50274638ec9020cb\\pressure.nc",
+    "static": "D:\\Profile\\专业实习\\sevir-agent-demo\\data\\foundation_live_cache\\CHATSWORTH_20190801\\b36c06d1b27d135a50274638ec9020cb\\static.nc"
+  },
+  "provenance": {
+    "source": "CDS ERA5",
+    "request_key": "b0cb6ab5897e1b452347"
+  }
+}

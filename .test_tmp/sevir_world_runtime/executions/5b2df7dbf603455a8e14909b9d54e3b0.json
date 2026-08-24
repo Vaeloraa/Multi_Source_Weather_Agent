@@ -1,0 +1,57 @@
+{
+  "execution_id": "5b2df7dbf603455a8e14909b9d54e3b0",
+  "created_at_epoch_seconds": 1787585568.825,
+  "code": "import inspect\nresult = {\n    'has_rolling_raw': 'rolling_raw' in dir(forecaster),\n    'signature': str(inspect.signature(forecaster.rolling_raw)),\n}",
+  "data_descs": [],
+  "selected_tools": [
+    "ds",
+    "forecaster"
+  ],
+  "execution": {
+    "status": "ok",
+    "result": {
+      "has_rolling_raw": true,
+      "signature": "(event_id: 'Any', horizon_hours: 'float' = 2.0, model_name: 'str' = 'cascast_live', ensemble_members: 'int' = 10, include_ground_truth: 'bool' = False) -> 'dict[str, Any]'"
+    },
+    "primary_result": {
+      "has_rolling_raw": true,
+      "signature": "(event_id: 'Any', horizon_hours: 'float' = 2.0, model_name: 'str' = 'cascast_live', ensemble_members: 'int' = 10, include_ground_truth: 'bool' = False) -> 'dict[str, Any]'"
+    },
+    "calls": [],
+    "stdout": "",
+    "result_json_characters": 213,
+    "runtime_schema": {
+      "schema_version": "sevir-contract-2",
+      "dataset": {
+        "schema_version": "sevir-contract-2",
+        "object": "ds",
+        "type": "list[DatasetRecord]",
+        "records": []
+      },
+      "tools": [
+        "forecaster"
+      ]
+    },
+    "evidence_ledger": {
+      "completed_evidence": [],
+      "reuse_rule": "reuse completed evidence unless arguments materially change"
+    },
+    "worker_session": {
+      "id": "9fc1178c91334e7b8ecc82a3ebba921f",
+      "step": 1
+    },
+    "tool_result_cache": {
+      "entries": 0,
+      "updates": 0
+    },
+    "elapsed_ms": 1561,
+    "limits": {
+      "timeout_seconds": 20.0,
+      "memory_limit_mb": 1024,
+      "budget_profile": "standard",
+      "network": "inherits worker process policy; weather tools own supported data access",
+      "filesystem": "temporary cwd; persistent figures use SEVIR_ARTIFACT_DIR",
+      "imports": "standard Python imports enabled"
+    }
+  }
+}
