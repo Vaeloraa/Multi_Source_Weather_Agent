@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import copy
 import hashlib
 import os
 import queue
@@ -13,14 +12,18 @@ import tempfile
 import threading
 import time
 import uuid
-import weakref
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
 import psutil
 
-from ..agent.contracts import ExecutionRequest, data_descs_from_context
-from ..agent.schema import classify_execution_error, domain_result_error
+from ..agent.contracts import (
+    ExecutionRequest,
+    data_descs_from_context,
+    request_binding_from_context,
+)
+from ..agent.diagnostics import classify_execution_error
 from .safety import UnsafeCodeError, normalize_generated_code, validate_code
 
 
@@ -187,28 +190,9 @@ class ExecutionClient:
             if live_memory_limit_mb is not None
             else os.getenv("SEVIR_LIVE_EXECUTION_MEMORY_MB", "12288")
         )
-        # A request-scoped client is reused across Agent steps. Cache only
-        # successful, exact executions so a model retry cannot recompute an
-        # identical forecast or render the same artifact set again.
-        self._successful_execution_cache: dict[str, dict[str, Any]] = {}
-        self._tool_result_cache: dict[str, Any] = {}
-        self._previous_result: Any = None
-        # Zephyrus keeps one long-lived execution service for an Agent run. Our
-        # workers remain isolated processes, so give them a request-scoped
-        # cache directory to preserve small deterministic tool results between
-        # Agent steps. Large raster/model outputs keep using their native
-        # NPZ/model caches and are never copied into this cache.
-        tool_cache_parent = _DEFAULT_RUNTIME_ROOT / "request_tool_cache"
-        try:
-            tool_cache_parent.mkdir(parents=True, exist_ok=True)
-            self._request_tool_cache_dir = tempfile.mkdtemp(
-                prefix="agent-", dir=str(tool_cache_parent)
-            )
-        except OSError:
-            self._request_tool_cache_dir = tempfile.mkdtemp(prefix="sevir-agent-cache-")
-        self._tool_cache_finalizer = weakref.finalize(
-            self, shutil.rmtree, self._request_tool_cache_dir, True
-        )
+        # One persistent worker/namespace is the reuse mechanism during an
+        # Agent run. Model/data products keep their native caches; answers and
+        # transport envelopes are deliberately never cached here.
         self._worker_process: subprocess.Popen[str] | None = None
         self._worker_workdir: str | None = None
         self._worker_configuration_key: str | None = None
@@ -378,36 +362,6 @@ class ExecutionClient:
             except queue.Empty:
                 continue
 
-    @staticmethod
-    def _execution_cache_key(
-        code: str, request: ExecutionRequest
-    ) -> str:
-        payload = json.dumps(
-            {
-                "code": code,
-                "data_descs": request.data_descs,
-                "selected_tools": request.selected_tools,
-            },
-            ensure_ascii=True,
-            sort_keys=True,
-            default=str,
-        )
-        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
-
-    def _bounded_tool_result_cache(self, limit: int = 24_000) -> dict[str, Any]:
-        """Fit the newest replayable tool results inside the worker request."""
-        selected: dict[str, Any] = {}
-        for key, value in reversed(list(self._tool_result_cache.items())):
-            candidate = {key: value, **selected}
-            try:
-                size = len(json.dumps(candidate, ensure_ascii=True).encode("utf-8"))
-            except (TypeError, ValueError):
-                continue
-            if size > limit:
-                continue
-            selected = candidate
-        return selected
-
     def execute(
         self,
         code: str,
@@ -421,6 +375,7 @@ class ExecutionClient:
         request = ExecutionRequest.from_payload(
             data_descs if data_descs is not None else data_descs_from_context(context),
             selected_tools,
+            request_binding_from_context(context),
         )
         # Some OpenAI-compatible gateways occasionally return a lone UTF-16
         # surrogate in generated source.  It is not valid UTF-8 and would make
@@ -429,17 +384,6 @@ class ExecutionClient:
         # produce an actionable repair if the character mattered.
         code = str(code or "").encode("utf-8", errors="replace").decode("utf-8")
         code = normalize_generated_code(code)
-        cache_key = self._execution_cache_key(code, request)
-        cached = self._successful_execution_cache.get(cache_key)
-        if cached is not None:
-            result = copy.deepcopy(cached)
-            result["cache_hit"] = True
-            result["elapsed_ms"] = 0
-            for call in result.get("calls", []):
-                if isinstance(call, dict):
-                    call["cache_hit"] = True
-            self._previous_result = copy.deepcopy(result.get("result"))
-            return result
         bound_context = dict(context or {})
         cancelled = bound_context.get("_cancelled")
         is_cancelled = cancelled if callable(cancelled) else (lambda: False)
@@ -511,8 +455,7 @@ class ExecutionClient:
                 "code": code,
                 "data_descs": request.data_descs,
                 "selected_tools": request.selected_tools,
-                "tool_result_cache": self._bounded_tool_result_cache(),
-                "previous_result": self._previous_result,
+                "binding": asdict(request.binding),
             },
             # Keep the parent -> isolated-worker protocol ASCII-only too.  On
             # Windows, redirected text pipes can otherwise split or recode a
@@ -527,67 +470,21 @@ class ExecutionClient:
             key: value
             for key, value in os.environ.items()
             if key.upper() in {
-                # Basic process/runtime paths plus the explicitly scoped
-                # live-foundation configuration.  Without USERPROFILE (or
+                # Basic process/runtime paths and external-service credentials. Without USERPROFILE (or
                 # CDSAPI_RC) an isolated worker cannot see the user's CDS
                 # credentials even though the parent service can.
                 "PATH", "SYSTEMROOT", "WINDIR", "TEMP", "TMP", "USERPROFILE", "HOME",
                 "CDSAPI_RC", "CDSAPI_URL", "CDSAPI_KEY", "CUDA_VISIBLE_DEVICES",
                 "AURORA_PYTHON", "CASCAST_PYTHON", "SEVIR_FOUNDATION_LIVE_ONLY", "SEVIR_CACHE_ONLY", "SEVIR_USE_VENDOR",
                 "SEVIR_ARTIFACT_DIR",
-                "SEVIR_LIVE_EVENT_ID", "SEVIR_LIVE_ANALYSIS_TIME_UTC", "SEVIR_LIVE_LATITUDE", "SEVIR_LIVE_LONGITUDE",
-                "SEVIR_LIVE_REGION_JSON", "SEVIR_LIVE_FORECAST_LEADS",
-                "SEVIR_LIVE_HISTORY_BEFORE_HOURS", "SEVIR_LIVE_HISTORY_AFTER_HOURS",
             }
         }
         data_policy = str(bound_context.get("data_policy", "")).lower()
-        if data_policy in {"live", "cached"}:
-            event_id = str(bound_context.get("event_id", "")).strip()
-            if event_id:
-                environment["SEVIR_LIVE_EVENT_ID"] = event_id
-            analysis_time = str(bound_context.get("analysis_time_utc", "")).strip()
-            if analysis_time:
-                environment["SEVIR_LIVE_ANALYSIS_TIME_UTC"] = analysis_time
-            if bound_context.get("latitude") is not None:
-                environment["SEVIR_LIVE_LATITUDE"] = str(bound_context["latitude"])
-            if bound_context.get("longitude") is not None:
-                environment["SEVIR_LIVE_LONGITUDE"] = str(bound_context["longitude"])
-            if isinstance(bound_context.get("region"), dict):
-                environment["SEVIR_LIVE_REGION_JSON"] = json.dumps(
-                    bound_context["region"], ensure_ascii=True, separators=(",", ":")
-                )
-            live_request = bound_context.get("live_preflight")
-            leads = list(
-                (live_request.get("forecast_leads_hours") if isinstance(live_request, dict) else None)
-                or bound_context.get("forecast_leads_hours")
-                or []
-            )
-            if leads:
-                environment["SEVIR_LIVE_FORECAST_LEADS"] = ",".join(str(int(item)) for item in leads)
-            before_hours = (
-                live_request.get("history_before_hours")
-                if isinstance(live_request, dict)
-                else bound_context.get("history_before_hours")
-            )
-            after_hours = (
-                live_request.get("history_after_hours")
-                if isinstance(live_request, dict)
-                else bound_context.get("history_after_hours")
-            )
-            if before_hours is not None:
-                environment["SEVIR_LIVE_HISTORY_BEFORE_HOURS"] = str(
-                    int(before_hours)
-                )
-            if after_hours is not None:
-                environment["SEVIR_LIVE_HISTORY_AFTER_HOURS"] = str(
-                    int(after_hours)
-                )
         if data_policy == "cached":
             # A cached demo must never turn a cache miss into an implicit
             # download or expensive model run.
             environment["SEVIR_CACHE_ONLY"] = "1"
         environment["PYTHONIOENCODING"] = "utf-8"
-        environment["SEVIR_REQUEST_TOOL_CACHE_DIR"] = self._request_tool_cache_dir
         environment["SEVIR_WORKER_SELECTED_TOOLS"] = ",".join(request.selected_tools)
         configuration_key = hashlib.sha256(
             json.dumps(
@@ -595,6 +492,7 @@ class ExecutionClient:
                     "request": {
                         "data_descs": request.data_descs,
                         "selected_tools": request.selected_tools,
+                        "binding": asdict(request.binding),
                     },
                     "environment": environment,
                     "memory_limit_mb": memory_limit_mb,
@@ -669,25 +567,7 @@ class ExecutionClient:
                 "worker_stdout_preview": preview,
                 "stderr": "".join(self._worker_stderr).strip()[:4_000],
             }
-        cache_updates = result.pop("tool_result_cache_updates", {})
-        if isinstance(cache_updates, dict):
-            for key, value in cache_updates.items():
-                if isinstance(key, str) and len(key) == 64:
-                    self._tool_result_cache[key] = value
-        result["tool_result_cache"] = {
-            "entries": len(self._tool_result_cache),
-            "updates": len(cache_updates) if isinstance(cache_updates, dict) else 0,
-        }
         result["elapsed_ms"] = round((time.perf_counter() - started) * 1000)
-        if result.get("status") == "ok":
-            domain_error = domain_result_error(
-                result.get("result"), result.get("calls")
-            )
-            if domain_error is not None:
-                result["status"] = "error"
-                result["error_type"] = domain_error["error_type"]
-                result["error"] = domain_error["error"]
-                result["error_phase"] = "domain_result"
         if result.get("status") == "ok":
             normalized_result, generated_artifacts = _register_artifact_paths(
                 result.get("result")
@@ -695,7 +575,6 @@ class ExecutionClient:
             result["result"] = normalized_result
             if generated_artifacts:
                 result["generated_artifacts"] = generated_artifacts
-            self._previous_result = copy.deepcopy(normalized_result)
         _attach_repair(result)
         result["limits"] = {
             "timeout_seconds": timeout_seconds,
@@ -706,6 +585,4 @@ class ExecutionClient:
             "imports": "standard Python imports enabled",
         }
         result["execution_id"] = _persist_execution(code, request, result)
-        if result.get("status") == "ok":
-            self._successful_execution_cache[cache_key] = copy.deepcopy(result)
         return result

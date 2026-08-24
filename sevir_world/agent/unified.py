@@ -12,7 +12,6 @@ import time
 from typing import Any, Callable
 
 from .contracts import ExecutionRequest
-from .schema import domain_result_error
 from .tool_docs import selected_api_reference
 from ..code_execution.client import ExecutionClient
 
@@ -29,7 +28,7 @@ At every turn, do exactly one of these:
 
 The available capabilities do not prescribe an analysis plan. You decide which data,
 tools, calculations, comparisons and figures answer the user's actual question. Inspect
-real objects instead of guessing undocumented field names. Use execution when an answer
+the documented signatures, return types and examples instead of guessing fields. Use execution when an answer
 depends on request-bound facts. After an observation, either
 finish or execute a genuinely useful next analysis. Do not repeat a successful call
 without a new reason.
@@ -176,14 +175,13 @@ def _tool_result_summary(call: dict[str, Any]) -> str:
 
     result = call.get("result")
     if not isinstance(result, dict):
-        status = call.get("result_status") or call.get("status") or "unknown"
-        return f"工具返回状态：{status}"
+        return f"返回 {call.get('return_type') or type(result).__name__}"
     facts: list[str] = []
-    status = result.get("status") or call.get("result_status") or call.get("status")
-    if status:
-        facts.append(f"状态 {status}")
-    if result.get("event_id"):
-        facts.append(f"事件 {result['event_id']}")
+    value_type = result.get("type") or call.get("return_type")
+    if value_type:
+        facts.append(f"返回 {value_type}")
+    if result.get("event_id") or result.get("id"):
+        facts.append(f"事件 {result.get('event_id') or result.get('id')}")
     if result.get("cache_hit") is True or call.get("cache_hit") is True:
         facts.append("命中已有数据缓存")
     for key, label in (
@@ -199,12 +197,10 @@ def _tool_result_summary(call: dict[str, Any]) -> str:
             facts.append(f"{label} {value}")
     if result.get("image_url") or result.get("url"):
         facts.append("已生成可视化文件")
-    if result.get("interpretation_limit") and len(facts) < 2:
-        facts.append("返回了资料适用边界")
-    return "；".join(facts[:5]) or "工具已返回可供下一步分析的结果"
+    return "；".join(facts[:5]) or "已返回可直接计算的 Python 对象"
 
 
-def run_unified_agent(
+def _run_unified_agent_session(
     provider: dict[str, str],
     model: str,
     question: str,
@@ -218,12 +214,12 @@ def run_unified_agent(
     max_steps: int = 8,
     max_error_retries: int = 3,
 ) -> dict[str, Any]:
-    executor = executor or ExecutionClient(timeout_seconds=90, memory_limit_mb=4096)
-    request = ExecutionRequest.from_payload(data_descs, selected_tools)
+    if executor is None:
+        raise ValueError("executor is required for an Agent session")
+    request = ExecutionRequest.from_payload(data_descs, selected_tools, context)
     dataset_description = _bound_asset_index(request.data_descs)
     reference = selected_api_reference(
         request.selected_tools,
-        dataset_schema=None,
     )
     user_prompt = (
         f"User question:\n{question}\n\n"
@@ -374,27 +370,15 @@ def run_unified_agent(
             data_descs=list(request.data_descs),
             selected_tools=request.selected_tools,
         )
-        domain_error = domain_result_error(
-            execution.get("result"), execution.get("calls")
-        )
-        if execution.get("status") == "ok" and domain_error is not None:
-            execution = dict(execution)
-            execution.update({
-                "status": "error",
-                "error_type": domain_error["error_type"],
-                "error": domain_error["error"],
-                "error_phase": "domain_result",
-            })
         execution_elapsed_ms = round((time.perf_counter() - execution_started) * 1000, 2)
         call_summaries = [
             {
                 "api": call.get("api"),
                 "arguments": call.get("arguments", {}),
                 "status": call.get("status"),
-                "result_status": call.get("result_status"),
                 "cache_hit": call.get("cache_hit", False),
                 "error": call.get("error"),
-                "purpose": (call.get("tool_contract") or {}).get("output_role"),
+                "return_type": call.get("return_type"),
                 "result_summary": _tool_result_summary(call),
             }
             for call in execution.get("calls", [])
@@ -498,3 +482,40 @@ def run_unified_agent(
         "本轮已保留全部真实执行结果，但智能体没有在分析轮次内完成最终回答。",
         "max_steps_without_solution",
     )
+
+
+def run_unified_agent(
+    provider: dict[str, str],
+    model: str,
+    question: str,
+    context: dict[str, Any],
+    complete: Callable[[dict[str, str], str, list[dict[str, str]]], dict[str, Any]],
+    *,
+    data_descs: list[dict[str, Any]] | None = None,
+    selected_tools: list[str] | tuple[str, ...] | None = None,
+    conversation_context: str = "",
+    executor: ExecutionClient | None = None,
+    max_steps: int = 8,
+    max_error_retries: int = 3,
+) -> dict[str, Any]:
+    """Run one Agent session and always terminate an internally owned Worker."""
+
+    owned_executor = executor is None
+    active_executor = executor or ExecutionClient(timeout_seconds=90, memory_limit_mb=4096)
+    try:
+        return _run_unified_agent_session(
+            provider,
+            model,
+            question,
+            context,
+            complete,
+            data_descs=data_descs,
+            selected_tools=selected_tools,
+            conversation_context=conversation_context,
+            executor=active_executor,
+            max_steps=max_steps,
+            max_error_retries=max_error_retries,
+        )
+    finally:
+        if owned_executor:
+            active_executor.close()

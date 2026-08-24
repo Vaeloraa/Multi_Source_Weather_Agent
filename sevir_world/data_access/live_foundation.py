@@ -301,7 +301,12 @@ def _compatible_standardized_cache(
     return cached
 
 
-def fetch_era5_live(request: dict[str, Any], *, artifact_dir: str | Path | None = None) -> dict[str, Any]:
+def fetch_era5_live(
+    request: dict[str, Any],
+    *,
+    artifact_dir: str | Path | None = None,
+    cache_only: bool = False,
+) -> dict[str, Any]:
     """Fetch the live request's ERA5 inputs through CDS and write a manifest."""
     if not isinstance(request, dict) or request.get("data_policy") != "live":
         raise ValueError("fetch_era5_live requires a normalized live request")
@@ -310,6 +315,17 @@ def fetch_era5_live(request: dict[str, Any], *, artifact_dir: str | Path | None 
         "standardized",
         source_role="era5_environment_analysis",
     )
+    # Early prepared cases stored one legacy standardized manifest containing
+    # both ERA5 and Aurora metadata.  That entry is correctly classified as an
+    # Aurora product, while the raw layer still owns the request identity and
+    # artifact directory for the ERA5 files.  Reuse that raw identity instead
+    # of treating a complete cache as an ERA5 miss.
+    if cached_manifest is None:
+        cached_manifest = read_manifest(
+            str(request.get("event_id") or "_live"),
+            "raw",
+            source_role="era5_environment_input",
+        )
     cached_superset = _compatible_standardized_cache(request, cached_manifest)
     if cached_superset is not None:
         output_dir = Path(str(cached_superset["artifact_dir"]))
@@ -332,9 +348,18 @@ def fetch_era5_live(request: dict[str, Any], *, artifact_dir: str | Path | None 
         manifest["requested_request_key"] = request.get("canonical_request_key")
         manifest["canonical_request_key"] = expected_key
         manifest["cache_compatibility"] = "exact" if cached_superset is None else "cached_superset"
+        # Legacy manifests may retain staging-directory paths from the machine
+        # that prepared the cache. The verified files above are authoritative.
+        manifest["artifact_dir"] = str(output_dir)
+        manifest["files"] = {
+            "surface": str(output_dir / "surface.nc"),
+            "pressure": str(output_dir / "pressure.nc"),
+            "static": str(output_dir / "static.nc"),
+        }
         manifest["target_timeseries"] = json.loads(cached_summary.read_text(encoding="utf-8"))
+        manifest["target_timeseries_file"] = str(cached_summary)
         return manifest
-    if os.getenv("SEVIR_CACHE_ONLY", "").strip().lower() in {"1", "true", "yes", "on"}:
+    if cache_only or os.getenv("SEVIR_CACHE_ONLY", "").strip().lower() in {"1", "true", "yes", "on"}:
         raise RuntimeError(
             f"cache_only_miss: refusing to download ERA5 for request {expected_key}"
         )
@@ -497,7 +522,12 @@ def fetch_era5_live(request: dict[str, Any], *, artifact_dir: str | Path | None 
     return manifest
 
 
-def run_aurora_live(request: dict[str, Any], *, artifact_dir: str | Path | None = None) -> dict[str, Any]:
+def run_aurora_live(
+    request: dict[str, Any],
+    *,
+    artifact_dir: str | Path | None = None,
+    cache_only: bool = False,
+) -> dict[str, Any]:
     """Run the checked-in Aurora wrapper on a live ERA5 artifact directory."""
     if not isinstance(request, dict) or request.get("data_policy") != "live":
         raise ValueError("run_aurora_live requires a normalized live request")
@@ -541,7 +571,7 @@ def run_aurora_live(request: dict[str, Any], *, artifact_dir: str | Path | None 
                 }
         except (OSError, ValueError, TypeError):
             pass
-    if os.getenv("SEVIR_CACHE_ONLY", "").strip().lower() in {"1", "true", "yes", "on"}:
+    if cache_only or os.getenv("SEVIR_CACHE_ONLY", "").strip().lower() in {"1", "true", "yes", "on"}:
         raise RuntimeError(
             "cache_only_miss: refusing to run Aurora for request "
             f"{request.get('canonical_request_key', request.get('request_key', ''))}"

@@ -19,14 +19,14 @@ _VENDOR = _ROOT / "vendor"
 if _VENDOR.is_dir() and str(_VENDOR) not in sys.path:
     sys.path.insert(0, str(_VENDOR))
 
-__all__ = ["DataIndexer", "ExecutionEnvironment", "ExecutionRequest"]
+__all__ = ["Aurora", "CasCast", "Geolocator", "Sevir", "RequestBinding"]
 
 
 def __getattr__(name: str) -> Any:
-    if name == "ExecutionRequest":
-        from .agent.contracts import ExecutionRequest
-        return ExecutionRequest
-    if name in {"DataIndexer", "ExecutionEnvironment"}:
-        from .agent.runtime import DataIndexer, ExecutionEnvironment
-        return {"DataIndexer": DataIndexer, "ExecutionEnvironment": ExecutionEnvironment}[name]
+    if name in {"Aurora", "CasCast", "Geolocator", "Sevir"}:
+        from .capabilities import Aurora, CasCast, Geolocator, Sevir
+        return {"Aurora": Aurora, "CasCast": CasCast, "Geolocator": Geolocator, "Sevir": Sevir}[name]
+    if name == "RequestBinding":
+        from .capabilities.base import RequestBinding
+        return RequestBinding
     raise AttributeError(name)

@@ -555,12 +555,10 @@ def get_uploaded_vil_sequence_forecast(
     history_payload: Any
     forecast_payload: Any
     ensemble_payload: Any = []
-    member_summaries: list[dict[str, Any]] = []
     if live_metadata is not None:
         member_values = _vil_display_values(
             np.asarray(arrays["ensemble_members"], dtype=np.float32)
         )
-        member_summaries = _ensemble_member_summaries(member_values, 133.0)
         member_records = []
         for member_index, member in enumerate(member_values):
             member_frames = np.ascontiguousarray(member, dtype=np.float32)
@@ -622,7 +620,6 @@ def get_uploaded_vil_sequence_forecast(
         "ensemble_count": ensemble_count,
         "ensemble_members_available": bool(live_metadata is not None),
         "ensemble": ensemble_payload,
-        "member_summaries": member_summaries,
         "member_seeds": member_seeds,
         "output_type": (
             "ensemble_mean" if stochastic and ensemble_count > 1

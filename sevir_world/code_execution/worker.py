@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import ast
 import io
 import json
 import os
@@ -9,6 +8,7 @@ import traceback
 import builtins
 import contextlib
 import uuid
+from dataclasses import fields, is_dataclass
 from pathlib import Path
 from typing import Any
 
@@ -34,7 +34,7 @@ from sevir_world.code_execution.safety import (  # noqa: E402
 )
 from sevir_world.agent.contracts import ExecutionRequest  # noqa: E402
 from sevir_world.agent.runtime import ExecutionEnvironment  # noqa: E402
-from sevir_world.agent.schema import classify_execution_error  # noqa: E402
+from sevir_world.agent.diagnostics import classify_execution_error  # noqa: E402
 
 
 class BoundedOutput(io.StringIO):
@@ -72,6 +72,11 @@ def _json_safe(value: Any, _depth: int = 0) -> Any:
             "elements": int(value.size),
             "guidance": "return selected slices or arrays reductions instead of a raw grid",
         }
+    if is_dataclass(value) and not isinstance(value, type):
+        return {
+            field.name: _json_safe(getattr(value, field.name), _depth + 1)
+            for field in fields(value)
+        }
     if isinstance(value, dict):
         return {str(key): _json_safe(item, _depth + 1) for key, item in value.items()}
     if isinstance(value, (list, tuple, set)):
@@ -105,16 +110,16 @@ class WorkerSession:
         self.namespace: dict[str, Any] | None = None
         self.step = 0
 
-    def bind(self, request: ExecutionRequest, replay_results: dict[str, Any]) -> None:
+    def bind(self, request: ExecutionRequest) -> None:
         if self.request is not None:
             if request != self.request:
                 raise ValueError(
-                    "persistent worker cannot change data_descs or selected_tools "
+                    "persistent worker cannot change request binding or selected resources "
                     "inside one execution session"
                 )
             return
         self.request = request
-        self.environment = ExecutionEnvironment(request, replay_results=replay_results)
+        self.environment = ExecutionEnvironment(request)
         self.runtime_schema = self.environment.describe()
         self.namespace = {
             "__builtins__": builtins.__dict__,
@@ -138,10 +143,11 @@ def _execute_payload(session: WorkerSession, payload: dict[str, Any]) -> dict[st
         request = ExecutionRequest.from_payload(
             list(payload.get("data_descs") or []),
             list(payload.get("selected_tools") or []),
+            dict(payload.get("binding") or {}),
         )
         tree = validate_code(code, request.selected_tools)
         phase = "environment_setup"
-        session.bind(request, dict(payload.get("tool_result_cache") or {}))
+        session.bind(request)
         environment = session.environment
         runtime_schema = session.runtime_schema
         namespace = session.namespace
@@ -152,24 +158,10 @@ def _execute_payload(session: WorkerSession, payload: dict[str, Any]) -> dict[st
         def safe_print(*values: Any, sep: str = " ", end: str = "\n") -> None:
             captured.write(sep.join(str(value) for value in values) + end)
 
-        # A previous_result field is accepted only for compatibility with an
-        # older parent. In a persistent session the real Python object already
-        # exists in ``namespace`` and must never be replaced by a JSON copy.
-        if session.step == 0 and payload.get("previous_result") is not None:
-            namespace["result"] = payload["previous_result"]
-        defines_run = any(
-            isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == "run"
-            for node in tree.body
-        )
         with contextlib.redirect_stdout(captured), contextlib.redirect_stderr(captured):
             exec(compile(tree, "<sevir-agent>", "exec"), namespace)
-            run_function = namespace.get("run") if defines_run else None
-            if defines_run and callable(run_function):
-                phase = "generated_run"
-                result_value = environment.invoke(run_function)
-            else:
-                phase = "generated_exec"
-                result_value = namespace.get("result", namespace.get("output"))
+            phase = "generated_exec"
+            result_value = namespace.get("result", namespace.get("output"))
             result = _json_safe(result_value)
         session.step += 1
         phase = "result_serialization"
@@ -190,8 +182,6 @@ def _execute_payload(session: WorkerSession, payload: dict[str, Any]) -> dict[st
             "stdout": captured.getvalue(),
             "result_json_characters": result_characters,
             "runtime_schema": runtime_schema,
-            "evidence_ledger": _json_safe(environment.recorder.ledger.prompt_context()),
-            "tool_result_cache_updates": _json_safe(environment.recorder.reusable_results()),
             "worker_session": {"id": session.session_id, "step": session.step},
         }
     except Exception as error:
@@ -227,8 +217,6 @@ def _execute_payload(session: WorkerSession, payload: dict[str, Any]) -> dict[st
             "error_location": error_location,
             "calls": _json_safe(environment.recorder.calls[call_start:]) if environment else [],
             "runtime_schema": runtime_schema if environment else None,
-            "evidence_ledger": _json_safe(environment.recorder.ledger.prompt_context()) if environment else None,
-            "tool_result_cache_updates": _json_safe(environment.recorder.reusable_results()) if environment else {},
             "repair": classify_execution_error(type(error).__name__, str(error)),
             "worker_session": {"id": session.session_id, "step": session.step},
         }

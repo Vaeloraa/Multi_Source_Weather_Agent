@@ -4,26 +4,23 @@ from __future__ import annotations
 
 import ast
 from pathlib import Path
-from typing import Any
 
 from .contracts import CANONICAL_ARGUMENTS
 
 
 POLICY = """Runtime notes:
 - Selected data and tool names are injected directly into the execution namespace.
-  Write ordinary Python and assign compact JSON-safe output to ``result``. A
-  synchronous ``run(...)`` function remains accepted for compatibility but is optional.
-- After a successful step, its JSON-safe ``result`` is injected into the next
-  execution, so follow-up code can refine it without recomputing successful work.
+  Write ordinary Python and assign compact JSON-safe output to ``result``.
+- The same Python namespace and capability instances remain alive across Agent steps.
+  Keep useful Python values in variables and refine them without reloading them.
 - This is standard Python in an isolated worker. Imports, NumPy, xarray,
   comprehensions, helper functions, normal array methods and matplotlib are available.
-- The complete public method names and signatures are listed below. Call only those
-  methods and do not spend an execution step rediscovering the interface.
-- Event methods with event_id=None use the request-bound event. Upload methods with
-  upload_id=None use the request-bound upload. Pass an explicit identity only when the
-  question deliberately switches to another event or upload.
-- Tool dictionaries use one stable read root: result.data. Status is available through
-  result.status/result.result_status. Raw arrays stay in the Worker.
+- Each method below includes its real signature, return type, and a minimal example;
+  together these are the complete contract. Do not probe it with dir() or inspect.
+- Capability instances already contain the request event, upload, location and time.
+  Optional identity arguments are only for deliberately switching subjects.
+- Successful methods return ordinary Python values directly. Use attributes, lists,
+  dictionaries and NumPy arrays exactly as documented; there is no result.data wrapper.
 - Selected tools are available capabilities, not mandatory workflow steps. Choose the
   data, calculations, thresholds and figures that answer the user's actual question.
 - Keep large arrays inside the worker and return compact evidence, conclusions and
@@ -34,12 +31,12 @@ POLICY = """Runtime notes:
 """
 
 
-_CAPABILITY_SOURCE = Path(__file__).resolve().parents[1] / "tools" / "capabilities.py"
+_CAPABILITY_SOURCE = Path(__file__).resolve().parents[1] / "capabilities" / "weather.py"
 TOOL_IMPLEMENTATIONS: dict[str, tuple[Path, str]] = {
-    "sevir": (_CAPABILITY_SOURCE, "SevirCapability"),
-    "geolocator": (_CAPABILITY_SOURCE, "GeolocatorCapability"),
-    "cascast": (_CAPABILITY_SOURCE, "CasCastCapability"),
-    "aurora": (_CAPABILITY_SOURCE, "AuroraCapability"),
+    "sevir": (_CAPABILITY_SOURCE, "Sevir"),
+    "geolocator": (_CAPABILITY_SOURCE, "Geolocator"),
+    "cascast": (_CAPABILITY_SOURCE, "CasCast"),
+    "aurora": (_CAPABILITY_SOURCE, "Aurora"),
 }
 
 
@@ -71,14 +68,8 @@ def _format_arguments(node: ast.FunctionDef) -> str:
 def extract_function_docstrings(
     path: str | Path,
     class_name: str,
-    allowed_methods: tuple[str, ...] | None = None,
 ) -> tuple[str, list[dict[str, str]]]:
-    """Read every public method from the implementation itself.
-
-    ``allowed_methods`` is accepted for source compatibility and intentionally
-    ignored: documentation must describe the real selected object, not a second
-    method-level permission protocol.
-    """
+    """Read every public method from the implementation itself."""
 
     path = Path(path)
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
@@ -93,6 +84,7 @@ def extract_function_docstrings(
             {
                 "name": node.name,
                 "arguments": _format_arguments(node),
+                "returns": ast.unparse(node.returns) if node.returns else "Any",
                 "docstring": ast.get_docstring(node, clean=True) or "No description.",
             }
         )
@@ -113,7 +105,9 @@ def class_api_docs(
     if class_doc:
         lines.append(class_doc[:600])
     for method in methods:
-        lines.append(f"{tool_name}.{method['name']}({method['arguments']})")
+        lines.append(
+            f"{tool_name}.{method['name']}({method['arguments']}) -> {method['returns']}"
+        )
         docstring = " ".join(method["docstring"].split())
         if doc_limit == -1:
             docstring = ""
@@ -126,12 +120,8 @@ def class_api_docs(
 
 def selected_api_reference(
     selected_tools: tuple[str, ...],
-    registry: dict[str, type[Any]] | None = None,
-    dataset_schema: dict[str, Any] | None = None,
     *,
-    compact: bool = False,
     include_policy: bool = True,
-    method_map: dict[str, tuple[str, ...]] | None = None,
 ) -> str:
     sections = [
         "Injected request data:\n"
@@ -140,11 +130,6 @@ def selected_api_reference(
         "relative_minutes and missing_value_code. Use normal dict/NumPy operations. The four "
         "capability objects are lazy: merely receiving them imports no model or data backend."
     ]
-    if dataset_schema:
-        sections.append(
-            "Actual runtime dataset description (loaded before generation):\n"
-            + repr(dataset_schema)
-        )
     for name in CANONICAL_ARGUMENTS:
         if name == "ds" or name not in selected_tools:
             continue

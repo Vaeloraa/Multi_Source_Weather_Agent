@@ -25,23 +25,6 @@ AGENT_CAPABILITIES = (
     "aurora",
 )
 
-# Compatibility is handled once at the request boundary.  Legacy classes and
-# modules remain importable, but generated programs only receive the four
-# capability objects below.  Analysis/render helpers no longer become tools;
-# their work is ordinary Python in the persistent worker.
-LEGACY_CAPABILITY_MAP = {
-    "data": "sevir",
-    "history": "sevir",
-    "statistics": "sevir",
-    "geolocator": "geolocator",
-    "forecaster": "cascast",
-    "uncertainty": "cascast",
-    "metrics": "cascast",
-    "foundation": "aurora",
-    "visualizer": None,
-    "arrays": None,
-}
-
 Completion = Callable[
     [dict[str, str], str, list[dict[str, str]], float], dict[str, Any]
 ]
@@ -79,8 +62,7 @@ def bind_request_assets(
         }
 
     descriptions = data_descs_from_context(payload)
-    has_upload = any(item.get("source") == "upload" for item in descriptions)
-    if event_id and not has_upload:
+    if event_id:
         descriptions = data_descs_for_event(
             event_id,
             descriptions,
@@ -95,9 +77,10 @@ def bind_request_assets(
         tools = ["ds"]
         for item in selected:
             requested = str(item).strip()
-            migrated = LEGACY_CAPABILITY_MAP.get(requested, requested)
-            if migrated in AGENT_CAPABILITIES and migrated not in tools:
-                tools.append(migrated)
+            if requested not in AGENT_CAPABILITIES:
+                raise ValueError(f"unknown capability: {requested}")
+            if requested not in tools:
+                tools.append(requested)
     else:
         tools = list(AGENT_CAPABILITIES)
 

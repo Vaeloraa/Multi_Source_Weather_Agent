@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from ..capabilities.base import RequestBinding
+
 
 CANONICAL_ARGUMENTS = (
     "ds",
@@ -13,7 +15,7 @@ CANONICAL_ARGUMENTS = (
 )
 DEFAULT_SELECTED_TOOLS = CANONICAL_ARGUMENTS
 DATA_CONTRACT_VERSION = "sevir-data-v3"
-_DATA_SOURCES = {"upload", "sevir", "foundation_case"}
+_DATA_SOURCES = {"upload", "sevir"}
 
 
 @dataclass(frozen=True)
@@ -22,15 +24,17 @@ class ExecutionRequest:
 
     data_descs: tuple[dict[str, Any], ...]
     selected_tools: tuple[str, ...]
+    binding: RequestBinding
 
     @classmethod
     def from_payload(
         cls,
         data_descs: list[dict[str, Any]] | tuple[dict[str, Any], ...] | None,
         selected_tools: list[str] | tuple[str, ...] | None,
+        binding: dict[str, Any] | RequestBinding | None = None,
     ) -> "ExecutionRequest":
         raw = normalize_data_descs(data_descs)
-        priority = {"upload": 0, "sevir": 1, "foundation_case": 2}
+        priority = {"upload": 0, "sevir": 1}
         descriptions = tuple(
             sorted(
                 raw,
@@ -48,7 +52,17 @@ class ExecutionRequest:
         ordered = tuple(name for name in CANONICAL_ARGUMENTS if name in requested)
         if "ds" not in ordered:
             raise ValueError("selected_tools must include ds")
-        return cls(descriptions, ordered)
+        if isinstance(binding, RequestBinding):
+            bound = binding
+        else:
+            inferred = dict(binding or {})
+            for item in descriptions:
+                if item.get("source") == "upload" and not inferred.get("upload_id"):
+                    inferred["upload_id"] = item.get("upload_id")
+                if item.get("source") == "sevir" and not inferred.get("event_id"):
+                    inferred["event_id"] = item.get("event_id")
+            bound = RequestBinding.from_mapping(inferred)
+        return cls(descriptions, ordered, bound)
 
 
 def normalize_data_descs(
@@ -68,7 +82,7 @@ def normalize_data_descs(
         if source not in _DATA_SOURCES:
             raise ValueError(
                 f"data_descs[{index}].source must be one of "
-                "upload, sevir, foundation_case"
+                "upload, sevir"
             )
         item["source"] = source
         key_name = "upload_id" if source == "upload" else "event_id"
@@ -91,19 +105,28 @@ def data_descs_from_context(context: dict[str, Any] | None) -> list[dict[str, An
     bound = dict(context or {})
     if bound.get("data_descs"):
         return normalize_data_descs(bound["data_descs"])
-    if bound.get("sequence_upload_id"):
-        return normalize_data_descs([
-            {"source": "upload", "upload_id": str(bound["sequence_upload_id"])}
-        ])
-    if bound.get("upload_id"):
-        return normalize_data_descs([
-            {"source": "upload", "upload_id": str(bound["upload_id"])}
-        ])
+    descriptions: list[dict[str, Any]] = []
+    upload_id = bound.get("sequence_upload_id") or bound.get("upload_id")
+    if upload_id:
+        descriptions.append({"source": "upload", "upload_id": str(upload_id)})
     if bound.get("event_id"):
-        return normalize_data_descs([
-            {"source": "sevir", "event_id": str(bound["event_id"])}
-        ])
-    return []
+        descriptions.append({"source": "sevir", "event_id": str(bound["event_id"])})
+    return normalize_data_descs(descriptions)
+
+
+def request_binding_from_context(context: dict[str, Any] | None) -> RequestBinding:
+    """Build the only request identity passed to capability constructors."""
+
+    value = dict(context or {})
+    preflight = value.get("live_preflight")
+    if isinstance(preflight, dict):
+        for key in (
+            "analysis_time_utc", "latitude", "longitude", "region",
+            "forecast_leads_hours", "history_before_hours", "history_after_hours",
+        ):
+            if value.get(key) is None and preflight.get(key) is not None:
+                value[key] = preflight[key]
+    return RequestBinding.from_mapping(value)
 
 
 def data_descs_for_event(

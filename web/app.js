@@ -375,7 +375,6 @@ function persistedResult(data) {
       api: run.api || run.tool_name,
       arguments: run.arguments || {},
       status: run.status,
-      result_status: run.result_status,
       result_summary: run.result_summary || "",
       error: run.error || "",
       elapsed_ms: run.elapsed_ms,
@@ -2456,7 +2455,33 @@ form.addEventListener("submit", async (event) => {
       }),
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.answer || data.error || "运行失败");
+    if (!response.ok) {
+      const answer = data.answer || "本轮请求未完成，请查看执行记录中的失败步骤。";
+      const technicalError = typeof data.error === "object"
+        ? String(data.error?.message || data.error?.type || "运行失败")
+        : String(data.error || "运行失败");
+      const meta = compactTurnMeta(data);
+      completePendingMessage(pendingMessage, answer, meta, true);
+      chatHistory.push({
+        role: "assistant",
+        text: answer,
+        meta,
+        result: persistedResult(data),
+        timestamp: Date.now(),
+        turnId,
+      });
+      persistChatHistory();
+      persistConversationIndex();
+      try {
+        await renderConversationList();
+        renderResult(data, pendingMessage);
+      } catch (displayError) {
+        console.error("Agent失败记录未能完整显示：", displayError);
+      }
+      renderError(technicalError);
+      conversationStatus.textContent = "请求失败；真实原因和失败步骤已保留在本轮执行记录中。";
+      return;
+    }
     const answer = data.answer || "本轮分析完成，但没有返回文字结论。";
     const meta = compactTurnMeta(data);
     completePendingMessage(pendingMessage, answer, meta, data.status === "error");

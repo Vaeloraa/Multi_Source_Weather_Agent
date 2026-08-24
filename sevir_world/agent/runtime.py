@@ -1,37 +1,27 @@
 from __future__ import annotations
 
 import json
-import hashlib
 import importlib
 import inspect
+from dataclasses import fields, is_dataclass
 from typing import Any, Callable
 
 import numpy as np
 
 from .contracts import CANONICAL_ARGUMENTS, ExecutionRequest
-from .schema import (
+from .diagnostics import (
     SCHEMA_VERSION,
     describe_dataset,
-    describe_value,
-    normalize_tool_result,
 )
-from ..data_access.tool_contracts import tool_card, classify_tool_error
-from .ledger import EvidenceLedger
 from ..data_access.uploads import _load_uploaded_vil, _load_uploaded_vil_sequence
-from ..data_access.config import ROOT
 
 
 _TOOL_IMPORTS = {
-    "sevir": ("sevir_world.tools.capabilities", "SevirCapability"),
-    "geolocator": ("sevir_world.tools.capabilities", "GeolocatorCapability"),
-    "cascast": ("sevir_world.tools.capabilities", "CasCastCapability"),
-    "aurora": ("sevir_world.tools.capabilities", "AuroraCapability"),
+    "sevir": ("sevir_world.capabilities.weather", "Sevir"),
+    "geolocator": ("sevir_world.capabilities.weather", "Geolocator"),
+    "cascast": ("sevir_world.capabilities.weather", "CasCast"),
+    "aurora": ("sevir_world.capabilities.weather", "Aurora"),
 }
-
-# Product-facing names and legacy program names resolve to one component; the
-# aliases never create a second backend instance or a duplicate tool record.
-TOOL_ALIASES: dict[str, str] = {}
-
 
 _LOADED_TOOL_CLASSES: dict[str, type[Any]] = {}
 
@@ -39,7 +29,7 @@ _LOADED_TOOL_CLASSES: dict[str, type[Any]] = {}
 def _load_tool_class(name: str) -> type[Any]:
     """Import one concrete tool only when the bound request needs it."""
 
-    canonical = TOOL_ALIASES.get(str(name), str(name))
+    canonical = str(name)
     if canonical not in _TOOL_IMPORTS:
         raise RuntimeError(f"unknown worker tool: {name}")
     loaded = _LOADED_TOOL_CLASSES.get(canonical)
@@ -51,7 +41,7 @@ def _load_tool_class(name: str) -> type[Any]:
 
 
 def canonical_tool_name(name: str) -> str:
-    return TOOL_ALIASES.get(str(name), str(name))
+    return str(name)
 
 
 def _trace_result(result: Any) -> Any:
@@ -64,8 +54,23 @@ def _trace_result(result: Any) -> Any:
                 "elements": int(value.size),
                 "trace_values_omitted": True,
             }
+        if is_dataclass(value) and not isinstance(value, type):
+            return {
+                "type": type(value).__name__,
+                **{
+                    field.name: array_metadata(getattr(value, field.name))
+                    for field in fields(value)
+                },
+            }
         if isinstance(value, dict):
             return {str(key): array_metadata(item) for key, item in value.items()}
+        if isinstance(value, (list, tuple)) and len(value) > 16:
+            return {
+                "type": type(value).__name__,
+                "count": len(value),
+                "first": array_metadata(value[0]),
+                "last": array_metadata(value[-1]),
+            }
         if isinstance(value, (list, tuple)):
             return [array_metadata(item) for item in value]
         return value
@@ -120,46 +125,11 @@ def _trace_arguments(arguments: dict[str, Any]) -> dict[str, Any]:
     return compact
 
 
-def tool_result_cache_key(name: str, arguments: dict[str, Any]) -> str:
-    payload = json.dumps(
-        {"api": str(name), "arguments": arguments},
-        ensure_ascii=True,
-        sort_keys=True,
-        default=str,
-    )
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
-
-
-def _cacheable_tool_result(value: Any, limit: int = 20_000) -> Any | None:
-    """Return a lossless JSON copy suitable for parent-host replay."""
-    try:
-        encoded = json.dumps(value, ensure_ascii=False, sort_keys=True)
-    except (TypeError, ValueError):
-        return None
-    if len(encoded.encode("utf-8")) > limit:
-        return None
-    return json.loads(encoded)
-
-
 class ToolUsageRecorder:
     """Record bounded results and failures for every injected tool call."""
 
-    def __init__(self, replay_results: dict[str, Any] | None = None) -> None:
+    def __init__(self) -> None:
         self.calls: list[dict[str, Any]] = []
-        self.ledger = EvidenceLedger()
-        self._replay_results = dict(replay_results or {})
-        self._reusable_results: dict[str, Any] = {}
-
-    def lookup(self, name: str, arguments: dict[str, Any]) -> Any | None:
-        key = tool_result_cache_key(name, arguments)
-        if key not in self._replay_results:
-            return None
-        # The payload crossed a JSON boundary and is already detached from the
-        # parent's state. Normalize it exactly like a fresh backend response.
-        return normalize_tool_result(name, self._replay_results[key])
-
-    def reusable_results(self) -> dict[str, Any]:
-        return dict(self._reusable_results)
 
     def __call__(
         self,
@@ -169,39 +139,20 @@ class ToolUsageRecorder:
         error: Exception | None = None,
         cache_hit: bool = False,
     ) -> None:
-        card = tool_card(name)
-        domain_status = result.get("status") if isinstance(result, dict) else None
-        unavailable_statuses = {
-            "not_found", "unavailable", "partial", "dependency_missing", "inputs_missing",
-            "awaiting_assets", "inference_failed", "extraction_failed", "error", "unsupported",
-        }
-        execution_status = "unavailable" if domain_status in unavailable_statuses else ("error" if error else "ok")
+        execution_status = "error" if error else "ok"
         item: dict[str, Any] = {
             "step": len(self.calls) + 1,
             "api": name,
             "arguments": _trace_arguments(arguments),
             "status": execution_status,
-            "result_status": domain_status,
             "cache_hit": bool(cache_hit),
-            "cache_key": tool_result_cache_key(name, arguments),
-            "tool_contract": {
-                "name": card.name, "output_role": card.output_role,
-                "retry_policy": card.retry_policy, "cache_policy": card.cache_policy,
-            },
         }
         if error:
             item["error"] = {"type": type(error).__name__, "message": str(error)}
-            item["error_classification"] = classify_tool_error(error)
         else:
             item["result"] = _trace_result(result)
-            # Keep the actual return paths/types available for a later repair;
-            # values themselves remain omitted from the trace.
-            item["result_schema"] = describe_value(result)
-            reusable = _cacheable_tool_result(result)
-            if reusable is not None:
-                self._reusable_results[item["cache_key"]] = reusable
+            item["return_type"] = type(result).__name__
         self.calls.append(item)
-        self.ledger.record(name, arguments, result, execution_status)
 
 
 class ToolInterface:
@@ -209,16 +160,11 @@ class ToolInterface:
 
     def __init__(
         self,
-        name_or_component: str | Any,
-        component_or_methods: Any | tuple[str, ...],
-        allowed_methods: tuple[str, ...] | None = None,
+        name: str,
+        component: Any,
     ) -> None:
-        if isinstance(name_or_component, str):
-            self._name = str(name_or_component)
-            self._component = component_or_methods
-        else:
-            self._name = "tool"
-            self._component = name_or_component
+        self._name = str(name)
+        self._component = component
 
     def __getattr__(self, name: str) -> Any:
         if name.startswith("_"):
@@ -363,14 +309,12 @@ class DataIndexer:
                 event_id = str(description.get("event_id", "")).strip()
                 if not event_id:
                     raise ValueError("SEVIR data_desc requires event_id")
-                metadata = normalize_tool_result(
-                    "sevir.event", get_sevir_event_metadata(event_id)
-                )
+                metadata = get_sevir_event_metadata(event_id)
+                if metadata.get("status") != "ok":
+                    raise ValueError(f"SEVIR metadata unavailable for {event_id}")
                 event_metadata = metadata["record"]
                 if str(description.get("representation", "")).lower() == "observation_sequence":
-                    loaded = normalize_tool_result(
-                        "sevir.observations", load_sevir_vil_event(event_id, 0, 48)
-                    )
+                    loaded = load_sevir_vil_event(event_id, 0, 48)
                     if str(loaded.get("status", "")) != "ok":
                         raise ValueError(
                             f"SEVIR observation sequence unavailable for {event_id}: "
@@ -436,37 +380,6 @@ class DataIndexer:
                             "metadata": event_metadata,
                         })
                     )
-            elif source == "foundation_case":
-                from ..data_access.foundation import get_case_foundation_artifacts
-                from ..data_access.foundation_validation import build_foundation_bundle
-                event_id = str(description.get("event_id", "")).strip()
-                if not event_id:
-                    raise ValueError("foundation_case data_desc requires event_id")
-                registry = get_case_foundation_artifacts(event_id)
-                evidence_path = ROOT / "data" / "era5_cases" / event_id / "artifacts" / "case_evidence.json"
-                evidence = (
-                    json.loads(evidence_path.read_text(encoding="utf-8"))
-                    if evidence_path.is_file()
-                    else registry.get("evidence")
-                )
-                bundle = build_foundation_bundle(event_id, evidence, registry.get("artifacts", []))
-                datasets.append(DatasetRecord({
-                    "source": "foundation_case",
-                    "role": "environmental_evidence",
-                    "dataset_id": f"foundation:{event_id}",
-                    "event_id": event_id,
-                    "selection": str(description.get("selection", "explicit_case")),
-                    "evidence": evidence,
-                    "evidence_bundle": bundle,
-                    "validation": bundle["validation"],
-                    "artifacts": registry.get("artifacts", []),
-                    "status": registry.get("status", "not_found"),
-                    "capabilities": ["era5_reanalysis", "aurora_forecast", "verification"] if registry.get("status") == "ok" else [],
-                    "interpretation_limit": (
-                        "SEVIR/CasCast local VIL, ERA5 retrospective environment and Aurora "
-                        "large-scale forecast are separate evidence roles."
-                    ),
-                }))
             elif source == "upload":
                 from ..data_access.uploads import list_uploaded_records
                 upload_id = str(description.get("upload_id", "")).strip()
@@ -516,68 +429,24 @@ class DataIndexer:
         return datasets
 
 
-def describe_request_data(data_descs: list[dict[str, Any]] | tuple[dict[str, Any], ...]) -> dict[str, Any]:
-    """Load only metadata/raw-shape information for prompt construction.
-
-    This mirrors Zephyrus's dataset_describe endpoint.  It is best-effort so a
-    missing optional HDF5 asset does not prevent the Agent from receiving the
-    static contract and producing a useful repairable execution.
-    """
-    try:
-        loaded = DataIndexer().load(tuple(dict(item) for item in data_descs))
-        return describe_dataset(loaded)
-    except Exception as error:
-        return {
-            "schema_version": SCHEMA_VERSION,
-            "object": "ds",
-            "status": "unavailable",
-            "error_type": type(error).__name__,
-            "error": str(error)[:500],
-            "requested_data_descs": [dict(item) for item in data_descs],
-        }
-
-
 class ExecutionEnvironment:
     """Assemble request-scoped resources in the canonical Zephyrus order."""
 
     def __init__(
         self,
         request: ExecutionRequest,
-        replay_results: dict[str, Any] | None = None,
     ) -> None:
         self.request = request
-        self.recorder = ToolUsageRecorder(replay_results)
+        self.recorder = ToolUsageRecorder()
         requested_names = {
             canonical_tool_name(name)
             for name in request.selected_tools
             if name not in {"ds"}
         }
         self.resources: dict[str, Any] = {"ds": DataIndexer().load(request.data_descs)}
-        default_event_id = next(
-            (
-                str(item.get("event_id", "")).strip().upper()
-                for item in request.data_descs
-                if item.get("source") in {"sevir", "foundation_case"}
-                and item.get("event_id")
-            ),
-            "",
-        )
-        default_upload_id = next(
-            (
-                str(item.get("upload_id", "")).strip()
-                for item in request.data_descs
-                if item.get("source") == "upload" and item.get("upload_id")
-            ),
-            "",
-        )
-
         def load_capability(name: str) -> Any:
             tool_class = _load_tool_class(name)
-            return tool_class(
-                self.recorder,
-                default_event_id=default_event_id,
-                default_upload_id=default_upload_id,
-            )
+            return tool_class(self.recorder, request.binding)
 
         for name in CANONICAL_ARGUMENTS:
             if name == "ds" or name not in requested_names:
@@ -586,9 +455,6 @@ class ExecutionEnvironment:
                 name,
                 lambda selected=name: load_capability(selected),
             )
-
-    def arguments(self) -> list[Any]:
-        return [self.resources[name] for name in CANONICAL_ARGUMENTS if name in self.request.selected_tools]
 
     def describe(self) -> dict[str, Any]:
         """Expose the actual request-scoped data shape and selected tool contract."""
@@ -605,6 +471,3 @@ class ExecutionEnvironment:
                 if name != "ds"
             ],
         }
-
-    def invoke(self, run_function: Callable[..., Any]) -> Any:
-        return run_function(*self.arguments())
