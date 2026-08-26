@@ -1,0 +1,158 @@
+{
+  "started_at": "2026-08-25T03:56:57.479549",
+  "finished_at": "2026-08-25T03:57:29.365201",
+  "event_id": "R19062708588472",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_30s_budget",
+  "diagnosis_required": true,
+  "ids": {
+    "single": "41b96dc5be6f40a9ba4cd86eebefb08a",
+    "sequence": "2bd23c97384b4fcabb961cd28719d3dc",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 1,
+      "question": "我看不懂这张天气图。请用普通人能理解的话告诉我现在大概是什么情况，也说明仅凭这一张图还不能确定什么。",
+      "kind": "single",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_30s_budget",
+      "elapsed_seconds": 30.58,
+      "server_elapsed_ms": 30571,
+      "route_mode": "unified_agent",
+      "termination_reason": "max_steps_without_solution",
+      "answer": "本轮已保留全部真实执行结果，但智能体没有在分析轮次内完成最终回答。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "event_resolution": {
+        "status": "resolved",
+        "event_id": "R19062708588472",
+        "source": "bound_upload_exact_match"
+      },
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "3d7864fce7f44129bc55805799b45380",
+      "trace_file": null,
+      "session_id": "acceptance42-q01-843a2f14-d789-44d3-ad99-0e4b0ca890e0",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "error",
+          "error_type": "TypeError",
+          "error": "tuple indices must be integers or slices, not str",
+          "elapsed_ms": 3688.7,
+          "summary": "代码执行失败：TypeError"
+        },
+        {
+          "attempt": 2,
+          "action": "format_repair",
+          "status": "error",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 9041.55,
+          "summary": "模型输出缺少可执行动作或最终回答标签"
+        },
+        {
+          "attempt": 3,
+          "action": "execute",
+          "status": "error",
+          "error_type": "ExecutionTimeout",
+          "error": "execution exceeded 0.115599 seconds",
+          "elapsed_ms": 683.91,
+          "summary": "代码执行失败：ExecutionTimeout"
+        },
+        {
+          "attempt": 3,
+          "action": "stop",
+          "status": "incomplete",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 0,
+          "summary": "Agent已执行0次，但未在轮次内形成最终回答"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "sevir.observations",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "start_frame": 0,
+            "end_frame": 49
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 8700.96,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 21282.28
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 9041.52,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 8551.33
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 8435.4,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 115.75
+        }
+      ],
+      "request_trace": {
+        "request_id": "3d7864fce7f44129bc55805799b45380",
+        "route": "/api/run",
+        "status": "incomplete",
+        "started_at": "2026-08-24T19:56:58.792068+00:00",
+        "stages": [
+          {
+            "stage_id": "3d7864fce7f44129bc55805799b45380:1",
+            "name": "unified_agent",
+            "status": "incomplete",
+            "elapsed_ms": 30568.75,
+            "termination_reason": "max_steps_without_solution",
+            "model_calls": 3,
+            "code_executions": 0
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 0,
+        "tool_calls": 2,
+        "model_calls": 3,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "max_steps_without_solution",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 30570.09,
+        "finished_at": "2026-08-24T19:57:29.362159+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null,
+      "diagnosis_required": true
+    }
+  ]
+}

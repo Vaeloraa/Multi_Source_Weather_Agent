@@ -1,0 +1,142 @@
+{
+  "started_at": "2026-08-25T03:26:04.852891",
+  "finished_at": "2026-08-25T03:26:35.700513",
+  "event_id": "R19062708588472",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_30s_budget",
+  "diagnosis_required": true,
+  "ids": {
+    "single": "636b5247608149ad8378ab0aea53f217",
+    "sequence": "0e7c29e70ad940c585b3ec152669ecc9",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 2,
+      "question": "图里哪里最值得注意？如果现有资料能够定位，请告诉我现实中大概在什么地方，并在图上标出来。",
+      "kind": "single",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_30s_budget",
+      "elapsed_seconds": 30.47,
+      "server_elapsed_ms": 30463,
+      "route_mode": "unified_agent",
+      "termination_reason": "model_failure_after_observation",
+      "answer": "本轮已经获得并保留真实执行结果，但最终模型调用失败，未生成完整文字结论。请查看步骤和已生成图表。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "event_resolution": {
+        "status": "resolved",
+        "event_id": "R19062708588472",
+        "source": "bound_upload_exact_match"
+      },
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "8fface9a4c9c44db9f1e4678b3e838d7",
+      "trace_file": null,
+      "session_id": "acceptance42-q02-cef87ce0-df9e-4e90-bae0-3b6b48c27ba5",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 3626.21,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 2,
+          "action": "model",
+          "status": "error",
+          "error_type": "RuntimeError",
+          "error": "固定模型 deepseek-v3.2 调用失败；未尝试其他模型：The read operation timed out",
+          "elapsed_ms": 12976.27,
+          "summary": "模型调用失败：RuntimeError"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "sevir.observations",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "start_frame": 0,
+            "end_frame": 49
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 13488.95,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 16495.56
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 12976.24,
+          "status": "error",
+          "error_type": "RuntimeError",
+          "remaining_ms_after": 0.0
+        }
+      ],
+      "request_trace": {
+        "request_id": "8fface9a4c9c44db9f1e4678b3e838d7",
+        "route": "/api/run",
+        "status": "partial",
+        "started_at": "2026-08-24T19:26:05.234276+00:00",
+        "stages": [
+          {
+            "stage_id": "8fface9a4c9c44db9f1e4678b3e838d7:1",
+            "name": "unified_agent",
+            "status": "partial",
+            "elapsed_ms": 30462.21,
+            "termination_reason": "model_failure_after_observation",
+            "model_calls": 2,
+            "code_executions": 1
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 0,
+        "tool_calls": 3,
+        "model_calls": 2,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "model_failure_after_observation",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 30463.01,
+        "finished_at": "2026-08-24T19:26:35.697288+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null,
+      "diagnosis_required": true
+    }
+  ]
+}

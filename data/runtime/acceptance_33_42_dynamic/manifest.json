@@ -1,0 +1,918 @@
+{
+  "started_at": "2026-08-26T00:30:21.472451",
+  "finished_at": "2026-08-26T00:40:01.605784",
+  "event_id": "R19062708588472",
+  "question_count": 42,
+  "result_count": 3,
+  "status_counts": {
+    "failed": 2,
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_90s_budget",
+  "diagnosis_required": true,
+  "ids": {
+    "single": "8c6ba32962264f1a880497510d115375",
+    "sequence": "f283f66f4e4740cdb77e3f3e000a4c42",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 33,
+      "question": "现在是2019年6月27日03:00 UTC，我想了解美国北达科他州（North Dakota）及周边未来6到24小时的天气。大范围环境有没有值得留意的变化，最早可能在哪个时段开始影响这里？请先用Aurora做区域判断，不要一开始就锁定某个城市或局地事件。",
+      "kind": "event_environment",
+      "status": "failed",
+      "failure_class": "agent_or_protocol_failure",
+      "elapsed_seconds": 137.26,
+      "server_elapsed_ms": 137236,
+      "route_mode": "unified_agent",
+      "termination_reason": "consecutive_execution_errors",
+      "answer": "本轮代码连续执行失败，完整步骤已保留供检查。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "73e222fedc2b4fdf8b9aa35a33a23148",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\73e222fedc2b4fdf8b9aa35a33a23148.trace.json",
+      "session_id": "acceptance42-foundation-dabc7eea-9b9d-4f05-a1ec-ad78bad87dd5",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "error",
+          "error_type": "KeyError",
+          "error": "'td2m_c'",
+          "elapsed_ms": 6334.53,
+          "summary": "代码执行失败：KeyError"
+        },
+        {
+          "attempt": 2,
+          "action": "execute",
+          "status": "error",
+          "error_type": "NameError",
+          "error": "name 'env' is not defined",
+          "elapsed_ms": 3760.7,
+          "summary": "代码执行失败：NameError"
+        },
+        {
+          "attempt": 3,
+          "action": "execute",
+          "status": "error",
+          "error_type": "KeyError",
+          "error": "'u10_ms'",
+          "elapsed_ms": 5813.63,
+          "summary": "代码执行失败：KeyError"
+        },
+        {
+          "attempt": 3,
+          "action": "stop",
+          "status": "error",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 0,
+          "summary": "连续3次执行失败，停止本轮"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "aurora.regional_fields",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": null,
+            "analysis_time_utc": "2019-06-27T03:00:00Z",
+            "latitude": null,
+            "longitude": null,
+            "region": {
+              "north": 53.05,
+              "west": -111.98,
+              "south": 41.3,
+              "east": -88.23
+            },
+            "forecast_leads": [
+              6,
+              12,
+              18,
+              24
+            ],
+            "history_before_hours": 6,
+            "history_after_hours": 24,
+            "data_policy": "cached"
+          }
+        },
+        {
+          "api": "geolocator.place",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "place": "North Dakota",
+            "country_codes": "us"
+          }
+        },
+        {
+          "api": "aurora.regional_fields",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": null,
+            "analysis_time_utc": "2019-06-27T03:00:00Z",
+            "latitude": null,
+            "longitude": null,
+            "region": {
+              "north": 53.05,
+              "west": -111.98,
+              "south": 41.3,
+              "east": -88.23
+            },
+            "forecast_leads": [
+              6,
+              12,
+              18,
+              24
+            ],
+            "history_before_hours": 6,
+            "history_after_hours": 24,
+            "data_policy": "cached"
+          }
+        },
+        {
+          "api": "geolocator.place",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "place": "North Dakota",
+            "country_codes": "us"
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 39348.36,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 260651.15
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 41538.18,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 212776.89
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 39864.38,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 169151.34
+        }
+      ],
+      "request_trace": {
+        "request_id": "73e222fedc2b4fdf8b9aa35a33a23148",
+        "route": "/api/run",
+        "status": "error",
+        "started_at": "2026-08-25T16:30:22.002163+00:00",
+        "stages": [
+          {
+            "stage_id": "73e222fedc2b4fdf8b9aa35a33a23148:1",
+            "name": "unified_agent",
+            "status": "error",
+            "elapsed_ms": 137234.19,
+            "termination_reason": "consecutive_execution_errors",
+            "model_calls": 3,
+            "code_executions": 0
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 2,
+        "tool_calls": 4,
+        "model_calls": 3,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "consecutive_execution_errors",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 137245.24,
+        "finished_at": "2026-08-25T16:32:39.247425+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null
+    },
+    {
+      "number": 34,
+      "question": "请把刚才Aurora发现的最值得关注的信号落实成可查找局地观测的时空窗口：它大致覆盖北达科他州的哪一部分、对应什么UTC时段、主要需要留意什么变化？重点先看起报后约6小时的第一个窗口，不要重复整段大范围预报，也不要把环境信号说成已经发生的局地灾害。",
+      "kind": "event_environment",
+      "status": "failed",
+      "failure_class": "agent_or_protocol_failure",
+      "elapsed_seconds": 141.73,
+      "server_elapsed_ms": 141692,
+      "route_mode": "unified_agent",
+      "termination_reason": "consecutive_execution_errors",
+      "answer": "本轮代码连续执行失败，完整步骤已保留供检查。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "2ef6d76261b247eaa1a12eb580ffade1",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\2ef6d76261b247eaa1a12eb580ffade1.trace.json",
+      "session_id": "acceptance42-foundation-dabc7eea-9b9d-4f05-a1ec-ad78bad87dd5",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "error",
+          "error_type": "KeyError",
+          "error": "'u10_ms'",
+          "elapsed_ms": 4202.13,
+          "summary": "代码执行失败：KeyError"
+        },
+        {
+          "attempt": 2,
+          "action": "execute",
+          "status": "error",
+          "error_type": "NameError",
+          "error": "name 'fcst_6h' is not defined",
+          "elapsed_ms": 3867.89,
+          "summary": "代码执行失败：NameError"
+        },
+        {
+          "attempt": 3,
+          "action": "execute",
+          "status": "error",
+          "error_type": "KeyError",
+          "error": "'cape_jkg'",
+          "elapsed_ms": 5567.89,
+          "summary": "代码执行失败：KeyError"
+        },
+        {
+          "attempt": 3,
+          "action": "stop",
+          "status": "error",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 0,
+          "summary": "连续3次执行失败，停止本轮"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "aurora.regional_fields",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": null,
+            "analysis_time_utc": "2019-06-27T03:00:00Z",
+            "latitude": null,
+            "longitude": null,
+            "region": {
+              "north": 53.05,
+              "west": -111.98,
+              "south": 41.3,
+              "east": -88.23
+            },
+            "forecast_leads": [
+              6,
+              12,
+              18,
+              24
+            ],
+            "history_before_hours": 6,
+            "history_after_hours": 24,
+            "data_policy": "cached"
+          }
+        },
+        {
+          "api": "aurora.regional_fields",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": null,
+            "analysis_time_utc": "2019-06-27T03:00:00Z",
+            "latitude": null,
+            "longitude": null,
+            "region": {
+              "north": 53.05,
+              "west": -111.98,
+              "south": 41.3,
+              "east": -88.23
+            },
+            "forecast_leads": [
+              6,
+              12,
+              18,
+              24
+            ],
+            "history_before_hours": 6,
+            "history_after_hours": 24,
+            "data_policy": "cached"
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 47963.78,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 252032.43
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 43273.03,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 204556.49
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 36217.05,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 164470.96
+        }
+      ],
+      "request_trace": {
+        "request_id": "2ef6d76261b247eaa1a12eb580ffade1",
+        "route": "/api/run",
+        "status": "error",
+        "started_at": "2026-08-25T16:32:39.272915+00:00",
+        "stages": [
+          {
+            "stage_id": "2ef6d76261b247eaa1a12eb580ffade1:1",
+            "name": "unified_agent",
+            "status": "error",
+            "elapsed_ms": 141670.57,
+            "termination_reason": "consecutive_execution_errors",
+            "model_calls": 3,
+            "code_executions": 0
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 2,
+        "tool_calls": 2,
+        "model_calls": 3,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "consecutive_execution_errors",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 141706.25,
+        "finished_at": "2026-08-25T16:35:00.979208+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null
+    },
+    {
+      "number": 35,
+      "question": "请按照这个区域和时间窗口检索SEVIR目录，把实际匹配到的局地天气事件都列出来。说明每个事件的编号、时间、位置或覆盖范围、与Aurora信号的时空关系，以及目标时刻前是否有一小时连续观测；如果没有多个匹配，也请如实说明，不要为了凑数扩大范围。",
+      "kind": "event_environment",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_90s_budget",
+      "elapsed_seconds": 300.62,
+      "server_elapsed_ms": 300603,
+      "route_mode": "unified_agent",
+      "termination_reason": "model_failure_after_observation",
+      "answer": "本轮已经获得并保留真实执行结果，但最终模型调用失败，未生成完整文字结论。请查看步骤和已生成图表。",
+      "artifacts": [
+        {
+          "artifact_id": "609a1e0c5e0e4c1eb7fdbad15c305ea0",
+          "url": "/api/artifacts/609a1e0c5e0e4c1eb7fdbad15c305ea0.png",
+          "image_url": "/api/artifacts/609a1e0c5e0e4c1eb7fdbad15c305ea0.png",
+          "title": "Agent生成图",
+          "description": "由本轮生成代码基于真实数据绘制。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        }
+      ],
+      "artifact_count": 1,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "50e368f532954709858748e1452268c3",
+      "trace_file": null,
+      "session_id": "acceptance42-foundation-dabc7eea-9b9d-4f05-a1ec-ad78bad87dd5",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 7932.72,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 2,
+          "action": "execute",
+          "status": "error",
+          "error_type": "NameError",
+          "error": "name 'nearby_events' is not defined",
+          "elapsed_ms": 4459.57,
+          "summary": "代码执行失败：NameError"
+        },
+        {
+          "attempt": 3,
+          "action": "execute",
+          "status": "error",
+          "error_type": "ExecutionTimeout",
+          "error": "execution exceeded 166.879 seconds",
+          "elapsed_ms": 167438.52,
+          "summary": "代码执行失败：ExecutionTimeout"
+        },
+        {
+          "attempt": 4,
+          "action": "model",
+          "status": "error",
+          "error_type": "TimeoutError",
+          "error": "统一Agent本轮总时间已达到上限",
+          "elapsed_ms": 0.54,
+          "summary": "模型调用失败：TimeoutError"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "sevir.search",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "query": "",
+            "year": 2019,
+            "month": 6,
+            "event_type": "",
+            "region": null,
+            "start_time_utc": null,
+            "end_time_utc": null,
+            "require_prior_minutes": null,
+            "limit": 100
+          }
+        },
+        {
+          "api": "sevir.nearby",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "latitude": 47.175,
+            "longitude": -100.105,
+            "radius_km": 1108.1975450856028,
+            "year": 2019,
+            "month": 6,
+            "event_type": "",
+            "limit": 50
+          }
+        },
+        {
+          "api": "aurora.regional_fields",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": null,
+            "analysis_time_utc": "2019-06-27T03:00:00Z",
+            "latitude": null,
+            "longitude": null,
+            "region": {
+              "north": 53.05,
+              "west": -111.98,
+              "south": 41.3,
+              "east": -88.23
+            },
+            "forecast_leads": [
+              6,
+              12,
+              18,
+              24
+            ],
+            "history_before_hours": 6,
+            "history_after_hours": 24,
+            "data_policy": "cached"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S837670"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S837670"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S835047"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S835047"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S822059"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S822059"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S836485"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S836485"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S840550"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S840550"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S842399"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S842399"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S838131"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S838131"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S818623"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S818623"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S836483"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S836483"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S834294"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S834294"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S837523"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S837523"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S834546"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S834546"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S837266"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S837266"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S816355"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S816355"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S816221"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S816221"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S835549"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S835549"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S829732"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S829732"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S834169"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S834169"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S838743"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S838743"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S831916"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "S831916"
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 33624.55,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 266374.09
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 43649.11,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 214789.63
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 43449.98,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 166879.25
+        }
+      ],
+      "request_trace": {
+        "request_id": "50e368f532954709858748e1452268c3",
+        "route": "/api/run",
+        "status": "partial",
+        "started_at": "2026-08-25T16:35:00.997914+00:00",
+        "stages": [
+          {
+            "stage_id": "50e368f532954709858748e1452268c3:1",
+            "name": "unified_agent",
+            "status": "partial",
+            "elapsed_ms": 300568.74,
+            "termination_reason": "model_failure_after_observation",
+            "model_calls": 4,
+            "code_executions": 1
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 1,
+        "tool_calls": 43,
+        "model_calls": 4,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "model_failure_after_observation",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 300600.19,
+        "finished_at": "2026-08-25T16:40:01.598096+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null,
+      "diagnosis_required": true
+    }
+  ]
+}

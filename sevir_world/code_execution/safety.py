@@ -8,6 +8,7 @@ This module deliberately does not redefine Python syntax or NumPy semantics.
 """
 
 import ast
+import importlib.util
 import re
 from typing import Any
 
@@ -41,6 +42,28 @@ def validate_code(code: str, selected_tools: tuple[str, ...]) -> ast.Module:
         raise UnsafeCodeError(f"invalid Python syntax: {error}") from error
 
     return tree
+
+
+def validate_imports(tree: ast.Module, available_modules: tuple[str, ...]) -> None:
+    """Reject missing imports before generated code can call a weather tool."""
+
+    available = set(available_modules)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            names = [item.name for item in node.names]
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            names = [node.module]
+        else:
+            continue
+        for name in names:
+            root = name.split(".", 1)[0]
+            if root in available:
+                continue
+            if importlib.util.find_spec(root) is None:
+                raise UnsafeCodeError(
+                    f"generated code imports unavailable module {root!r}; "
+                    f"available modules: {', '.join(sorted(available))}"
+                )
 
 
 def count_external_tool_calls(code: str, selected_tools: tuple[str, ...]) -> int:

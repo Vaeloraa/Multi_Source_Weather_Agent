@@ -12,7 +12,12 @@ from typing import Any
 
 import numpy as np
 
-from .catalog import _catalog_vil_event, _load_vil_array, _local_hdf5_path
+from ..tools.sevir.Catalog import (
+    _catalog_subject_key,
+    _catalog_vil_event,
+    _load_vil_array,
+    _local_hdf5_path,
+)
 from ..domain.cascast_alignment import build_validation_manifest
 from .config import (
     AUTOENCODER_CHECKPOINT,
@@ -95,17 +100,39 @@ def live_cascast_readiness() -> dict[str, Any]:
     }
 
 
-def _cache_path(event_id: str, segment: int, ensemble_members: int) -> Path:
-    return CASCAST_LIVE_CACHE / f"{event_id}_s{segment}_ens{ensemble_members}.npz"
+def _cache_path(subject_key: str, segment: int, ensemble_members: int) -> Path:
+    """Return the canonical cache path for one exact SEVIR catalog row."""
+    record = _catalog_vil_event(subject_key)
+    token = _catalog_subject_key(record).split(":", 1)[1]
+    return CASCAST_LIVE_CACHE / f"sevir_{token}_s{segment}_ens{ensemble_members}.npz"
 
 
-def _newest_cache(event_id: str, segment: int = 0) -> Path | None:
-    files = sorted(
-        CASCAST_LIVE_CACHE.glob(f"{event_id}_s{segment}_ens*.npz"),
+def _matching_cache(
+    subject_key: str,
+    segment: int = 0,
+    ensemble_members: int | None = None,
+) -> Path | None:
+    """Find a canonical or verified legacy cache for one exact catalog row."""
+    record = _catalog_vil_event(subject_key)
+    token = _catalog_subject_key(record).split(":", 1)[1]
+    member_pattern = str(int(ensemble_members)) if ensemble_members is not None else "*"
+    patterns = (
+        f"sevir_{token}_s{segment}_ens{member_pattern}.npz",
+        f"{record['id']}_s{segment}_ens{member_pattern}.npz",
+    )
+    candidates = sorted(
+        (path for pattern in patterns for path in CASCAST_LIVE_CACHE.glob(pattern)),
         key=lambda item: item.stat().st_mtime,
         reverse=True,
     ) if CASCAST_LIVE_CACHE.exists() else []
-    return files[0] if files else None
+    for path in candidates:
+        try:
+            with np.load(path, allow_pickle=False) as payload:
+                if int(payload["hdf5_row"].item()) == int(record["file_index"]):
+                    return path
+        except (OSError, ValueError, KeyError):
+            continue
+    return None
 
 
 def _uploaded_cache_path(
@@ -134,7 +161,7 @@ def _remote_event_input_path(record: dict[str, Any], segment: int) -> Path:
 
 
 def run_local_cascast_inference(
-    event_id: str,
+    subject_key: str,
     segment: int = 0,
     ensemble_members: int = 10,
     force: bool = False,
@@ -154,10 +181,12 @@ def run_local_cascast_inference(
     if not readiness["ready"]:
         missing = [name for name, available in readiness["assets"].items() if not available]
         raise RuntimeError(f"Local CasCast assets are incomplete: {', '.join(missing)}")
-    record = _catalog_vil_event(event_id)
-    output = _cache_path(record["id"], segment, ensemble_members)
-    if output.is_file() and not force:
-        return {"status": "ok", "cache_hit": True, "output": str(output)}
+    record = _catalog_vil_event(subject_key)
+    exact_key = _catalog_subject_key(record)
+    output = _cache_path(exact_key, segment, ensemble_members)
+    existing = _matching_cache(exact_key, segment, ensemble_members)
+    if existing is not None and not force:
+        return {"status": "ok", "cache_hit": True, "output": str(existing)}
     if os.getenv("SEVIR_CACHE_ONLY", "").strip().lower() in {"1", "true", "yes", "on"}:
         raise RuntimeError(
             f"cache_only_miss: refusing to run CasCast for event {record['id']}, "
@@ -174,6 +203,8 @@ def run_local_cascast_inference(
             "--cascast-root", str(CASCAST_ROOT),
             "--hdf5", str(hdf5_path),
             "--event-id", record["id"],
+            "--hdf5-row", str(record["file_index"]),
+            "--source-id", exact_key,
             "--segment", str(segment),
             "--ensemble-members", str(ensemble_members),
             "--precision", "fp16",
@@ -192,10 +223,11 @@ def run_local_cascast_inference(
             "--output", str(temporary),
         ]
     with _INFERENCE_LOCK:
-        if output.is_file() and not force:
+        existing = _matching_cache(exact_key, segment, ensemble_members)
+        if existing is not None and not force:
             if temporary_input is not None:
                 temporary_input.unlink(missing_ok=True)
-            return {"status": "ok", "cache_hit": True, "output": str(output)}
+            return {"status": "ok", "cache_hit": True, "output": str(existing)}
         try:
             completed = subprocess.run(
                 command,
@@ -287,17 +319,19 @@ def run_uploaded_cascast_inference(
 
 @lru_cache(maxsize=16)
 def load_live_cascast_ensemble(
-    event_id: str,
+    subject_key: str,
     segment: int = 0,
     ensemble_members: int | None = None,
 ) -> tuple[dict[str, np.ndarray], dict[str, Any]]:
-    path = (
-        _cache_path(event_id, segment, _validate_ensemble_members(ensemble_members))
-        if ensemble_members is not None
-        else _newest_cache(event_id, segment)
+    path = _matching_cache(
+        subject_key,
+        segment,
+        _validate_ensemble_members(ensemble_members) if ensemble_members is not None else None,
     )
     if path is None:
-        raise ValueError(f"No local CasCast cache exists for event {event_id}, segment {segment}")
+        raise ValueError(
+            f"No local CasCast cache exists for subject {subject_key}, segment {segment}"
+        )
     with np.load(path, allow_pickle=False) as payload:
         arrays = {
             key: np.asarray(payload[key])
@@ -307,8 +341,9 @@ def load_live_cascast_ensemble(
             )
         }
         hdf5_row = int(payload["hdf5_row"])
-    record = _catalog_vil_event(event_id)
+    record = _catalog_vil_event(subject_key)
     metadata = {
+        "subject_key": _catalog_subject_key(record),
         "event_id": record["id"],
         "segment": segment,
         "h5_file": record["file_name"],

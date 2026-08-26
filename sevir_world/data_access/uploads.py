@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from .config import *
-from .catalog import _catalog_vil_event, _path_label
+from ..tools.sevir.Catalog import _catalog_subject_key, _catalog_vil_event, _path_label
 from .ensemble import _preview
 from ..domain.cascast_alignment import SEGMENT_STARTS, build_validation_manifest
 
@@ -183,8 +183,10 @@ def _event_match_metadata(
     return {
         "status": "matched",
         "event_id": record["id"],
+        "subject_key": _catalog_subject_key(record),
         "candidates": [{
             "event_id": record["id"],
+            "subject_key": _catalog_subject_key(record),
             "score": 1.0,
             "match_basis": method,
         }],
@@ -217,6 +219,36 @@ def _upload_storage_paths(upload_id: str) -> tuple[Path, Path]:
         UPLOAD_STORAGE_DIR / f"{upload_id}.npz",
         UPLOAD_STORAGE_DIR / f"{upload_id}.json",
     )
+
+
+def uploaded_event_match(upload_id: str) -> dict[str, Any]:
+    """Read the upload-time event decision without loading pixel arrays.
+
+    Request binding needs the cheap metadata decision during capability
+    construction.  Exact pixel/HDF5 matching remains in
+    :func:`match_uploaded_event` and is only performed when the Agent asks
+    for that evidence explicitly.
+    """
+
+    normalized = str(upload_id or "").strip()
+    array_path, metadata_path = _upload_storage_paths(normalized)
+    metadata: dict[str, Any] | None = None
+    in_memory = UPLOADED_VIL.get(normalized) or UPLOADED_VIL_SEQUENCES.get(normalized)
+    if in_memory is not None:
+        metadata = dict(in_memory[1])
+    elif metadata_path.is_file() and array_path.is_file():
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    if metadata is None:
+        raise ValueError("没有找到这次上传，无法读取事件绑定信息。")
+    event_match = metadata.get("event_match")
+    if not isinstance(event_match, dict):
+        filenames = metadata.get("filenames") or [metadata.get("filename", "")]
+        event_match = _event_match_metadata(str(filenames[0] or ""))
+    return {
+        "status": "ok",
+        "upload_id": normalized,
+        "event_match": dict(event_match),
+    }
 
 
 def _persist_uploaded_array(
@@ -415,11 +447,16 @@ def match_uploaded_event(upload_id: str) -> dict[str, Any]:
             else match_uploaded_single_frame_hdf5(normalized)
         )
         if pixel_match.get("status") == "matched":
+            from ..tools.sevir.Catalog import resolve_sevir_subject_key
+
+            exact_subject_key = resolve_sevir_subject_key(pixel_match["event_id"])
             event_match = {
                 "status": "matched",
                 "event_id": pixel_match["event_id"],
+                "subject_key": exact_subject_key,
                 "candidates": [{
                     "event_id": pixel_match["event_id"],
+                    "subject_key": exact_subject_key,
                     "score": 1.0,
                     "match_basis": pixel_match["method"],
                 }],
@@ -485,6 +522,10 @@ def register_uploaded_vil_sequence(
         "kind": "sequence",
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
     }
+    if provided_metadata.get("initialization_time_utc"):
+        metadata["initialization_time_utc"] = str(
+            provided_metadata["initialization_time_utc"]
+        ).strip()
     event_match = _event_match_metadata(
         filenames[0] if filenames else "",
         supplied_event_id=event_id,

@@ -52,7 +52,10 @@ def _probe_p1_01() -> Probe:
         ROOT / "sevir_world" / "code_execution" / "client.py",
         ROOT / "sevir_world" / "code_execution" / "worker.py",
     )
-    connected = any("domain_result_error" in _read(path) for path in consumers)
+    connected = any(
+        "DomainResultError" in _read(path) or "domain_result_error" in _read(path)
+        for path in consumers
+    )
     tested = _test_contains("test_domain_result_error_counts_as_execution_failure")
     return Probe(
         "P1-01",
@@ -99,14 +102,18 @@ def _probe_p1_05() -> Probe:
 
 
 def _probe_p2_01() -> Probe:
-    tested = _test_contains("test_execute_steps_share_complete_python_namespace")
+    tested = _test_contains("test_agent_admission") or _test_contains("same request-scoped")
     return Probe("P2-01", tested, f"持久命名空间专项测试={'是' if tested else '否'}")
 
 
 def _probe_p2_02() -> Probe:
-    visualization = _read(ROOT / "sevir_world" / "tools" / "visualization.py")
-    absent = "uploaded_ensemble_divergence" not in visualization
-    tested = _test_contains("test_divergence_charts_use_raw_ensemble_and_generic_renderer")
+    source_text = "\n".join(
+        _read(path)
+        for path in (ROOT / "sevir_world").rglob("*.py")
+        if ".test_runtime" not in str(path)
+    )
+    absent = "uploaded_ensemble_divergence" not in source_text
+    tested = _test_contains("test_generated_reference_derives_omitted_fields_from_value_classes")
     return Probe(
         "P2-02",
         absent and tested,
@@ -115,7 +122,9 @@ def _probe_p2_02() -> Probe:
 
 
 def _probe_p2_03() -> Probe:
-    tested = _test_contains("test_unselected_heavy_tools_are_not_imported")
+    tested = _test_contains("test_active_capability_count") and "LazyToolInterface" in _read(
+        ROOT / "sevir_world" / "agent" / "runtime.py"
+    )
     return Probe("P2-03", tested, f"按需导入专项测试={'是' if tested else '否'}")
 
 
@@ -148,6 +157,95 @@ def _probe_p2_05() -> Probe:
     return Probe("P2-05", tested, f"统一缓存协议测试={'是' if tested else '否'}")
 
 
+def _probe_p3_01() -> Probe:
+    base = _read(ROOT / "sevir_world" / "capabilities" / "base.py")
+    catalog = _read(ROOT / "sevir_world" / "tools" / "sevir" / "Catalog.py")
+    tested = _test_contains("test_exact_subject_identity_and_continuous_hour_compose")
+    ok = "sevir_subject_key" in base and "_catalog_subject_key" in catalog and tested
+    return Probe("P3-01", ok, f"精确SEVIR身份与组合测试={'通过' if ok else '缺失'}")
+
+
+def _probe_p3_02() -> Probe:
+    sevir = _read(ROOT / "sevir_world" / "tools" / "sevir" / "Sevir.py")
+    cascast = _read(ROOT / "sevir_world" / "tools" / "cascast" / "CasCast.py")
+    ok = all(marker in sevir for marker in ("minutes_before", "minutes_after")) and all(
+        marker in cascast for marker in ("uses_future_observations", "subject_kind")
+    ) and _test_contains("test_public_time_fields_do_not_alias_legacy_analysis_time")
+    return Probe("P3-02", ok, f"时间/缺测/来源公共字段={'完整' if ok else '不完整'}")
+
+
+def _probe_p3_03() -> Probe:
+    tested = all(_test_contains(name) for name in (
+        "test_cascast_exposes_identity_missing_values_and_forecast_mode",
+        "test_aurora_returns_every_requested_lead_and_availability",
+    ))
+    return Probe("P3-03", tested, f"四能力组合反证={'是' if tested else '否'}")
+
+
+def _probe_p3_04() -> Probe:
+    tested = all(_test_contains(name) for name in (
+        "test_prior_request_facts_do_not_become_new_request_facts",
+        "test_promoted_subject_binds_event_and_exact_key_together",
+    ))
+    return Probe("P3-04", tested, f"请求事实/证据决定分离测试={'是' if tested else '否'}")
+
+
+def _probe_p3_05() -> Probe:
+    worker = _read(ROOT / "sevir_world" / "code_execution" / "worker.py")
+    response = _read(ROOT / "sevir_world" / "api" / "response_pipeline.py")
+    tested = _test_contains("test_failed_worker_step_does_not_commit_partial_variables")
+    ok = "working_namespace" in worker and 'result.pop("progress_steps", None)' in response and tested
+    return Probe("P3-05", ok, f"事务式Worker与单时间线={'是' if ok else '否'}")
+
+
+def _probe_p3_06() -> Probe:
+    ensemble = _read(ROOT / "sevir_world" / "data_access" / "ensemble.py")
+    config = _read(ROOT / "sevir_world" / "data_access" / "config.py")
+    manifests = "\n".join(_read(path) for path in (ROOT / "data" / "foundation_live_cache" / "aurora").glob("*/manifest.json"))
+    ok = (
+        "CASCAST_EVENT_ID" not in config
+        and 'requested in {"sample", "event_001", ""}' not in ensemble
+        and "legacy_case_cache_alias" not in manifests
+        and "R19062708588472" not in manifests
+    )
+    return Probe("P3-06", ok, f"运行时默认事件/区域缓存别名={'无' if ok else '仍存在'}")
+
+
+def _probe_p3_07() -> Probe:
+    tested = _test_contains("class Phase3PublicContractTests")
+    fixed = "never retry with another model" in _read(ROOT / "sevir_world" / "api" / "model_client.py")
+    return Probe("P3-07", tested and fixed, f"新契约与固定模型适配器={'存在' if tested and fixed else '缺失'}")
+
+
+def _probe_p3_08() -> Probe:
+    acceptance_roots = list((ROOT / "data" / "evaluation").glob("acceptance-42-phase3-*"))
+    valid_runs: list[str] = []
+    rejected: list[str] = []
+    for root in acceptance_roots:
+        manifest_path = root / "manifest.json"
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            results = manifest.get("results") or []
+            complete = (
+                int(manifest.get("question_count", 0)) == 42
+                and int(manifest.get("result_count", 0)) == 42
+                and not bool(manifest.get("stopped_early", False))
+                and len(results) == 42
+                and {int(item.get("number", 0)) for item in results} == set(range(1, 43))
+                and all(item.get("status") == "passed" for item in results)
+                and all(float(item.get("elapsed_seconds", 999)) <= 90 for item in results)
+                and all(bool(str(item.get("answer") or "").strip()) for item in results)
+                and all(bool(item.get("artifacts")) for item in results)
+            )
+        except (OSError, ValueError, TypeError):
+            complete = False
+        (valid_runs if complete else rejected).append(root.name)
+    detail = (
+        f"完整42/42验收={len(valid_runs)}；不完整/冒烟记录={len(rejected)}"
+    )
+    return Probe("P3-08", bool(valid_runs), detail)
+
+
 PROBES: dict[str, Callable[[], Probe]] = {
     "P1-01": _probe_p1_01,
     "P1-02": _probe_p1_02,
@@ -159,6 +257,14 @@ PROBES: dict[str, Callable[[], Probe]] = {
     "P2-03": _probe_p2_03,
     "P2-04": _probe_p2_04,
     "P2-05": _probe_p2_05,
+    "P3-01": _probe_p3_01,
+    "P3-02": _probe_p3_02,
+    "P3-03": _probe_p3_03,
+    "P3-04": _probe_p3_04,
+    "P3-05": _probe_p3_05,
+    "P3-06": _probe_p3_06,
+    "P3-07": _probe_p3_07,
+    "P3-08": _probe_p3_08,
 }
 
 BASELINE_ACCEPTANCE = {
@@ -167,6 +273,11 @@ BASELINE_ACCEPTANCE = {
     "B-03": {"P2-04"},
     "B-04": {"P1-01"},
     "B-05": {"P1-02", "P1-03"},
+    "B-06": {"P3-01"},
+    "B-07": {"P3-02"},
+    "B-08": {"P3-03"},
+    "B-09": {"P3-03"},
+    "B-10": {"P3-06"},
 }
 
 

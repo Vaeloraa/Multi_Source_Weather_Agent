@@ -1,0 +1,34 @@
+{
+  "status": "available",
+  "aurora_request_key": "d642984aa795f338595ed8532346aecc",
+  "identity": {
+    "forecast_leads_hours": [6, 12, 18, 24],
+    "initialization_time_utc": "2019-06-27T03:00:00Z",
+    "model": "era5+aurora",
+    "model_version": "",
+    "pressure_levels": [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000],
+    "region": {
+      "area_north_west_south_east": [53.05, -111.98, 41.3, -88.23]
+    },
+    "resolution": "0.25/0.25",
+    "variables": [
+      "10m_u_component_of_wind",
+      "10m_v_component_of_wind",
+      "2m_temperature",
+      "geopotential",
+      "mean_sea_level_pressure",
+      "specific_humidity",
+      "temperature",
+      "u_component_of_wind",
+      "v_component_of_wind"
+    ]
+  },
+  "artifact_dir": "artifacts",
+  "files": {
+    "surface": "artifacts/surface.nc",
+    "pressure": "artifacts/pressure.nc",
+    "static": "artifacts/static.nc",
+    "forecast": "artifacts/aurora_forecast_aligned_0300.npz",
+    "forecast_summary": "artifacts/aurora_forecast_aligned_0300.json"
+  }
+}

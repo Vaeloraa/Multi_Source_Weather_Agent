@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field, replace
 from typing import Any
 
 from ..capabilities.base import RequestBinding
@@ -19,12 +19,37 @@ _DATA_SOURCES = {"upload", "sevir"}
 
 
 @dataclass(frozen=True)
-class ExecutionRequest:
-    """Data identities and coarse tool objects injected into one namespace."""
+class RequestContext:
+    """Canonical immutable request facts resolved before Agent execution."""
 
     data_descs: tuple[dict[str, Any], ...]
     selected_tools: tuple[str, ...]
     binding: RequestBinding
+    visual_artifact_required: bool = False
+
+
+@dataclass(frozen=True)
+class ExecutionRequest:
+    """One canonical request context plus cross-request evidence state."""
+
+    context: RequestContext
+    evidence_state: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def data_descs(self) -> tuple[dict[str, Any], ...]:
+        return self.context.data_descs
+
+    @property
+    def selected_tools(self) -> tuple[str, ...]:
+        return self.context.selected_tools
+
+    @property
+    def binding(self) -> RequestBinding:
+        return self.context.binding
+
+    @property
+    def visual_artifact_required(self) -> bool:
+        return self.context.visual_artifact_required
 
     @classmethod
     def from_payload(
@@ -32,6 +57,8 @@ class ExecutionRequest:
         data_descs: list[dict[str, Any]] | tuple[dict[str, Any], ...] | None,
         selected_tools: list[str] | tuple[str, ...] | None,
         binding: dict[str, Any] | RequestBinding | None = None,
+        evidence_state: dict[str, Any] | None = None,
+        visual_artifact_required: bool = False,
     ) -> "ExecutionRequest":
         raw = normalize_data_descs(data_descs)
         priority = {"upload": 0, "sevir": 1}
@@ -61,8 +88,54 @@ class ExecutionRequest:
                     inferred["upload_id"] = item.get("upload_id")
                 if item.get("source") == "sevir" and not inferred.get("event_id"):
                     inferred["event_id"] = item.get("event_id")
+                if item.get("source") == "sevir" and not inferred.get("sevir_subject_key"):
+                    inferred["sevir_subject_key"] = item.get("subject_key")
             bound = RequestBinding.from_mapping(inferred)
-        return cls(descriptions, ordered, bound)
+        bound = _reconcile_asset_identities(descriptions, bound)
+        return cls(
+            RequestContext(
+                descriptions,
+                ordered,
+                bound,
+                bool(visual_artifact_required),
+            ),
+            dict(evidence_state or {}),
+        )
+
+
+def _reconcile_asset_identities(
+    descriptions: tuple[dict[str, Any], ...],
+    binding: RequestBinding,
+) -> RequestBinding:
+    """Make loaded records and request-bound capabilities share one identity.
+
+    A request may contain both an upload and its matched SEVIR event, but it
+    must never bind a capability to a different identity than the records of
+    the same source injected as ``ds``.
+    """
+
+    updates: dict[str, str] = {}
+    for source, field_name, description_field in (
+        ("upload", "upload_id", "upload_id"),
+        ("sevir", "event_id", "event_id"),
+        ("sevir", "sevir_subject_key", "subject_key"),
+    ):
+        identities = tuple(dict.fromkeys(
+            str(item.get(description_field) or "").strip()
+            for item in descriptions
+            if item.get("source") == source and item.get(description_field)
+        ))
+        bound_value = str(getattr(binding, field_name) or "").strip()
+        if field_name == "event_id":
+            bound_value = bound_value.upper()
+        if bound_value and identities and bound_value not in identities:
+            raise ValueError(
+                f"request identity conflict: binding.{field_name}={bound_value!r} "
+                f"is not present in data_descs {field_name} values {identities!r}"
+            )
+        if not bound_value and identities:
+            updates[field_name] = identities[0]
+    return replace(binding, **updates) if updates else binding
 
 
 def normalize_data_descs(
@@ -92,7 +165,9 @@ def normalize_data_descs(
         if source != "upload":
             identity_value = identity_value.upper()
         item[key_name] = identity_value
-        identity = (source, identity_value)
+        if source == "sevir" and item.get("subject_key"):
+            item["subject_key"] = str(item["subject_key"]).strip().lower()
+        identity = (source, str(item.get("subject_key") or identity_value))
         if identity in seen:
             continue
         seen.add(identity)
@@ -110,7 +185,13 @@ def data_descs_from_context(context: dict[str, Any] | None) -> list[dict[str, An
     if upload_id:
         descriptions.append({"source": "upload", "upload_id": str(upload_id)})
     if bound.get("event_id"):
-        descriptions.append({"source": "sevir", "event_id": str(bound["event_id"])})
+        event_description = {
+            "source": "sevir",
+            "event_id": str(bound["event_id"]),
+        }
+        if bound.get("sevir_subject_key"):
+            event_description["subject_key"] = str(bound["sevir_subject_key"])
+        descriptions.append(event_description)
     return normalize_data_descs(descriptions)
 
 
@@ -121,7 +202,8 @@ def request_binding_from_context(context: dict[str, Any] | None) -> RequestBindi
     preflight = value.get("live_preflight")
     if isinstance(preflight, dict):
         for key in (
-            "analysis_time_utc", "latitude", "longitude", "region",
+            "requested_time_utc", "aurora_initialization_time_utc",
+            "latitude", "longitude", "region", "aurora_region",
             "forecast_leads_hours", "history_before_hours", "history_after_hours",
         ):
             if value.get(key) is None and preflight.get(key) is not None:
@@ -157,6 +239,15 @@ def data_descs_for_event(
         )
     ]
     existing["selection"] = "explicit_event_id"
+    if not existing.get("subject_key"):
+        try:
+            from ..tools.sevir.Catalog import resolve_sevir_subject_key
+
+            existing["subject_key"] = resolve_sevir_subject_key(normalized_id)
+        except (ValueError, RuntimeError):
+            # The request ingress owns ambiguity errors.  This helper may also
+            # be used while remote catalog metadata is temporarily absent.
+            pass
     if include_observations:
         existing["representation"] = "observation_sequence"
         if observation_window_minutes is not None:

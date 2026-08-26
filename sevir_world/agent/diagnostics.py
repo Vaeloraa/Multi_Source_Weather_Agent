@@ -6,6 +6,7 @@ from dataclasses import fields, is_dataclass
 from typing import Any
 
 import numpy as np
+import pandas as pd
 
 
 SCHEMA_VERSION = "python-capabilities-v1"
@@ -28,6 +29,19 @@ def describe_value(value: Any, depth: int = 0) -> dict[str, Any]:
         return {
             "type": "ndarray", "shape": [int(item) for item in value.shape],
             "dtype": str(value.dtype), "read_only": not bool(value.flags.writeable),
+        }
+    if isinstance(value, pd.DataFrame):
+        return {
+            "type": "DataFrame",
+            "shape": [int(item) for item in value.shape],
+            "columns": [str(item) for item in value.columns],
+        }
+    if type(value).__module__.startswith("xarray"):
+        return {
+            "type": type(value).__name__,
+            "dimensions": {str(key): int(size) for key, size in value.sizes.items()},
+            "variables": [str(name) for name in getattr(value, "data_vars", ())],
+            "coordinates": [str(name) for name in value.coords],
         }
     if is_dataclass(value) and not isinstance(value, type):
         return {

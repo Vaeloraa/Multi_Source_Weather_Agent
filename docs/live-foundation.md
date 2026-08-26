@@ -33,4 +33,10 @@
 
 ## 外部依赖
 
-现场 ERA5 取数需要安装 `cdsapi` 并在用户目录配置 CDS 凭据；Aurora 需要 `aurora`、PyTorch 和可用的 checkpoint。没有这些依赖时，系统仍会返回明确的可恢复错误和 request key，不会回退到旧 event case。
+在项目根目录安装现场依赖：
+
+```powershell
+python -m pip install -r requirements-dev.txt
+```
+
+现场 ERA5 取数需要 `cdsapi`、`netCDF4` 并在用户目录配置 CDS 凭据；Aurora 需要 `microsoft-aurora`、PyTorch 和可用的 checkpoint；远程 SEVIR VIL 需要 `h5py`、`fsspec`。安装依赖不会自动下载 Aurora checkpoint、ERA5 数据或 SEVIR HDF5 文件。没有这些运行时资源时，系统仍会返回明确的可恢复错误和 request key，不会回退到旧 event case。

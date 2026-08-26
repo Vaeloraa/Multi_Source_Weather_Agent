@@ -46,7 +46,7 @@ def _aligned_aurora(cache: dict[str, str]) -> tuple[bool, str]:
         if lead6.tzinfo is None:
             lead6 = lead6.replace(tzinfo=timezone.utc)
         event = datetime.fromisoformat(
-            str(json.loads(CONFIG_PATH.read_text(encoding="utf-8"))["analysis_time_utc"])
+            str(json.loads(CONFIG_PATH.read_text(encoding="utf-8"))["selected_event_anchor_time_utc"])
             .replace("Z", "+00:00")
         )
         gap_minutes = abs((lead6 - event).total_seconds()) / 60.0

@@ -14,16 +14,16 @@ class RefactorGovernanceTests(unittest.TestCase):
                 self.assertIsInstance(result, refactor_gate.Probe)
                 self.assertEqual(result.criterion_id, criterion_id)
 
-    def test_current_state_contains_only_two_accepted_phases(self) -> None:
+    def test_current_state_has_two_accepted_phases_and_active_phase_three(self) -> None:
         state = refactor_gate.load_state()
         report = refactor_gate.collect_report(state)
 
         self.assertTrue(report["governance_valid"], report["errors"])
-        self.assertEqual(report["active_phase"], "phase_2")
+        self.assertEqual(report["active_phase"], "phase_3")
         self.assertEqual(report["accepted_phases"], ["phase_1", "phase_2"])
         self.assertEqual(
             [item["status"] for item in report["phases"]],
-            ["accepted", "accepted"],
+            ["accepted", "accepted", "in_progress"],
         )
         self.assertEqual(report["phases"][0]["accepted"], 5)
 
@@ -115,7 +115,7 @@ class RefactorGovernanceTests(unittest.TestCase):
         ):
             self.assertTrue(probes[criterion_id]["ok"], probes[criterion_id])
         self.assertEqual(report["accepted_phases"], ["phase_1", "phase_2"])
-        self.assertEqual(report["active_phase"], "phase_2")
+        self.assertEqual(report["active_phase"], "phase_3")
         self.assertEqual(report["phases"][1]["status"], "accepted")
 
 

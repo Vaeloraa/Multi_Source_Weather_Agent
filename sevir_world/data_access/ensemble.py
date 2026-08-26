@@ -32,7 +32,6 @@ def _earthformer_latent_status() -> dict[str, Any]:
                 invalid_files.append({"file": str(path), "shape": shape})
         except (OSError, ValueError) as error:
             invalid_files.append({"file": str(path), "error": str(error)})
-    matching_latent = any(Path(path).name == CASCAST_SAMPLE_NAME for path in valid_files)
     return {
         "available": bool(valid_files),
         "root": str(EARTHFORMER_LATENT_ROOT),
@@ -40,13 +39,8 @@ def _earthformer_latent_status() -> dict[str, Any]:
         "valid_files": valid_files,
         "invalid_files": invalid_files,
         "expected_shape": [12, 4, 48, 48],
-        "event_compatible": matching_latent,
-        "event_id": CASCAST_LEGACY_EVENT_ID if matching_latent else None,
-        "event_note": (
-            f"已匹配旧版单事件{CASCAST_LEGACY_EVENT_ID}。"
-            if matching_latent
-            else f"未找到旧版单事件{CASCAST_LEGACY_EVENT_ID}对应的EarthFormer latent。"
-        ),
+        "event_compatible": None,
+        "event_note": "Latent files are model assets; no event identity is inferred from a filename.",
     }
 
 
@@ -139,9 +133,9 @@ def _live_ensemble_event(event_id: str) -> dict[str, Any] | None:
 
 def _ensemble_event(event_id: str) -> dict[str, Any]:
     manifest = _ensemble_manifest()
-    requested = str(event_id).strip()
-    if requested in {"sample", "event_001", ""}:
-        requested = CASCAST_EVENT_ID
+    requested = str(event_id).strip().upper()
+    if not requested:
+        raise ValueError("event_id is required; no default CasCast subject is selected")
     for event in manifest["events"]:
         aliases = {
             str(event["event_id"]),
@@ -164,8 +158,8 @@ def _ensemble_event(event_id: str) -> dict[str, Any]:
     raise ValueError(f"当前CasCast结果不含事件{requested}；可选事件：{available}")
 
 
-@lru_cache(maxsize=3)
-def _load_cascast_ensemble(event_id: str = CASCAST_EVENT_ID) -> tuple[dict[str, np.ndarray], dict[str, Any]]:
+@lru_cache(maxsize=16)
+def _load_cascast_ensemble(event_id: str) -> tuple[dict[str, np.ndarray], dict[str, Any]]:
     event = _ensemble_event(event_id)
     cache_root = (
         CASCAST_LIVE_CACHE
@@ -261,7 +255,7 @@ def _load_cascast_rolling_ensemble(
 
 
 
-def _load_cascast_prediction(event_id: str = CASCAST_EVENT_ID) -> tuple[np.ndarray, dict[str, Any]]:
+def _load_cascast_prediction(event_id: str) -> tuple[np.ndarray, dict[str, Any]]:
     arrays, metadata = _load_cascast_ensemble(event_id)
     prediction = arrays["ensemble_mean"].transpose(1, 2, 0)
     return prediction, metadata
@@ -272,7 +266,7 @@ def _vil_display_values(values: np.ndarray) -> np.ndarray:
     return np.clip(np.asarray(values, dtype=np.float32), 0.0, 254.0)
 
 
-def _cascast_source(event_id: str = CASCAST_EVENT_ID) -> dict[str, Any]:
+def _cascast_source(event_id: str) -> dict[str, Any]:
     event = _ensemble_event(event_id)
     cache_root = (
         CASCAST_LIVE_CACHE
@@ -318,7 +312,7 @@ def _load_sample() -> tuple[np.ndarray, dict[str, Any]]:
 def _event(event_id: str) -> tuple[np.ndarray, dict[str, Any]]:
     vil, metadata = _load_sample()
     actual_id = metadata["event_id"]
-    if event_id not in {actual_id, "event_001", "sample"}:
+    if event_id != actual_id:
         raise ValueError(f"本地仅有事件{actual_id}，没有找到{event_id}。")
     return vil, metadata
 

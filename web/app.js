@@ -829,7 +829,7 @@ function displayToolName(name) {
     "geolocator.administrative_area": "查询州县范围",
     "geolocator.region": "定位分析区域",
     "cascast.forecast": "读取 CasCast 事件预测",
-    "cascast.forecast_upload": "运行或读取上传序列预测",
+    "cascast.forecast": "运行或读取局地集合预测",
     "aurora.case": "读取缓存的 ERA5/Aurora 案例",
     "aurora.forecast": "运行或读取 Aurora 区域预测",
     "aurora.regional_fields": "读取 ERA5/Aurora 区域场",
@@ -1721,14 +1721,16 @@ function toolDisplaySentence(run, index = 0) {
 function readableToolArguments(argumentsValue) {
   if (!argumentsValue || typeof argumentsValue !== "object" || Array.isArray(argumentsValue)) return "";
   const labels = {
-    event_id: "事件", upload_id: "上传资料", threshold: "阈值",
-    lead_minutes: "预报时效", start_frame: "起始帧", end_frame: "结束帧",
+    subject_key: "精确数据", event_id: "事件", upload_id: "上传资料", threshold: "阈值",
+    lead_minutes: "预报时效", minutes_before: "往前观测", minutes_after: "往后观测",
+    horizon_hours: "预报时长", ensemble_members: "集合成员",
     place: "地点", latitude: "纬度", longitude: "经度",
   };
   const parts = [];
   Object.entries(argumentsValue).slice(0, 5).forEach(([key, value]) => {
     if (value == null || value === "" || typeof value === "object") return;
-    const suffix = key === "lead_minutes" ? "分钟" : "";
+    const suffix = ["lead_minutes", "minutes_before", "minutes_after"].includes(key)
+      ? "分钟" : key === "horizon_hours" ? "小时" : "";
     parts.push(`${labels[key] || key.replaceAll("_", " ")} ${value}${suffix}`);
   });
   return parts.join("，");
@@ -1959,7 +1961,7 @@ function renderAgentTrace(data) {
   container.classList.toggle("hidden", attempts.length === 0);
   if (executionMode) executionMode.textContent = "统一 Agent";
   if (executionFlow) {
-    executionFlow.textContent = "生成代码 → 执行 → 观察 → 继续或回答";
+    executionFlow.textContent = "理解问题 → 按需读取数据 → 计算/绘图 → 根据证据回答";
   }
   if (sessionBudget) {
     const reason = data.termination_reason || data.route_mode || "unknown";
@@ -2417,12 +2419,16 @@ form.addEventListener("submit", async (event) => {
   const progressState = { done: false };
   const progressPromise = pollRequestProgress(requestId, progressState);
   const requestController = new AbortController();
-  // The server owns the 30-second hard budget.  Give it one second to return
-  // the terminal trace, then close the HTTP request so cancellation propagates
-  // instead of leaving an invisible background Agent running.
+  // The server owns the request budget and exposes it through /api/config.
+  // Give it two seconds to serialize the terminal trace, then close the HTTP
+  // request so cancellation propagates instead of leaving hidden background work.
+  const requestBudgetSeconds = Math.max(
+    1,
+    Number(runtimeConfig.agent_request_budget_seconds || 90),
+  );
   const requestTimeout = window.setTimeout(
-    () => requestController.abort("Agent request exceeded 31 seconds"),
-    31_000,
+    () => requestController.abort(`Agent request exceeded ${requestBudgetSeconds} seconds`),
+    (requestBudgetSeconds + 2) * 1_000,
   );
 
   try {
@@ -2435,16 +2441,15 @@ form.addEventListener("submit", async (event) => {
         task: taskInput.value,
         data_source: uploadedSequenceId ? "upload_sequence" : (uploadedSampleId ? "upload" : (liveContextReady ? "live" : "none")),
         data_policy: liveContextReady ? "live" : "cached",
-        analysis_time_utc: normalizedAnalysisTimeUtc(),
+        requested_time_utc: normalizedAnalysisTimeUtc(),
         place_name: analysisPlaceInput?.value.trim() || "",
         latitude: optionalCoordinate(analysisLatitudeInput),
         longitude: optionalCoordinate(analysisLongitudeInput),
-        forecast_leads: [6, 12, 18, 24],
+        forecast_leads_hours: [6, 12, 18, 24],
         weather_model: weatherModelInput.value,
         lead_minutes: Number(leadInput.value),
         event_id: eventInput?.value.trim() || "",
-        upload_id: uploadedSampleId,
-        sequence_upload_id: uploadedSequenceId,
+        upload_id: uploadedSequenceId || uploadedSampleId,
         session_id: sessionId,
         turn_id: turnId,
         request_id: requestId,
@@ -2514,12 +2519,12 @@ form.addEventListener("submit", async (event) => {
       attachmentTitle.textContent = "需要重新上传图片";
     }
     const answer = aborted
-      ? "本轮请求已在30秒预算后停止，系统不会继续后台分析。请查看进度记录定位耗时步骤。"
+      ? `本轮请求已在${requestBudgetSeconds}秒预算后停止，系统不会继续后台分析。请查看进度记录定位耗时步骤。`
       : `本轮请求未完成：${error.message}`;
     completePendingMessage(pendingMessage, answer, { route: "request_failed", sessionId }, true);
     chatHistory.push({ role: "assistant", text: answer, meta: { route: "request_failed" }, timestamp: Date.now(), turnId });
     persistChatHistory();
-    renderError(aborted ? "请求超过30秒总预算并已取消。" : error.message);
+    renderError(aborted ? `请求超过${requestBudgetSeconds}秒总预算并已取消。` : error.message);
     conversationStatus.textContent = "请求失败；你可以修改问题后继续当前对话。";
   } finally {
     window.clearTimeout(requestTimeout);

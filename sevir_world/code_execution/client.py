@@ -73,6 +73,29 @@ def _attach_repair(result: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
+def _promote_domain_result_error(result: dict[str, Any]) -> dict[str, Any]:
+    """Treat an explicit generated ``result.status == error`` as execution failure.
+
+    The worker transport succeeded, but the generated program deliberately
+    reported that its requested operation failed.  Keeping the outer status
+    as ``ok`` makes the Agent believe it has an observation and causes it to
+    synthesize an answer from a cache miss.  This promotion is the execution
+    contract boundary, not a weather-specific rule.
+    """
+    value = result.get("result")
+    if result.get("status") in {"ok", "partial"} and isinstance(value, dict):
+        domain_status = str(value.get("status", "")).strip().lower()
+        if domain_status in {"error", "failed", "unavailable"}:
+            result["status"] = "error"
+            result["error_type"] = "DomainResultError"
+            result["error"] = str(value.get("message") or value.get("error") or domain_status)
+            result["error_phase"] = "generated_result"
+            result.setdefault("repair", classify_execution_error(
+                "DomainResultError", str(result["error"])
+            ))
+    return result
+
+
 def _persist_execution(
     code: str,
     request: ExecutionRequest,
@@ -93,6 +116,7 @@ def _persist_execution(
         "code": code,
         "data_descs": request.data_descs,
         "selected_tools": request.selected_tools,
+        "visual_artifact_required": request.visual_artifact_required,
         "execution": result,
     }
     path = EXECUTION_LOG_ROOT / f"{execution_id}.json"
@@ -108,7 +132,11 @@ def _persist_execution(
     return execution_id
 
 
-def _register_artifact_paths(value: Any) -> tuple[Any, list[dict[str, Any]]]:
+def _register_artifact_paths(
+    value: Any,
+    *,
+    created_after: float | None = None,
+) -> tuple[Any, list[dict[str, Any]]]:
     """Turn generated PNG paths into stable HTTP artifacts.
 
     File naming is runtime infrastructure, not an analytical task. Generated
@@ -161,7 +189,17 @@ def _register_artifact_paths(value: Any) -> tuple[Any, list[dict[str, Any]]]:
         })
         return url
 
-    return convert(value), artifacts
+    normalized = convert(value)
+    # Generated code sometimes saves a figure but forgets to include its path
+    # in ``result``.  The worker contract is filesystem-backed, so register
+    # PNGs present in the request artifact directory as well; this prevents a
+    # real figure from being mistaken for missing evidence and retried.
+    for candidate in sorted(root.glob("*.png")):
+        if candidate.is_file() and (
+            created_after is None or candidate.stat().st_mtime >= created_after - 0.5
+        ):
+            convert(str(candidate))
+    return normalized, artifacts
 
 
 class ExecutionClient:
@@ -369,13 +407,16 @@ class ExecutionClient:
         *,
         data_descs: list[dict[str, Any]] | None = None,
         selected_tools: list[str] | tuple[str, ...] | None = None,
+        execution_request: ExecutionRequest | None = None,
     ) -> dict[str, Any]:
         """Validate, execute, and return structured result/error/provenance."""
         started = time.perf_counter()
-        request = ExecutionRequest.from_payload(
+        artifact_started_at = time.time()
+        request = execution_request or ExecutionRequest.from_payload(
             data_descs if data_descs is not None else data_descs_from_context(context),
             selected_tools,
             request_binding_from_context(context),
+            dict((context or {}).get("_study_case") or {}),
         )
         # Some OpenAI-compatible gateways occasionally return a lone UTF-16
         # surrogate in generated source.  It is not valid UTF-8 and would make
@@ -398,14 +439,15 @@ class ExecutionClient:
             _attach_repair(result)
             result["execution_id"] = _persist_execution(code, request, result)
             return result
+        # The worker profile is a property of the request contract, never of
+        # the current generated program.  Classifying each repair from its
+        # source text restarted the persistent worker whenever a later step
+        # reused ``env`` without repeating ``aurora.regional_fields()``.
+        # All request-bound weather capabilities therefore share one stable
+        # extended profile for the lifetime of this ExecutionClient.
         live_execution = (
-            str(bound_context.get("weather_model", "")) == "cascast_live"
-            or "cascast_live" in code
-            or str(bound_context.get("data_policy", "")).lower() == "live"
-            or "aurora.forecast" in code
-            or "aurora.regional_fields" in code
-            or "foundation.fetch_era5" in code
-            or "foundation.forecast_aurora" in code
+            request.binding.policy.mode == "live"
+            or any(name in request.selected_tools for name in ("cascast", "aurora"))
         )
         timeout_seconds = self.live_timeout_seconds if live_execution else self.timeout_seconds
         memory_limit_mb = self.live_memory_limit_mb if live_execution else self.memory_limit_mb
@@ -456,6 +498,8 @@ class ExecutionClient:
                 "data_descs": request.data_descs,
                 "selected_tools": request.selected_tools,
                 "binding": asdict(request.binding),
+                "evidence_state": request.evidence_state,
+                "visual_artifact_required": request.visual_artifact_required,
             },
             # Keep the parent -> isolated-worker protocol ASCII-only too.  On
             # Windows, redirected text pipes can otherwise split or recode a
@@ -479,7 +523,7 @@ class ExecutionClient:
                 "SEVIR_ARTIFACT_DIR",
             }
         }
-        data_policy = str(bound_context.get("data_policy", "")).lower()
+        data_policy = request.binding.policy.mode
         if data_policy == "cached":
             # A cached demo must never turn a cache miss into an implicit
             # download or expensive model run.
@@ -493,6 +537,8 @@ class ExecutionClient:
                         "data_descs": request.data_descs,
                         "selected_tools": request.selected_tools,
                         "binding": asdict(request.binding),
+                        "evidence_state": request.evidence_state,
+                        "visual_artifact_required": request.visual_artifact_required,
                     },
                     "environment": environment,
                     "memory_limit_mb": memory_limit_mb,
@@ -567,14 +613,19 @@ class ExecutionClient:
                 "worker_stdout_preview": preview,
                 "stderr": "".join(self._worker_stderr).strip()[:4_000],
             }
+        result = _promote_domain_result_error(result)
         result["elapsed_ms"] = round((time.perf_counter() - started) * 1000)
-        if result.get("status") == "ok":
-            normalized_result, generated_artifacts = _register_artifact_paths(
-                result.get("result")
-            )
+        # A plotting program can save a complete figure and then fail in a
+        # later scalar calculation.  Artifact discovery is independent of
+        # Python's terminal status, so retain such evidence for the repair
+        # turn instead of silently discarding it.
+        normalized_result, generated_artifacts = _register_artifact_paths(
+            result.get("result"), created_after=artifact_started_at
+        )
+        if "result" in result:
             result["result"] = normalized_result
-            if generated_artifacts:
-                result["generated_artifacts"] = generated_artifacts
+        if generated_artifacts:
+            result["generated_artifacts"] = generated_artifacts
         _attach_repair(result)
         result["limits"] = {
             "timeout_seconds": timeout_seconds,

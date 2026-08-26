@@ -1,0 +1,30 @@
+{
+  "started_at": "2026-08-25T02:39:38.121732",
+  "finished_at": "2026-08-25T02:40:08.539593",
+  "event_id": "R19062708588472",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_30s_budget",
+  "diagnosis_required": true,
+  "ids": {
+    "single": "ad2db20b6a204eeebc894e91da54772f",
+    "sequence": "cac510766f764cc7ab7d177d696122a4",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 3,
+      "question": "这片天气目前是集中在局部，还是已经铺开得比较广？请把明显活跃和相对平静的地方直观地分出来。",
+      "kind": "single",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_30s_budget",
+      "elapsed_seconds": 30.0,
+      "error": "TimeoutError: timed out",
+      "diagnosis_required": true
+    }
+  ]
+}

@@ -1,0 +1,831 @@
+{
+  "started_at": "2026-08-26T17:18:30.497280",
+  "finished_at": "2026-08-26T17:21:21.238175",
+  "asset_event_id": null,
+  "study_case_event_selection": "agent_selected_from_evidence",
+  "question_count": 42,
+  "result_count": 4,
+  "status_counts": {
+    "passed": 3,
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_90s_budget",
+  "diagnosis_required": true,
+  "ids": {},
+  "results": [
+    {
+      "number": 33,
+      "question": "现在是2019年6月27日03:00 UTC，我想了解美国北达科他州（North Dakota）及周边未来6到24小时的天气。大范围环境有没有值得留意的变化，最早可能在哪个时段开始影响这里？请先用Aurora做区域判断，不要一开始就锁定某个城市或局地事件。",
+      "kind": "event_environment",
+      "status": "passed",
+      "failure_class": "",
+      "elapsed_seconds": 26.74,
+      "server_elapsed_ms": 26682,
+      "route_mode": "unified_agent",
+      "termination_reason": "agent_completed",
+      "answer": "根据Aurora区域环境场分析，北达科他州未来6–24小时大范围天气变化如下：\n\n- **气温**：6小时约19°C，18小时升至26.4°C（午后峰值），24小时回落至23.3°C。\n- **海平面气压**：从6小时的1013.1 hPa逐步下降，18小时降至1011.6 hPa，24小时为1011.3 hPa，呈持续减压趋势。\n- **地面风速**：整体较弱且递减，6小时1.75 m/s，24小时仅0.6 m/s，无显著大风信号。\n- **上游对比**：蒙大拿/怀俄明上游区域气压在6–12小时略有回升后趋稳，与北达科他州的持续减压形成反差，表明低压系统正向东移动接近本区。\n\n**最早影响时段**：气压显著下降（较6小时基准降幅＞1.5 hPa）始于**预报时效18小时**（即UTC 2019-06-27 21:00左右），对应本地下午至傍晚。此前6–12小时环境相对稳定，无明显风压突变。建议重点关注27日夜间起的大尺度强迫增强可能。\n\n![区域环境演变](/api/artifacts/3fd715eb983c4cd88c6be29a7860c294.png)",
+      "artifacts": [
+        {
+          "artifact_id": "3fd715eb983c4cd88c6be29a7860c294",
+          "url": "/api/artifacts/3fd715eb983c4cd88c6be29a7860c294.png",
+          "image_url": "/api/artifacts/3fd715eb983c4cd88c6be29a7860c294.png",
+          "title": "Agent生成图",
+          "description": "由本轮生成代码基于真实数据绘制。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        }
+      ],
+      "artifact_count": 1,
+      "visual_artifact_required": true,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "3c65d7ba2dfb444b9d14a26749cf4cea",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\3c65d7ba2dfb444b9d14a26749cf4cea.trace.json",
+      "session_id": "acceptance42-foundation-87a3a889-6d4c-4bcf-936c-635e402023ec",
+      "agent_trace": [
+        {
+          "attempt": null,
+          "action": "expand",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 737.75,
+          "summary": "已按需展开能力契约：aurora"
+        },
+        {
+          "attempt": null,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 5550.54,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": null,
+          "action": "finish",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 5718.22,
+          "summary": "已根据现有证据完成回答"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "aurora.regional_fields",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {}
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 737.71,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 89230.34
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 14337.65,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 74878.68
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 5718.2,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 63602.03
+        }
+      ],
+      "request_trace": {
+        "request_id": "3c65d7ba2dfb444b9d14a26749cf4cea",
+        "route": "/api/run",
+        "status": "ok",
+        "started_at": "2026-08-26T09:18:30.544262+00:00",
+        "stages": [
+          {
+            "stage_id": "3c65d7ba2dfb444b9d14a26749cf4cea:1",
+            "name": "unified_agent",
+            "status": "ok",
+            "elapsed_ms": 26680.53,
+            "termination_reason": "agent_completed",
+            "model_calls": 3,
+            "code_executions": 1
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 1,
+        "tool_calls": 1,
+        "model_calls": 3,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "agent_completed",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 26686.45,
+        "finished_at": "2026-08-26T09:18:57.230713+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null
+    },
+    {
+      "number": 34,
+      "question": "请把刚才Aurora发现的最值得关注的信号落实成可查找局地观测的时空窗口：它大致覆盖北达科他州的哪一部分、对应什么UTC时段、主要需要留意什么变化？重点先看起报后约6小时的第一个窗口，不要重复整段大范围预报，也不要把环境信号说成已经发生的局地灾害。",
+      "kind": "event_environment",
+      "status": "passed",
+      "failure_class": "",
+      "elapsed_seconds": 17.49,
+      "server_elapsed_ms": 17473,
+      "route_mode": "unified_agent",
+      "termination_reason": "agent_completed",
+      "answer": "针对Aurora识别出的首个关注信号，起报后6小时（2019-06-27 09:00 UTC）的局地观测窗口如下：\n\n- **空间范围**：北达科他州西南部（约46.0°N–48.8°N、104.0°W–97.2°W），气压最低值出现在该区域西南角（46.05°N, 103.98°W）。\n- **UTC时段**：2019-06-27 09:00前后1–2小时。\n- **需留意变化**：海平面气压均值1013.1 hPa、局地低至1011.8 hPa，配合2米气温约19°C、风速约1.75 m/s；重点监测气压是否继续下降及风向切变，作为后续系统逼近的前兆，而非已发生灾害。\n\n![ND Lead+6h MSLP](/api/artifacts/e39d79bb1f3b4e0fa01c44fbcd6881ac.png)",
+      "artifacts": [
+        {
+          "artifact_id": "e39d79bb1f3b4e0fa01c44fbcd6881ac",
+          "url": "/api/artifacts/e39d79bb1f3b4e0fa01c44fbcd6881ac.png",
+          "image_url": "/api/artifacts/e39d79bb1f3b4e0fa01c44fbcd6881ac.png",
+          "title": "Agent生成图",
+          "description": "由本轮生成代码基于真实数据绘制。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        }
+      ],
+      "artifact_count": 1,
+      "visual_artifact_required": true,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "7c62ecc241a74fea80025eed60240241",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\7c62ecc241a74fea80025eed60240241.trace.json",
+      "session_id": "acceptance42-foundation-87a3a889-6d4c-4bcf-936c-635e402023ec",
+      "agent_trace": [
+        {
+          "attempt": null,
+          "action": "expand",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 692.07,
+          "summary": "已按需展开能力契约：aurora"
+        },
+        {
+          "attempt": null,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 3594.2,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": null,
+          "action": "finish",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 4668.0,
+          "summary": "已根据现有证据完成回答"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "aurora.regional_fields",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {}
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 692.06,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 89306.32
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 8241.63,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 81064.61
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 4667.98,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 72800.3
+        }
+      ],
+      "request_trace": {
+        "request_id": "7c62ecc241a74fea80025eed60240241",
+        "route": "/api/run",
+        "status": "ok",
+        "started_at": "2026-08-26T09:18:57.238370+00:00",
+        "stages": [
+          {
+            "stage_id": "7c62ecc241a74fea80025eed60240241:1",
+            "name": "unified_agent",
+            "status": "ok",
+            "elapsed_ms": 17457.68,
+            "termination_reason": "agent_completed",
+            "model_calls": 3,
+            "code_executions": 1
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 1,
+        "tool_calls": 1,
+        "model_calls": 3,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "agent_completed",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 17482.04,
+        "finished_at": "2026-08-26T09:19:14.720420+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null
+    },
+    {
+      "number": 35,
+      "question": "请按照这个区域和时间窗口检索SEVIR目录，把实际匹配到的局地天气事件都列出来。说明每个事件的编号、时间、位置或覆盖范围、与Aurora信号的时空关系，以及目标时刻前是否有一小时连续观测；如果没有多个匹配，也请如实说明，不要为了凑数扩大范围。",
+      "kind": "event_environment",
+      "status": "passed",
+      "failure_class": "",
+      "elapsed_seconds": 36.09,
+      "server_elapsed_ms": 36055,
+      "route_mode": "unified_agent",
+      "termination_reason": "agent_completed",
+      "answer": "在目标区域（46°N–49°N、104°W–97°W）及Aurora信号窗口（2019-06-27 08:00–10:00 UTC）内，SEVIR目录共匹配到8个局地天气事件，均与目标区域存在空间交叠，且全部满足锚点时刻前至少1小时连续观测（history_is_continuous=true，可用帧数=期望帧数=13）。具体如下：\n\n| 编号 | 锚点时间(UTC) | 覆盖范围(纬度/经度) | 与Aurora信号关系 | 前1h连续观测 |\n|------|---------------|---------------------|------------------|-------------|\n| R19062708588472 | 08:58:20 | 45.28°N–48.83°N, 102.44°W–97.51°W | 完全落入信号窗口核心区 | ✅ |\n| R19062708588390 (×2) | 08:58:20 | 44.40°N–47.95°N / 44.43°N–47.98°N, ~102.6°W–97.7°W | 南缘触及目标区西南角 | ✅ |\n| R19062708588419 | 08:58:20 | 46.60°N–50.36°N, 108.16°W–103.50°W | 西段覆盖目标区西北边界 | ✅ |\n| R19062708008460 | 08:00:00 | 45.64°N–49.24°N, 104.14°W–99.29°W | 正对目标区中西部，早于信号峰值1h | ✅ |\n| R19062708008317 | 08:00:00 | 43.31°N–46.82°N, 101.66°W–96.85°W | 仅北缘擦过目标区东南角 | ✅ |\n| R19062708008208 | 08:00:00 | 42.70°N–46.31°N, 104.45°W–99.86°W | 仅北缘触及目标区南界 | ✅ |\n| R19062708008369 | 08:00:00 | 44.33°N–47.90°N, 103.19°W–98.39°W | 中部偏南覆盖目标区 | ✅ |\n\n所有事件类型均为\"Unlabeled\"，无强对流标签；其中R19062708588472和R19062708008460与Aurora识别的气压下降信号时空重合度最高。未扩大检索范围，结果如实反映目录实际匹配情况。\n\n![SEVIR事件分布图](/api/artifacts/e809aeb4781743ddb552106bedfc5b75.png)",
+      "artifacts": [
+        {
+          "artifact_id": "e809aeb4781743ddb552106bedfc5b75",
+          "url": "/api/artifacts/e809aeb4781743ddb552106bedfc5b75.png",
+          "image_url": "/api/artifacts/e809aeb4781743ddb552106bedfc5b75.png",
+          "title": "Agent生成图",
+          "description": "由本轮生成代码基于真实数据绘制。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        }
+      ],
+      "artifact_count": 1,
+      "visual_artifact_required": true,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "9a18bb963a4f4e04b372d341311dd84f",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\9a18bb963a4f4e04b372d341311dd84f.trace.json",
+      "session_id": "acceptance42-foundation-87a3a889-6d4c-4bcf-936c-635e402023ec",
+      "agent_trace": [
+        {
+          "attempt": null,
+          "action": "expand",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 707.31,
+          "summary": "已按需展开能力契约：sevir"
+        },
+        {
+          "attempt": null,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 5023.1,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": null,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 88.75,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": null,
+          "action": "finish",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 12766.9,
+          "summary": "已根据现有证据完成回答"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "sevir.search",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "query": "",
+            "year": null,
+            "month": null,
+            "event_type": "",
+            "region": {
+              "south": 46.0,
+              "west": -104.0,
+              "north": 49.0,
+              "east": -97.0
+            },
+            "latitude": null,
+            "longitude": null,
+            "radius_km": null,
+            "start_time_utc": "2019-06-27T08:00:00Z",
+            "end_time_utc": "2019-06-27T10:00:00Z",
+            "require_prior_minutes": 60,
+            "limit": 20
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:feb5f0f6599442f9ee04f71a"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:7fba021bb8f794adb7c8a5b7"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:c2aec764b790b8bbbb3f21cb"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:6778928b521416f829f56eb0"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:0fe0a51d0d089275af1be9d6"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:35131795558cee0240af8ea2"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:be8daf87ac93f45133e6ab9e"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:1afdfb504fbe9178fa79fc28"
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 707.28,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 89291.29
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 11768.01,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 77512.97
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 5261.38,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 67205.55
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 12766.87,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 54347.88
+        }
+      ],
+      "request_trace": {
+        "request_id": "9a18bb963a4f4e04b372d341311dd84f",
+        "route": "/api/run",
+        "status": "ok",
+        "started_at": "2026-08-26T09:19:14.741519+00:00",
+        "stages": [
+          {
+            "stage_id": "9a18bb963a4f4e04b372d341311dd84f:1",
+            "name": "unified_agent",
+            "status": "ok",
+            "elapsed_ms": 36043.34,
+            "termination_reason": "agent_completed",
+            "model_calls": 4,
+            "code_executions": 2
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 0,
+        "tool_calls": 9,
+        "model_calls": 4,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "agent_completed",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 36066.17,
+        "finished_at": "2026-08-26T09:19:50.807694+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null
+    },
+    {
+      "number": 36,
+      "question": "在刚才检索到的事件中，哪个最适合继续做局地追踪？请根据与Aurora窗口的时空匹配、此前一小时观测的连续性和数据完整性进行选择，并说明最终选中的事件是否由这些条件筛选出来，而不是因为已有缓存就直接指定它。",
+      "kind": "sequence_environment",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_90s_budget",
+      "elapsed_seconds": 90.43,
+      "server_elapsed_ms": 90394,
+      "route_mode": "unified_agent",
+      "termination_reason": "model_transport_failure",
+      "answer": "固定模型调用失败；未继续重试，也未切换其他模型。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "visual_artifact_required": true,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "b01b4a692c2240e6b74488154db531b7",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\b01b4a692c2240e6b74488154db531b7.trace.json",
+      "session_id": "acceptance42-foundation-87a3a889-6d4c-4bcf-936c-635e402023ec",
+      "agent_trace": [
+        {
+          "attempt": null,
+          "action": "contract_required",
+          "status": "blocked",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 23274.01,
+          "summary": "执行前需要先展开能力契约：geolocator"
+        },
+        {
+          "attempt": null,
+          "action": "expand",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 1184.68,
+          "summary": "已按需展开能力契约：geolocator"
+        },
+        {
+          "attempt": null,
+          "action": "contract_required",
+          "status": "blocked",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 16044.92,
+          "summary": "执行前需要先展开能力契约：sevir"
+        },
+        {
+          "attempt": null,
+          "action": "expand",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 1042.5,
+          "summary": "已按需展开能力契约：sevir"
+        },
+        {
+          "attempt": null,
+          "action": "execute",
+          "status": "error",
+          "error_type": null,
+          "error": "name 'SEVIR_ARTIFACT_DIR' is not defined",
+          "elapsed_ms": 4090.1,
+          "summary": "代码执行失败：NameError"
+        },
+        {
+          "attempt": null,
+          "action": "time_budget",
+          "status": "blocked",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 24408.18,
+          "summary": "剩余时间优先保留给最终回答，停止新的代码执行"
+        },
+        {
+          "attempt": null,
+          "action": "solution_validation",
+          "status": "error",
+          "error_type": null,
+          "error": "the user explicitly requested a visual artifact, but none was registered",
+          "elapsed_ms": 5838.81,
+          "summary": "最终回答引用的图像与真实执行产物不一致"
+        },
+        {
+          "attempt": null,
+          "action": "model",
+          "status": "error",
+          "error_type": null,
+          "error": "固定模型 qwen3.8-max 调用失败；未尝试其他模型：The read operation timed out",
+          "elapsed_ms": 1269.03,
+          "summary": "模型调用失败：RuntimeError"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:feb5f0f6599442f9ee04f71a"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:feb5f0f6599442f9ee04f71a"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:7fba021bb8f794adb7c8a5b7"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:7fba021bb8f794adb7c8a5b7"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:c2aec764b790b8bbbb3f21cb"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:c2aec764b790b8bbbb3f21cb"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:6778928b521416f829f56eb0"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:6778928b521416f829f56eb0"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:0fe0a51d0d089275af1be9d6"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:0fe0a51d0d089275af1be9d6"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:35131795558cee0240af8ea2"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:35131795558cee0240af8ea2"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:be8daf87ac93f45133e6ab9e"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:be8daf87ac93f45133e6ab9e"
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:1afdfb504fbe9178fa79fc28"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:1afdfb504fbe9178fa79fc28"
+          }
+        },
+        {
+          "api": "sevir.observations",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "subject_key": "sevir:feb5f0f6599442f9ee04f71a",
+            "minutes_before": 60,
+            "minutes_after": 0
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 23273.98,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 66721.73
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 1184.65,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 65535.12
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 16044.86,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 49457.07
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 1042.45,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 48411.9
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 12798.81,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 35612.88
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 24408.16,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 7092.57
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 5838.79,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 1253.64
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 1269.0,
+          "status": "error",
+          "error_type": "RuntimeError",
+          "remaining_ms_after": 0.0
+        }
+      ],
+      "request_trace": {
+        "request_id": "b01b4a692c2240e6b74488154db531b7",
+        "route": "/api/run",
+        "status": "error",
+        "started_at": "2026-08-26T09:19:50.837307+00:00",
+        "stages": [
+          {
+            "stage_id": "b01b4a692c2240e6b74488154db531b7:1",
+            "name": "unified_agent",
+            "status": "error",
+            "elapsed_ms": 90382.8,
+            "termination_reason": "model_transport_failure",
+            "model_calls": 8,
+            "code_executions": 0
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 0,
+        "tool_calls": 17,
+        "model_calls": 8,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "model_transport_failure",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 90394.17,
+        "finished_at": "2026-08-26T09:21:21.231480+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null,
+      "diagnosis_required": true
+    }
+  ]
+}

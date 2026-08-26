@@ -8,7 +8,6 @@ request signature.
 from __future__ import annotations
 
 from datetime import datetime, timezone
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -21,7 +20,7 @@ from typing import Any
 
 from .cache_layers import write_manifest, read_manifest
 from .evidence_bundle import make_evidence
-from .request_identity import request_identity
+from .request_identity import regional_forecast_identity
 
 
 DEFAULT_SURFACE_VARIABLES = [
@@ -236,22 +235,24 @@ def normalize_live_request(
         "event_id": str(event_id or "").strip().upper(),
         "model_version": str(model_version or ""),
     }
-    signature = json.dumps(request, sort_keys=True, separators=(",", ":"))
-    request["request_key"] = hashlib.sha256(signature.encode("utf-8")).hexdigest()[:20]
-    identity = request_identity(
-        event_id=request.get("event_id", ""), analysis_time_utc=request["analysis_time_utc"],
-        latitude=request.get("latitude"), longitude=request.get("longitude"),
+    identity = regional_forecast_identity(
+        initialization_time_utc=request["era5_time_utc"],
         region={"area_north_west_south_east": request["area_north_west_south_east"]},
+        forecast_leads_hours=request.get("forecast_leads_hours", []),
         variables=request.get("surface_variables", []) + request.get("pressure_variables", []),
-        pressure_levels=request.get("pressure_levels_hpa", []),
-        history_before_hours=request.get("history_before_hours"), history_after_hours=request.get("history_after_hours"),
-        forecast_leads_hours=request.get("forecast_leads_hours", []), model="era5+aurora",
-        model_version=request.get("model_version", ""), resolution=request.get("grid", ""),
-        task="foundation_request", evidence_kind="environment",
+        pressure_levels=request.get("aurora_pressure_levels_hpa", []),
+        model="era5+aurora",
+        model_version=request.get("model_version", ""),
+        resolution=request.get("grid", ""),
     )
+    request["aurora_initialization_time_utc"] = request["era5_time_utc"]
+    request["aurora_forecast_identity"] = identity["canonical"]
+    request["aurora_request_key"] = identity["request_key"]
+    request["request_key"] = identity["request_key"]
     request["canonical_request_key"] = identity["request_key"]
     root = Path(cache_root) if cache_root else Path(__file__).resolve().parents[2] / "data" / "foundation_live_cache"
-    request["artifact_dir"] = str(root / (request.get("event_id") or "_live") / request["canonical_request_key"])
+    request["forecast_cache_root"] = str(root)
+    request["artifact_dir"] = str(root / "aurora" / request["aurora_request_key"])
     request["status"] = "normalized"
     return request
 
@@ -301,6 +302,111 @@ def _compatible_standardized_cache(
     return cached
 
 
+def _regional_identity_manifest_path(request: dict[str, Any]) -> Path:
+    """Return the manifest path for the event-independent Aurora identity."""
+
+    root = Path(
+        str(
+            request.get("forecast_cache_root")
+            or Path(__file__).resolve().parents[2] / "data" / "foundation_live_cache"
+        )
+    )
+    return root / "aurora" / str(request.get("aurora_request_key", "")) / "manifest.json"
+
+
+def _read_regional_identity_manifest(request: dict[str, Any]) -> dict[str, Any] | None:
+    """Read an exact regional forecast cache record without an event lookup."""
+
+    path = _regional_identity_manifest_path(request)
+    if not path.is_file():
+        return None
+    try:
+        record = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError):
+        return None
+    if not isinstance(record, dict) or record.get("status") != "available":
+        return None
+    if str(record.get("aurora_request_key", "")) != str(request.get("aurora_request_key", "")):
+        return None
+    artifact_dir = Path(str(record.get("artifact_dir", "")))
+    if not artifact_dir.is_absolute():
+        artifact_dir = (path.parent / artifact_dir).resolve()
+    if not artifact_dir.is_dir():
+        return None
+    record["artifact_dir"] = str(artifact_dir)
+    record["manifest_path"] = str(path)
+    return record
+
+
+def _write_regional_identity_manifest(
+    request: dict[str, Any], artifact_dir: Path, *, forecast_file: Path | None = None
+) -> None:
+    """Persist the physical Aurora identity separately from any SEVIR case."""
+
+    path = _regional_identity_manifest_path(request)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    record = {
+        "status": "available",
+        "aurora_request_key": request.get("aurora_request_key"),
+        "identity": request.get("aurora_forecast_identity"),
+        "artifact_dir": str(artifact_dir.resolve()),
+        "files": {
+            "surface": str((artifact_dir / "surface.nc").resolve()),
+            "pressure": str((artifact_dir / "pressure.nc").resolve()),
+            "static": str((artifact_dir / "static.nc").resolve()),
+        },
+    }
+    if forecast_file is not None:
+        record["files"]["forecast"] = str(forecast_file.resolve())
+        record["files"]["forecast_summary"] = str(forecast_file.with_suffix(".json").resolve())
+    path.write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _cached_era5_for_regional_identity(request: dict[str, Any]) -> dict[str, Any] | None:
+    """Return reusable ERA5 inputs selected by Aurora identity, not event ID."""
+
+    record = _read_regional_identity_manifest(request)
+    if record is None:
+        return None
+    output_dir = Path(str(record["artifact_dir"]))
+    files = {
+        "surface": output_dir / "surface.nc",
+        "pressure": output_dir / "pressure.nc",
+        "static": output_dir / "static.nc",
+    }
+    if not all(_netcdf_readable(path, str(request.get("aurora_request_key", ""))) for path in files.values()):
+        return None
+    summary_path = output_dir / "era5_target_timeseries.json"
+    result = dict(request)
+    legacy_manifest = output_dir / "live_manifest.json"
+    if legacy_manifest.is_file():
+        try:
+            loaded = json.loads(legacy_manifest.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                result.update({
+                    key: value for key, value in loaded.items()
+                    if key not in {
+                        "analysis_time_utc", "era5_time_utc", "event_id", "request_key",
+                        "canonical_request_key", "artifact_dir",
+                    }
+                })
+        except (OSError, ValueError, TypeError):
+            pass
+    result.update({
+        "status": "ok",
+        "cache_hit": True,
+        "cache_compatibility": "regional_forecast_identity",
+        "artifact_dir": str(output_dir),
+        "files": {name: str(path) for name, path in files.items()},
+        "requested_request_key": request.get("aurora_request_key"),
+        "canonical_request_key": request.get("aurora_request_key"),
+    })
+    if summary_path.is_file():
+        result["target_timeseries"] = json.loads(summary_path.read_text(encoding="utf-8"))
+        result["target_timeseries_file"] = str(summary_path)
+    return result
+
+
 def fetch_era5_live(
     request: dict[str, Any],
     *,
@@ -310,6 +416,9 @@ def fetch_era5_live(
     """Fetch the live request's ERA5 inputs through CDS and write a manifest."""
     if not isinstance(request, dict) or request.get("data_policy") != "live":
         raise ValueError("fetch_era5_live requires a normalized live request")
+    regional_cached = _cached_era5_for_regional_identity(request)
+    if regional_cached is not None:
+        return regional_cached
     cached_manifest = read_manifest(
         str(request.get("event_id") or "_live"),
         "standardized",
@@ -492,6 +601,7 @@ def fetch_era5_live(
         manifest["target_timeseries_status"] = "extraction_failed"
         manifest["target_timeseries_error"] = summarized.stderr[-2000:]
     (output_dir / "live_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    _write_regional_identity_manifest(request, output_dir)
     event_id = str(request.get("event_id") or "_live")
     identity = {"request_key": request.get("canonical_request_key", request.get("request_key")), "canonical": request}
     write_manifest(
@@ -522,6 +632,28 @@ def fetch_era5_live(
     return manifest
 
 
+def _cached_aurora_product(
+    root: Path, request: dict[str, Any]
+) -> tuple[Path, dict[str, Any]] | None:
+    """Find a cached forecast whose initialization and leads match the request."""
+
+    requested_time = _parse_time(str(request.get("era5_time_utc", "")))
+    requested_leads = {int(value) for value in request.get("forecast_leads_hours", [])}
+    for summary_path in sorted(root.glob("aurora_forecast*.json")):
+        forecast_path = summary_path.with_suffix(".npz")
+        if not forecast_path.is_file():
+            continue
+        try:
+            summary = json.loads(summary_path.read_text(encoding="utf-8"))
+            product_time = _parse_time(str(summary.get("event_input_time", "")))
+            completed = {int(value) for value in summary.get("completed_leads_hours", [])}
+        except (OSError, ValueError, TypeError):
+            continue
+        if product_time == requested_time and requested_leads.issubset(completed):
+            return forecast_path, summary
+    return None
+
+
 def run_aurora_live(
     request: dict[str, Any],
     *,
@@ -546,31 +678,23 @@ def run_aurora_live(
     leads = [int(value) for value in request.get("forecast_leads_hours", [6])]
     # A completed request is reusable evidence. The Agent may still decide
     # how to interpret it, but must not rerun the foundation model.
-    cached_summary_path = output.with_suffix(".json")
-    if output.is_file() and cached_summary_path.is_file():
-        try:
-            cached_summary = json.loads(cached_summary_path.read_text(encoding="utf-8"))
-            completed = [int(value) for value in cached_summary.get("completed_leads_hours", [])]
-            if all(lead in completed for lead in leads):
-                # A cache hit is deliberately read-only.  Rewriting the same
-                # manifest on every question adds filesystem contention and,
-                # in restricted deployments, can spend tens of seconds in
-                # tempfile retries even though all evidence already exists.
-                return {
-                    "status": "ok",
-                    "model": "AuroraPretrained",
-                    "cache_hit": True,
-                    "request": request,
-                    "forecast": cached_summary,
-                    "verification": None,
-                    "verification_status": "compute_on_demand_from_forecast_and_era5",
-                    "output": str(output),
-                    "completed_leads_hours": completed,
-                    "pending_leads_hours": [],
-                    "interpretation_limit": "Aurora给出大尺度环境预测；缓存命中时不重复运行模型。",
-                }
-        except (OSError, ValueError, TypeError):
-            pass
+    cached_product = _cached_aurora_product(root, request)
+    if cached_product is not None:
+        output, cached_summary = cached_product
+        completed = [int(value) for value in cached_summary.get("completed_leads_hours", [])]
+        return {
+            "status": "ok",
+            "model": "AuroraPretrained",
+            "cache_hit": True,
+            "request": request,
+            "forecast": cached_summary,
+            "verification": None,
+            "verification_status": "compute_on_demand_from_forecast_and_era5",
+            "output": str(output),
+            "completed_leads_hours": completed,
+            "pending_leads_hours": [],
+            "interpretation_limit": "Aurora给出大尺度环境预测；缓存命中时不重复运行模型。",
+        }
     if cache_only or os.getenv("SEVIR_CACHE_ONLY", "").strip().lower() in {"1", "true", "yes", "on"}:
         raise RuntimeError(
             "cache_only_miss: refusing to run Aurora for request "
@@ -595,6 +719,7 @@ def run_aurora_live(
         shutil.copy2(staged_summary, output.with_suffix(".json"))
     summary_path = output.with_suffix(".json")
     summary = json.loads(summary_path.read_text(encoding="utf-8")) if summary_path.is_file() else {}
+    _write_regional_identity_manifest(request, root, forecast_file=output)
     requested_leads = leads
     completed_leads = [int(value) for value in summary.get("completed_leads_hours", [])]
     event_id = str(request.get("event_id") or "_live")

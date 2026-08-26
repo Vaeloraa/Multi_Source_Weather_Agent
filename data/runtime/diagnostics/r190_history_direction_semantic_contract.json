@@ -1,0 +1,1468 @@
+{
+  "status": "error",
+  "answer": "本轮代码连续执行失败，完整步骤已保留供检查。",
+  "route_mode": "unified_agent",
+  "termination_reason": "consecutive_execution_errors",
+  "selected_tools": [
+    "ds",
+    "sevir",
+    "geolocator",
+    "cascast"
+  ],
+  "agent_trace": [
+    {
+      "attempt": 1,
+      "action": "execute",
+      "status": "ok",
+      "elapsed_ms": 3879.45,
+      "model_elapsed_ms": 5637.9,
+      "summary": "代码执行成功，已获得新的真实观测结果",
+      "code": "import numpy as np\nimport matplotlib.pyplot as plt\nimport os\nfrom datetime import datetime\n\n# 获取当前事件的CasCast预测\nforecast = cascast.forecast(horizon_hours=1.0, ensemble_members=10, include_ground_truth=True)\nprint(f\"预测主题ID: {forecast.subject_id}\")\nprint(f\"预测模型: {forecast.model}\")\nprint(f\"历史分钟数: {forecast.history_minutes}\")\nprint(f\"预测提前分钟数: {forecast.lead_minutes}\")\nprint(f\"预测均值形状: {forecast.mean.shape}\")\nprint(f\"预测成员形状: {forecast.members.shape}\")\nprint(f\"是否有地面实况: {forecast.ground_truth is not None}\")\n\n# 获取当前事件的位置信息\nlocation = geolocator.event()\nprint(f\"事件中心位置: {location.center}\")\nprint(f\"事件边界: {location.bounds}\")\n\nresult = {\n    \"forecast_available\": True,\n    \"forecast_shape\": forecast.mean.shape,\n    \"event_center\": location.center,\n    \"event_bounds\": location.bounds\n}",
+      "calls": [
+        {
+          "api": "cascast.forecast",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "horizon_hours": 1.0,
+            "model_name": "cascast_live",
+            "ensemble_members": 10,
+            "include_ground_truth": true,
+            "array_transport": true
+          },
+          "status": "ok",
+          "cache_hit": true,
+          "error": null,
+          "return_type": "Forecast",
+          "result_summary": "返回 Forecast；命中已有数据缓存"
+        },
+        {
+          "api": "geolocator.event",
+          "arguments": {
+            "event_id": "R19062708588472"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "Location",
+          "result_summary": "返回 Location；事件 R19062708588472"
+        }
+      ],
+      "error_type": null,
+      "error": null
+    },
+    {
+      "attempt": 2,
+      "action": "execute",
+      "status": "ok",
+      "elapsed_ms": 213.55,
+      "model_elapsed_ms": 7029.7,
+      "summary": "代码执行成功，已获得新的真实观测结果",
+      "code": "# 查找附近的历史相似天气过程\n# 使用事件中心位置和较大半径搜索历史事件\nlatitude, longitude = location.center\nhistorical_events = sevir.nearby(latitude, longitude, radius_km=200.0, year=2019, month=6, limit=100)\nprint(f\"找到 {len(historical_events)} 个附近历史事件\")\n\n# 筛选有本地数据的事件\navailable_events = [e for e in historical_events if e.local_data]\nprint(f\"其中 {len(available_events)} 个有本地观测数据\")\n\n# 获取当前事件的观测数据\ncurrent_event = sevir.event()\nprint(f\"当前事件ID: {current_event.id}\")\nprint(f\"当前事件时间: {current_event.time_utc}\")\nprint(f\"当前事件类型: {current_event.event_type}\")\n\n# 获取当前事件的观测立方体\ncurrent_cube = sevir.observations()\nprint(f\"当前观测立方体形状: {current_cube.values.shape}\")\nprint(f\"当前观测分钟数范围: {current_cube.minutes.min()} 到 {current_cube.minutes.max()}\")\n\nresult = {\n    \"total_nearby_events\": len(historical_events),\n    \"available_events\": len(available_events),\n    \"current_event_id\": current_event.id,\n    \"current_event_time\": str(current_event.time_utc),\n    \"current_event_type\": current_event.event_type,\n    \"current_obs_shape\": current_cube.values.shape,\n    \"current_obs_minutes_range\": [int(current_cube.minutes.min()), int(current_cube.minutes.max())]\n}",
+      "calls": [
+        {
+          "api": "sevir.nearby",
+          "arguments": {
+            "latitude": 47.054316,
+            "longitude": -99.976044,
+            "radius_km": 200.0,
+            "year": 2019,
+            "month": 6,
+            "event_type": "",
+            "limit": 100
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "list",
+          "result_summary": "返回 list"
+        },
+        {
+          "api": "sevir.event",
+          "arguments": {
+            "event_id": "R19062708588472"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "Event",
+          "result_summary": "返回 Event；事件 R19062708588472"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062708588472"
+        }
+      ],
+      "error_type": null,
+      "error": null
+    },
+    {
+      "attempt": 3,
+      "action": "execute",
+      "status": "partial",
+      "elapsed_ms": 1586.8,
+      "model_elapsed_ms": 17122.64,
+      "summary": "代码执行完成，但部分工具调用失败，需依据失败信息调整分析",
+      "code": "# 分析当前事件的预测和历史相似性\n# 首先，我们需要定义相似性标准：使用预测前60分钟的历史观测作为相似性匹配\n\n# 获取预测前的历史观测（分钟-60到0）\nhistory_mask = (current_cube.minutes >= -60) & (current_cube.minutes <= 0)\nhistory_frames = current_cube.values[history_mask]\nhistory_minutes = current_cube.minutes[history_mask]\nprint(f\"历史观测帧数: {len(history_frames)}\")\nprint(f\"历史分钟数: {history_minutes}\")\n\n# 计算历史观测的统计特征\nhistory_valid = np.where(history_frames == current_cube.missing_value, np.nan, history_frames)\nhistory_mean = np.nanmean(history_valid, axis=(1, 2))\nhistory_max = np.nanmax(history_valid, axis=(1, 2))\nhistory_area = np.sum(history_valid > 10, axis=(1, 2))  # VIL > 10 dBZ的面积\n\nprint(f\"历史平均VIL范围: {np.nanmin(history_mean):.2f} 到 {np.nanmax(history_mean):.2f}\")\nprint(f\"历史最大VIL范围: {np.nanmin(history_max):.2f} 到 {np.nanmax(history_max):.2f}\")\nprint(f\"历史活跃面积范围: {np.nanmin(history_area):.0f} 到 {np.nanmax(history_area):.0f} 像素\")\n\n# 加载历史事件并计算相似性\nsimilar_events = []\nfor event in available_events[:20]:  # 先分析前20个事件\n    try:\n        # 加载历史事件的观测数据\n        hist_cube = sevir.observations(event_id=event.id)\n        \n        # 获取相同时间范围的历史观测（分钟-60到0）\n        hist_mask = (hist_cube.minutes >= -60) & (hist_cube.minutes <= 0)\n        if np.sum(hist_mask) < 5:  # 至少需要5帧\n            continue\n            \n        hist_frames = hist_cube.values[hist_mask]\n        hist_valid = np.where(hist_frames == hist_cube.missing_value, np.nan, hist_frames)\n        \n        # 计算特征\n        hist_mean = np.nanmean(hist_valid, axis=(1, 2))\n        hist_max = np.nanmax(hist_valid, axis=(1, 2))\n        hist_area = np.sum(hist_valid > 10, axis=(1, 2))\n        \n        # 计算相似性分数（使用最后5帧的均方根误差）\n        if len(history_mean) >= 5 and len(hist_mean) >= 5:\n            # 对齐时间序列\n            min_len = min(len(history_mean), len(hist_mean))\n            hist_rmsd = np.sqrt(np.mean((history_mean[-min_len:] - hist_mean[-min_len:])**2))\n            \n            # 记录相似事件\n            similar_events.append({\n                'event_id': event.id,\n                'time_utc': str(event.time_utc),\n                'distance_km': event.distance_km,\n                'rmsd': hist_rmsd,\n                'mean_vil': np.nanmean(hist_mean),\n                'max_vil': np.nanmax(hist_max),\n                'mean_area': np.nanmean(hist_area)\n            })\n    except Exception as e:\n        continue\n\nprint(f\"成功分析 {len(similar_events)} 个历史事件\")\n\n# 按相似性排序\nsimilar_events.sort(key=lambda x: x['rmsd'])\ntop_similar = similar_events[:5] if len(similar_events) >= 5 else similar_events\n\nresult = {\n    \"history_stats\": {\n        \"mean_vil_range\": [float(np.nanmin(history_mean)), float(np.nanmax(history_mean))],\n        \"max_vil_range\": [float(np.nanmin(history_max)), float(np.nanmax(history_max))],\n        \"area_range\": [float(np.nanmin(history_area)), float(np.nanmax(history_area))]\n    },\n    \"similar_events_count\": len(similar_events),\n    \"top_similar_events\": top_similar[:3] if len(top_similar) >= 3 else top_similar\n}",
+      "calls": [
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19063012358548",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19063012358548"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061502218124",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061502218124"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061502218370",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061502218370"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061505008362",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061505008362"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061119368216",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061119368216"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061119368410",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061119368410"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061119368560",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061119368560"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062201438498",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062201438498"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062201438646",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062201438646"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062912338550",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062912338550"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062912338617",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062912338617"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19063004508672",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19063004508672"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19063004508681",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19063004508681"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061705038666",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061705038666"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": true,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062708588472；命中已有数据缓存"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062708588390",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "error",
+          "cache_hit": false,
+          "error": {
+            "type": "ValueError",
+            "message": "SEVIR VIL id R19062708588390 has 2 CATALOG records; provide file_name or file_index. Candidates: [{'file_name': 'vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5', 'file_index': 1251}, {'file_name': 'vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5', 'file_index': 1253}]"
+          },
+          "return_type": null,
+          "result_summary": "返回 NoneType"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062708588390",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "error",
+          "cache_hit": false,
+          "error": {
+            "type": "ValueError",
+            "message": "SEVIR VIL id R19062708588390 has 2 CATALOG records; provide file_name or file_index. Candidates: [{'file_name': 'vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5', 'file_index': 1251}, {'file_name': 'vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5', 'file_index': 1253}]"
+          },
+          "return_type": null,
+          "result_summary": "返回 NoneType"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062910398618",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062910398618"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062910398598",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062910398598"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062102428215",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062102428215"
+        }
+      ],
+      "error_type": null,
+      "error": null
+    },
+    {
+      "attempt": 4,
+      "action": "execute",
+      "status": "error",
+      "elapsed_ms": 26.69,
+      "model_elapsed_ms": 31252.9,
+      "summary": "代码执行失败：NameError",
+      "code": "# 现在比较CasCast预测与历史相似事件的发展方向\n# 首先分析CasCast预测的未来演变\n\n# 获取预测均值的时间演变\nforecast_mean = forecast.mean  # 形状: [12, 384, 384]\nlead_minutes = forecast.lead_minutes  # 预测提前分钟数\nprint(f\"预测提前分钟数: {lead_minutes}\")\n\n# 计算预测的统计特征随时间变化\nforecast_mean_valid = np.where(forecast_mean == 255, np.nan, forecast_mean)\nforecast_mean_ts = np.nanmean(forecast_mean_valid, axis=(1, 2))\nforecast_max_ts = np.nanmax(forecast_mean_valid, axis=(1, 2))\nforecast_area_ts = np.sum(forecast_mean_valid > 10, axis=(1, 2))\n\nprint(f\"预测平均VIL变化: {forecast_mean_ts}\")\nprint(f\"预测最大VIL变化: {forecast_max_ts}\")\nprint(f\"预测活跃面积变化: {forecast_area_ts}\")\n\n# 分析历史相似事件的后续发展（分钟0到60）\nhistorical_evolutions = []\nfor event_info in top_similar_events[1:4]:  # 排除自身，取前3个相似事件\n    try:\n        hist_cube = sevir.observations(event_id=event_info['event_id'])\n        \n        # 获取未来演变（分钟0到60）\n        future_mask = (hist_cube.minutes >= 0) & (hist_cube.minutes <= 60)\n        if np.sum(future_mask) < -5:  # 至少需要5帧\n            continue\n            \n        future_frames = hist_cube.values[future_mask]\n        future_minutes = hist_cube.minutes[future_mask]\n        future_valid = np.where(future_frames == hist_cube.missing_value, np.nan, future_frames)\n        \n        # 计算未来演变特征\n        future_mean = np.nanmean(future_valid, axis=(1, 2))\n        future_max = np.nanmax(future_valid, axis=(1, 2))\n        future_area = np.sum(future_valid > 10, axis=(1, 2))\n        \n        historical_evolutions.append({\n            'event_id': event_info['event_id'],\n            'minutes': future_minutes,\n            'mean_vil': future_mean,\n            'max_vil': future_max,\n            'area': future_area,\n            'initial_mean': event_info['mean_vil'],\n            'initial_max': event_info['max_vil']\n        })\n    except Exception as e:\n        continue\n\nprint(f\"成功获取 {len(historical_evolutions)} 个历史事件的未来演变\")\n\n# 创建比较图表\nartifact_dir = os.environ.get('SEVIR_ARTIFACT_DIR', '/tmp')\nfig, axes = plt.subplots(2, 2, figsize=(12, 10))\n\n# 1. 平均VIL随时间变化\nax1 = axes[0, 0]\nax1.plot(lead_minutes, forecast_mean_ts, 'b-', linewidth=2, marker='o', label='CasCast预测')\nfor i, hist in enumerate(historical_evolutions):\n    if len(hist['minutes']) > 0:\n        ax1.plot(hist['minutes'], hist['mean_vil'], '--', alpha=0.7, \n                label=f'历史事件 {hist[\"event_id\"][-6:]}')\nax1.set_xlabel('分钟 (相对于事件时间)')\nax1.set_ylabel('平均VIL (dBZ)')\nax1.set_title('平均强度演变比较')\nax1.legend()\nax1.grid(True, alpha=0.3)\n\n# 2. 最大VIL随时间变化\nax2 = axes[0, 1]\nax2.plot(lead_minutes, forecast_max_ts, 'b-', linewidth=2, marker='o', label='CasCast预测')\nfor i, hist in enumerate(historical_evolutions):\n    if len(hist['minutes']) > 0:\n        ax2.plot(hist['minutes'], hist['max_vil'], '--', alpha=0.7,\n                label=f'历史事件 {hist[\"event_id\"][-6:]}')\nax2.set_xlabel('分钟 (相对于事件时间)')\nax2.set_ylabel('最大VIL (dBZ)')\nax2.set_title('最大强度演变比较')\nax2.legend()\nax2.grid(True, alpha=0.3)\n\n# 3. 活跃面积随时间变化\nax3 = axes[1, 0]\nax3.plot(lead_minutes, forecast_area_ts, 'b-', linewidth=2, marker='o', label='CasCast预测')\nfor i, hist in enumerate(historical_evolutions):\n    if len(hist['minutes']) > 0:\n        ax3.plot(hist['minutes'], hist['area'], '--', alpha=0.7,\n                label=f'历史事件 {hist[\"event_id\"][-6:]}')\nax3.set_xlabel('分钟 (相对于事件时间)')\nax3.set_ylabel('活跃面积 (像素数)')\nax3.set_title('影响范围演变比较')\nax3.legend()\nax3.grid(True, alpha=0.3)\n\n# 4. 预测与历史趋势对比统计\nax4 = axes[1, 1]\n# 计算趋势：最后值相对于初始值的变化百分比\nforecast_trend_mean = (forecast_mean_ts[-1] - forecast_mean_ts[0]) / forecast_mean_ts[0] * 100\nforecast_trend_area = (forecast_area_ts[-1] - forecast_area_ts[0]) / forecast_area_ts[0] * 100\n\nhistorical_trends_mean = []\nhistorical_trends_area = []\nfor hist in historical_evolutions:\n    if len(hist['mean_vil']) > -1:\n        hist_trend_mean = (hist['mean_vil'][-1] - hist['mean_vil'][0]) / hist['mean_vil'][0] * 100\n        hist_trend_area = (hist['area'][-1] - hist['area'][0]) / hist['area'][0] * 100\n        historical_trends_mean.append(hist_trend_mean)\n        historical_trends_area.append(hist_trend_area)\n\n# 绘制箱线图比较趋势\npositions = [1, 2]\nmean_trend_data = [historical_trends_mean, [forecast_trend_mean]]\narea_trend_data = [historical_trends_area, [forecast_trend_area]]\n\nax4.boxplot(mean_trend_data, positions=[1, 2], widths=0.6)\nax4.set_xticks([1, 2])\nax4.set_xticklabels(['历史样本', 'CasCast预测'])\nax4.set_ylabel('平均VIL变化百分比 (%)')\nax4.set_title('强度变化趋势比较')\nax4.grid(True, alpha=0.3)\n\nplt.tight_layout()\nchart_path = os.path.join(artifact_dir, 'forecast_vs_history_comparison.png')\nplt.savefig(chart_path, dpi=150, bbox_inches='tight')\nplt.close()\n\n# 计算一致性指标\nconsistency_metrics = {\n    'forecast_trend_mean': float(forecast_trend_mean),\n    'forecast_trend_area': float(forecast_trend_area),\n    'historical_mean_trend_avg': float(np.mean(historical_trends_mean)) if historical_trends_mean else None,\n    'historical_area_trend_avg': float(np.mean(historical_trends_area)) if historical_trends_area else None,\n    'historical_sample_count': len(historical_evolutions)\n}\n\nresult = {\n    \"forecast_evolution\": {\n        \"mean_vil\": [float(x) for x in forecast_mean_ts],\n        \"max_vil\": [float(x) for x in forecast_max_ts],\n        \"area\": [float(x) for x in forecast_area_ts],\n        \"lead_minutes\": [int(x) for x in lead_minutes]\n    },\n    \"historical_evolutions_count\": len(historical_evolutions),\n    \"consistency_metrics\": consistency_metrics,\n    \"chart_path\": chart_path\n}",
+      "calls": [],
+      "error_type": "NameError",
+      "error": "name 'top_similar_events' is not defined"
+    },
+    {
+      "attempt": 5,
+      "action": "execute",
+      "status": "error",
+      "elapsed_ms": 919.89,
+      "model_elapsed_ms": 47482.82,
+      "summary": "代码执行失败：NameError",
+      "code": "# 修复变量名错误，重新分析\n# 使用之前计算出的similar_events变量\n\nprint(f\"可用的相似事件数量: {len(similar_events)}\")\n\n# 分析CasCast预测的未来演变\nforecast_mean = forecast.mean  # 形状: [12, 384, 384]\nlead_minutes = forecast.lead_minutes  # 预测提前分钟数\nprint(f\"预测提前分钟数: {lead_minutes}\")\n\n# 计算预测的统计特征随时间变化\nforecast_mean_valid = np.where(forecast_mean == 255, np.nan, forecast_mean)\nforecast_mean_ts = np.nanmean(forecast_mean_valid, axis=(1, 2))\nforecast_max_ts = np.nanmax(forecast_mean_valid, axis=(1, 2))\nforecast_area_ts = np.sum(forecast_mean_valid > 10, axis=(1, 2))\n\nprint(f\"预测平均VIL变化范围: {forecast_mean_ts[0]:.2f} 到 {forecast_mean_ts[-1]:.2f}\")\nprint(f\"预测最大VIL变化范围: {forecast_max_ts[0]:.2f} 到 {forecast_max_ts[-1]:.2f}\")\nprint(f\"预测活跃面积变化范围: {forecast_area_ts[0]:.0f} 到 {forecast_area_ts[-1]:.0f}\")\n\n# 分析历史相似事件的后续发展（分钟0到60）\nhistorical_evolutions = []\n# 排除当前事件自身，取前3个最相似的历史事件\nfor event_info in similar_events[1:4]:  # 索引0是当前事件自身\n    try:\n        hist_cube = sevir.observations(event_id=event_info['event_id'])\n        \n        # 获取未来演变（分钟0到60）\n        future_mask = (hist_cube.minutes >= 0) & (hist_cube.minutes <= 60)\n        future_frames = hist_cube.values[future_mask]\n        future_minutes = hist_cube.minutes[future_mask]\n        \n        if len(future_minutes) < 5:  # 至少需要5帧\n            continue\n            \n        future_valid = np.where(future_frames == hist_cube.missing_value, np.nan, future_frames)\n        \n        # 计算未来演变特征\n        future_mean = np.nanmean(future_valid, axis=(1, 2))\n        future_max = np.nanmax(future_valid, axis=(1, 2))\n        future_area = np.sum(future_valid > 10, axis=(1, 2))\n        \n        historical_evolutions.append({\n            'event_id': event_info['event_id'],\n            'minutes': future_minutes,\n            'mean_vil': future_mean,\n            'max_vil': future_max,\n            'area': future_area,\n            'initial_mean': event_info['mean_vil'],\n            'initial_max': event_info['max_vil'],\n            'rmsd': event_info['rmsd']  # 相似性分数\n        })\n    except Exception as e:\n        print(f\"处理事件 {event_info['event_id']} 时出错: {e}\")\n        continue\n\nprint(f\"成功获取 {len(historical_evolutions)} 个历史事件的未来演变\")\n\n# 创建比较图表\nartifact_dir = os.environ.get('SEVIR_ARTIFACT_DIR', '/tmp')\nfig, axes = plt.subplots(2, 2, figsize=(12, 10))\n\n# 1. 平均VIL随时间变化\nax1 = axes[0, 0]\nax1.plot(lead_minutes, forecast_mean_ts, 'b-', linewidth=2, marker='o', label='CasCast预测')\nfor i, hist in enumerate(historical_evolutions):\n    if len(hist['minutes']) > 0:\n        ax1.plot(hist['minutes'], hist['mean_vil'], '--', alpha=0.7, \n                label=f'历史样本 {i+1} (RMSD={hist[\"rmsd\"]:.2f})')\nax1.set_xlabel('分钟 (相对于事件时间)')\nax1.set_ylabel('平均VIL (dBZ)')\nax1.set_title('平均强度演变比较')\nax1.legend()\nax1.grid(True, alpha=0.3)\n\n# 2. 最大VIL随时间变化\nax2 = axes[0, 1]\nax2.plot(lead_minutes, forecast_max_ts, 'b-', linewidth=2, marker='o', label='CasCast预测')\nfor i, hist in enumerate(historical_evolutions):\n    if len(hist['minutes']) > 0:\n        ax2.plot(hist['minutes'], hist['max_vil'], '--', alpha=0.7,\n                label=f'历史样本 {i+1}')\nax2.set_xlabel('分钟 (相对于事件时间)')\nax2.set_ylabel('最大VIL (dBZ)')\nax2.set_title('最大强度演变比较')\nax2.legend()\nax2.grid(True, alpha=0.3)\n\n# 3. 活跃面积随时间变化\nax3 = axes[1, 0]\nax3.plot(lead_minutes, forecast_area_ts, 'b-', linewidth=2, marker='o', label='CasCast预测')\nfor i, hist in enumerate(historical_evolutions):\n    if len(hist['minutes']) > 0:\n        ax3.plot(hist['minutes'], hist['area'], '--', alpha=0.7,\n                label=f'历史样本 {i+1}')\nax3.set_xlabel('分钟 (相对于事件时间)')\nax3.set_ylabel('活跃面积 (像素数)')\nax3.set_title('影响范围演变比较')\nax3.legend()\nax3.grid(True, alpha=0.3)\n\n# 4. 趋势一致性分析\nax4 = axes[1, 1]\n# 计算趋势：最后值相对于初始值的变化百分比\nif len(forecast_mean_ts) > 1:\n    forecast_trend_mean = (forecast_mean_ts[-1] - forecast_mean_ts[0]) / forecast_mean_ts[0] * 100\n    forecast_trend_area = (forecast_area_ts[-1] - forecast_area_ts[0]) / forecast_area_ts[0] * 100\nelse:\n    forecast_trend_mean = forecast_trend_area = 0\n\nhistorical_trends_mean = []\nhistorical_trends_area = []\nfor hist in historical_evolutions:\n    if len(hist['mean_vil']) > 1:\n        hist_trend_mean = (hist['mean_vil'][-1] - hist['mean_vil'][0]) / hist['mean_vil'][0] * 100\n        hist_trend_area = (hist['area'][-1] - hist['area'][0]) / hist['area'][0] * 100\n        historical_trends_mean.append(hist_trend_mean)\n        historical_trends_area.append(hist_trend_area)\n\n# 绘制箱线图比较趋势\nif historical_trends_mean:\n    positions = [1, 2]\n    mean_trend_data = [historical_trends_mean, [forecast_trend_mean]]\n    \n    ax4.boxplot(mean_trend_data, positions=[1, 2], widths=0.6)\n    ax4.set_xticks([1, 2])\n    ax4.set_xticklabels([f'历史样本\\n(n={len(historical_trends_mean)})', 'CasCast预测'])\n    ax4.set_ylabel('平均VIL变化百分比 (%)')\n    ax4.set_title('强度变化趋势一致性')\n    ax4.grid(True, alpha=0.3)\n    \n    # 添加数值标注\n    ax4.text(1, np.median(historical_trends_mean), f'中值: {np.median(historical_trends_mean):.1f}%', \n             ha='center', va='bottom')\n    ax4.text(2, forecast_trend_mean, f'{forecast_trend_mean:.1f}%', \n             ha='center', va='bottom')\nelse:\n    ax4.text(0.5, 0.5, '历史样本数据不足\\n无法进行趋势比较', \n             ha='center', va='center', transform=ax4.transAxes)\n    ax4.set_title('趋势比较 (数据不足)')\n\nplt.tight_layout()\nchart_path = os.path.join(artifact_dir, 'forecast_vs_history_comparison.png')\nplt.savefig(chart_path, dpi=150, bbox_inches='tight')\nplt.close()\n\n# 计算一致性指标\nif historical_trends_mean:\n    hist_mean_avg = np.mean(historical_trends_mean)\n    hist_std = np.std(historical_trends_mean)\n    # 预测趋势是否在历史趋势的1个标准差范围内\n    trend_within_1std = abs(forecast_trend_mean - hist_mean_avg) <= hist_std\nelse:\n    hist_mean_avg = hist_std = None\n    trend_within_1std = False\n\n# 计算移动方向一致性（使用质心移动）\ndef calculate_centroid_movement(vil_array):\n    \"\"\"计算VIL场的质心移动\"\"\"\n    if len(vil_array.shape) != 3:\n        return None\n    \n    movements = []\n    for i in range(len(vil_array)-1):\n        frame1 = vil_array[i]\n        frame2 = vil_array[i+1]\n        \n        # 计算质心（加权平均位置）\n        y1, x1 = np.indices(frame1.shape)\n        valid1 = ~np.isnan(frame1) & (frame1 > 10)\n        valid2 = ~np.isnan(frame2) & (frame2 > 10)\n        \n        if np.sum(valid1) > 0 and np.sum(valid2) > 0:\n            weights1 = frame1[valid1]\n            weights2 = frame2[valid2]\n            \n            centroid1_x = np.average(x1[valid1], weights=weights1)\n            centroid1_y = np.average(y1[valid1], weights=weights1)\n            centroid2_x = np.average(x2[valid2], weights=weights2)\n            centroid2_y = np.average(y2[valid2], weights=weights2)\n            \n            # 计算移动距离（像素）\n            movement = np.sqrt((centroid2_x - centroid1_x)**2 + (centroid2_y - centroid1_y)**2)\n            movements.append(movement)\n    \n    return np.mean(movements) if movements else 0\n\n# 计算预测的移动速度\nforecast_movement = calculate_centroid_movement(forecast_mean_valid)\n\n# 计算历史样本的移动速度\nhistorical_movements = []\nfor hist in historical_evolutions:\n    # 重建历史事件的VIL数组\n    hist_cube = sevir.observations(event_id=hist['event_id'])\n    future_mask = (hist_cube.minutes >= 0) & (hist_cube.minutes <= 60)\n    future_frames = hist_cube.values[future_mask]\n    future_valid = np.where(future_frames == hist_cube.missing_value, np.nan, future_frames)\n    \n    movement = calculate_centroid_movement(future_valid)\n    if movement is not None:\n        historical_movements.append(movement)\n\nconsistency_metrics = {\n    'forecast_trend_mean': float(forecast_trend_mean),\n    'forecast_trend_area': float(forecast_trend_area),\n    'historical_mean_trend_avg': float(hist_mean_avg) if hist_mean_avg is not None else None,\n    'historical_mean_trend_std': float(hist_std) if hist_std is not None else None,\n    'trend_within_1std': bool(trend_within_1std),\n    'forecast_movement_speed': float(forecast_movement) if forecast_movement is not None else None,\n    'historical_movement_avg': float(np.mean(historical_movements)) if historical_movements else None,\n    'historical_sample_count': len(historical_evolutions),\n    'total_historical_candidates': len(similar_events) - 1  # 排除自身\n}\n\nresult = {\n    \"forecast_evolution\": {\n        \"mean_vil_trend\": float(forecast_trend_mean),\n        \"area_trend\": float(forecast_trend_area),\n        \"movement_speed\": float(forecast_movement) if forecast_movement is not None else None\n    },\n    \"historical_comparison\": {\n        \"sample_count\": len(historical_evolutions),\n        \"mean_trend_avg\": float(hist_mean_avg) if hist_mean_avg is not None else None,\n        \"movement_speed_avg\": float(np.mean(historical_movements)) if historical_movements else None\n    },\n    \"consistency_assessment\": {\n        \"trend_consistent\": trend_within_1std,\n        \"chart_path\": chart_path\n    }\n}",
+      "calls": [
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062912338617",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": true,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062912338617；命中已有数据缓存"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062910398598",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": true,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062910398598；命中已有数据缓存"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062912338550",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": true,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062912338550；命中已有数据缓存"
+        }
+      ],
+      "error_type": "NameError",
+      "error": "name 'x2' is not defined"
+    },
+    {
+      "attempt": 5,
+      "action": "stop",
+      "status": "error",
+      "elapsed_ms": 0,
+      "summary": "连续2次执行失败，停止本轮"
+    }
+  ],
+  "observations": [
+    {
+      "status": "ok",
+      "result": {
+        "forecast_available": true,
+        "forecast_shape": [
+          12,
+          384,
+          384
+        ],
+        "event_center": [
+          47.054316,
+          -99.976044
+        ],
+        "event_bounds": {
+          "south": 45.283591627891646,
+          "west": -102.44166025945844,
+          "north": 48.82504062351925,
+          "east": -97.51042813589711
+        }
+      },
+      "stdout": "Could not save font_manager cache [Errno 13] Permission denied: 'C:\\\\Users\\\\zhaor\\\\AppData\\\\Local\\\\Temp\\\\sevir-session-iekt1kiu\\\\fontlist-v390.json.matplotlib-lock'\n预测主题ID: R19062708588472\n预测模型: cascast_live\n历史分钟数: [-60 -55 -50 -45 -40 -35 -30 -25 -20 -15 -10  -5   0]\n预测提前分钟数: [ 5 10 15 20 25 30 35 40 45 50 55 60]\n预测均值形状: (12, 384, 384)\n预测成员形状: (10, 12, 384, 384)\n是否有地面实况: True\n事件中心位置: (47.054316, -99.976044)\n事件边界: Bounds(south=45.283591627891646, west=-102.44166025945844, north=48.82504062351925, east=-97.51042813589711)\n",
+      "calls": [
+        {
+          "api": "cascast.forecast",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "horizon_hours": 1.0,
+            "model_name": "cascast_live",
+            "ensemble_members": 10,
+            "include_ground_truth": true,
+            "array_transport": true
+          },
+          "status": "ok",
+          "cache_hit": true,
+          "error": null,
+          "return_type": "Forecast",
+          "result_summary": "返回 Forecast；命中已有数据缓存"
+        },
+        {
+          "api": "geolocator.event",
+          "arguments": {
+            "event_id": "R19062708588472"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "Location",
+          "result_summary": "返回 Location；事件 R19062708588472"
+        }
+      ],
+      "tool_call_summary": {
+        "total": 2,
+        "successful": 2,
+        "failed": 0
+      },
+      "generated_artifacts": [],
+      "error_type": null,
+      "error": null,
+      "traceback": null,
+      "error_location": null
+    },
+    {
+      "status": "ok",
+      "result": {
+        "total_nearby_events": 54,
+        "available_events": 36,
+        "current_event_id": "R19062708588472",
+        "current_event_time": "2019-06-27 08:58:20",
+        "current_event_type": "Unlabeled",
+        "current_obs_shape": [
+          49,
+          384,
+          384
+        ],
+        "current_obs_minutes_range": [
+          -120,
+          120
+        ]
+      },
+      "stdout": "找到 54 个附近历史事件\n其中 36 个有本地观测数据\n当前事件ID: R19062708588472\n当前事件时间: 2019-06-27 08:58:20\n当前事件类型: Unlabeled\n当前观测立方体形状: (49, 384, 384)\n当前观测分钟数范围: -120 到 120\n",
+      "calls": [
+        {
+          "api": "sevir.nearby",
+          "arguments": {
+            "latitude": 47.054316,
+            "longitude": -99.976044,
+            "radius_km": 200.0,
+            "year": 2019,
+            "month": 6,
+            "event_type": "",
+            "limit": 100
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "list",
+          "result_summary": "返回 list"
+        },
+        {
+          "api": "sevir.event",
+          "arguments": {
+            "event_id": "R19062708588472"
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "Event",
+          "result_summary": "返回 Event；事件 R19062708588472"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062708588472"
+        }
+      ],
+      "tool_call_summary": {
+        "total": 3,
+        "successful": 3,
+        "failed": 0
+      },
+      "generated_artifacts": [],
+      "error_type": null,
+      "error": null,
+      "traceback": null,
+      "error_location": null
+    },
+    {
+      "status": "partial",
+      "result": {
+        "history_stats": {
+          "mean_vil_range": [
+            36.67787170410156,
+            51.53660202026367
+          ],
+          "max_vil_range": [
+            238.0,
+            254.0
+          ],
+          "area_range": [
+            61689.0,
+            86764.0
+          ]
+        },
+        "similar_events_count": 18,
+        "top_similar_events": [
+          {
+            "event_id": "R19062708588472",
+            "time_utc": "2019-06-27 08:58:20",
+            "distance_km": 0.0,
+            "rmsd": 0.0,
+            "mean_vil": 44.68681335449219,
+            "max_vil": 254.0,
+            "mean_area": 75195.07692307692
+          },
+          {
+            "event_id": "R19062912338617",
+            "time_utc": "2019-06-29 12:33:20",
+            "distance_km": 0.0,
+            "rmsd": 1.0970330238342285,
+            "mean_vil": 45.25107192993164,
+            "max_vil": 254.0,
+            "mean_area": 79646.92307692308
+          },
+          {
+            "event_id": "R19062910398598",
+            "time_utc": "2019-06-29 10:39:35",
+            "distance_km": 3.571,
+            "rmsd": 2.5775468349456787,
+            "mean_vil": 46.086891174316406,
+            "max_vil": 254.0,
+            "mean_area": 77728.84615384616
+          }
+        ]
+      },
+      "stdout": "历史观测帧数: 13\n历史分钟数: [-60 -55 -50 -45 -40 -35 -30 -25 -20 -15 -10  -5   0]\n历史平均VIL范围: 36.68 到 51.54\n历史最大VIL范围: 238.00 到 254.00\n历史活跃面积范围: 61689 到 86764 像素\n<sevir-agent>:37: RuntimeWarning: Mean of empty slice\n<sevir-agent>:38: RuntimeWarning: All-NaN slice encountered\n成功分析 18 个历史事件\n",
+      "calls": [
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19063012358548",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19063012358548"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061502218124",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061502218124"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061502218370",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061502218370"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061505008362",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061505008362"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061119368216",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061119368216"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061119368410",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061119368410"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061119368560",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061119368560"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062201438498",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062201438498"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062201438646",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062201438646"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062912338550",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062912338550"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062912338617",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062912338617"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19063004508672",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19063004508672"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19063004508681",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19063004508681"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19061705038666",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19061705038666"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": true,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062708588472；命中已有数据缓存"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062708588390",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "error",
+          "cache_hit": false,
+          "error": {
+            "type": "ValueError",
+            "message": "SEVIR VIL id R19062708588390 has 2 CATALOG records; provide file_name or file_index. Candidates: [{'file_name': 'vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5', 'file_index': 1251}, {'file_name': 'vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5', 'file_index': 1253}]"
+          },
+          "return_type": null,
+          "result_summary": "返回 NoneType"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062708588390",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "error",
+          "cache_hit": false,
+          "error": {
+            "type": "ValueError",
+            "message": "SEVIR VIL id R19062708588390 has 2 CATALOG records; provide file_name or file_index. Candidates: [{'file_name': 'vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5', 'file_index': 1251}, {'file_name': 'vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5', 'file_index': 1253}]"
+          },
+          "return_type": null,
+          "result_summary": "返回 NoneType"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062910398618",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062910398618"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062910398598",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062910398598"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062102428215",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": false,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062102428215"
+        }
+      ],
+      "tool_call_summary": {
+        "total": 20,
+        "successful": 18,
+        "failed": 2
+      },
+      "generated_artifacts": [],
+      "error_type": null,
+      "error": null,
+      "traceback": null,
+      "error_location": null
+    },
+    {
+      "status": "error",
+      "result": null,
+      "stdout": "",
+      "calls": [],
+      "tool_call_summary": {
+        "total": 0,
+        "successful": 0,
+        "failed": 0
+      },
+      "generated_artifacts": [],
+      "error_type": "NameError",
+      "error": "name 'top_similar_events' is not defined",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Profile\\专业实习\\sevir-agent-demo\\sevir_world\\code_execution\\worker.py\", line 175, in _execute_payload\n    exec(compile(tree, \"<sevir-agent>\", \"exec\"), namespace)\n    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<sevir-agent>\", line 21, in <module>\nNameError: name 'top_similar_events' is not defined. Did you mean: 'similar_events'?\n",
+      "error_location": {
+        "line": 21,
+        "source": "for event_info in top_similar_events[1:4]:  # 排除自身，取前3个相似事件",
+        "function": "<module>"
+      }
+    },
+    {
+      "status": "error",
+      "result": null,
+      "stdout": "",
+      "calls": [
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062912338617",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": true,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062912338617；命中已有数据缓存"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062910398598",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": true,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062910398598；命中已有数据缓存"
+        },
+        {
+          "api": "sevir.observations",
+          "arguments": {
+            "event_id": "R19062912338550",
+            "start_frame": 0,
+            "end_frame": 49
+          },
+          "status": "ok",
+          "cache_hit": true,
+          "error": null,
+          "return_type": "ObservationCube",
+          "result_summary": "返回 ObservationCube；事件 R19062912338550；命中已有数据缓存"
+        }
+      ],
+      "tool_call_summary": {
+        "total": 3,
+        "successful": 3,
+        "failed": 0
+      },
+      "generated_artifacts": [],
+      "error_type": "NameError",
+      "error": "name 'x2' is not defined",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Profile\\专业实习\\sevir-agent-demo\\sevir_world\\code_execution\\worker.py\", line 175, in _execute_payload\n    exec(compile(tree, \"<sevir-agent>\", \"exec\"), namespace)\n    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<sevir-agent>\", line 189, in <module>\n  File \"<sevir-agent>\", line 179, in calculate_centroid_movement\nNameError: name 'x2' is not defined. Did you mean: 'x1'?\n",
+      "error_location": {
+        "line": 179,
+        "source": "centroid2_x = np.average(x2[valid2], weights=weights2)",
+        "function": "calculate_centroid_movement"
+      }
+    }
+  ],
+  "tool_runs": [
+    {
+      "api": "cascast.forecast",
+      "arguments": {
+        "event_id": "R19062708588472",
+        "horizon_hours": 1.0,
+        "model_name": "cascast_live",
+        "ensemble_members": 10,
+        "include_ground_truth": true,
+        "array_transport": true
+      },
+      "status": "ok",
+      "cache_hit": true,
+      "error": null,
+      "return_type": "Forecast",
+      "result_summary": "返回 Forecast；命中已有数据缓存"
+    },
+    {
+      "api": "geolocator.event",
+      "arguments": {
+        "event_id": "R19062708588472"
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "Location",
+      "result_summary": "返回 Location；事件 R19062708588472"
+    },
+    {
+      "api": "sevir.nearby",
+      "arguments": {
+        "latitude": 47.054316,
+        "longitude": -99.976044,
+        "radius_km": 200.0,
+        "year": 2019,
+        "month": 6,
+        "event_type": "",
+        "limit": 100
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "list",
+      "result_summary": "返回 list"
+    },
+    {
+      "api": "sevir.event",
+      "arguments": {
+        "event_id": "R19062708588472"
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "Event",
+      "result_summary": "返回 Event；事件 R19062708588472"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062708588472",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19062708588472"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19063012358548",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19063012358548"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19061502218124",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19061502218124"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19061502218370",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19061502218370"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19061505008362",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19061505008362"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19061119368216",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19061119368216"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19061119368410",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19061119368410"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19061119368560",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19061119368560"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062201438498",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19062201438498"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062201438646",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19062201438646"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062912338550",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19062912338550"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062912338617",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19062912338617"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19063004508672",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19063004508672"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19063004508681",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19063004508681"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19061705038666",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19061705038666"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062708588472",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": true,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19062708588472；命中已有数据缓存"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062708588390",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "error",
+      "cache_hit": false,
+      "error": {
+        "type": "ValueError",
+        "message": "SEVIR VIL id R19062708588390 has 2 CATALOG records; provide file_name or file_index. Candidates: [{'file_name': 'vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5', 'file_index': 1251}, {'file_name': 'vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5', 'file_index': 1253}]"
+      },
+      "return_type": null,
+      "result_summary": "返回 NoneType"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062708588390",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "error",
+      "cache_hit": false,
+      "error": {
+        "type": "ValueError",
+        "message": "SEVIR VIL id R19062708588390 has 2 CATALOG records; provide file_name or file_index. Candidates: [{'file_name': 'vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5', 'file_index': 1251}, {'file_name': 'vil/2019/SEVIR_VIL_RANDOMEVENTS_2019_0501_0831.h5', 'file_index': 1253}]"
+      },
+      "return_type": null,
+      "result_summary": "返回 NoneType"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062910398618",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19062910398618"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062910398598",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19062910398598"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062102428215",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": false,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19062102428215"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062912338617",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": true,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19062912338617；命中已有数据缓存"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062910398598",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": true,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19062910398598；命中已有数据缓存"
+    },
+    {
+      "api": "sevir.observations",
+      "arguments": {
+        "event_id": "R19062912338550",
+        "start_frame": 0,
+        "end_frame": 49
+      },
+      "status": "ok",
+      "cache_hit": true,
+      "error": null,
+      "return_type": "ObservationCube",
+      "result_summary": "返回 ObservationCube；事件 R19062912338550；命中已有数据缓存"
+    }
+  ],
+  "artifacts": [],
+  "artifact_count": 0,
+  "model_calls": 5,
+  "code_execution_count": 3,
+  "code_execution_attempt_count": 5,
+  "dataset_description": {
+    "loading": "on_demand",
+    "assets": [
+      {
+        "source": "sevir",
+        "event_id": "R19062708588472",
+        "representation": "event_handle"
+      }
+    ],
+    "details_expanded": false
+  },
+  "session_id": "diagnostic-1787636577",
+  "llm_timings": [
+    {
+      "kind": "agent_step",
+      "elapsed_ms": 5637.87,
+      "status": "ok",
+      "error_type": null,
+      "remaining_ms_after": 594346.66
+    },
+    {
+      "kind": "agent_step",
+      "elapsed_ms": 7029.64,
+      "status": "ok",
+      "error_type": null,
+      "remaining_ms_after": 583436.7
+    },
+    {
+      "kind": "agent_step",
+      "elapsed_ms": 17122.61,
+      "status": "ok",
+      "error_type": null,
+      "remaining_ms_after": 566100.04
+    },
+    {
+      "kind": "agent_step",
+      "elapsed_ms": 31252.88,
+      "status": "ok",
+      "error_type": null,
+      "remaining_ms_after": 533259.85
+    },
+    {
+      "kind": "agent_step",
+      "elapsed_ms": 47482.79,
+      "status": "ok",
+      "error_type": null,
+      "remaining_ms_after": 485750.12
+    }
+  ],
+  "request_budget": {
+    "limit_seconds": 600.0,
+    "remaining_ms": 484354.1,
+    "deadline_reached": false
+  },
+  "request_admission": {
+    "queue_wait_ms": 0.01,
+    "slot_count": 1
+  },
+  "diagnostic_model_actions": [
+    {
+      "content": "我将分析CasCast预测的发展方向与该地区历史相似天气过程的发展方向是否一致。首先，我需要获取当前事件的CasCast预测，然后查找该地区的历史相似天气过程进行比较。\n\n让我从获取当前事件的CasCast预测开始：\n\n<execute>\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport os\nfrom datetime import datetime\n\n# 获取当前事件的CasCast预测\nforecast = cascast.forecast(horizon_hours=1.0, ensemble_members=10, include_ground_truth=True)\nprint(f\"预测主题ID: {forecast.subject_id}\")\nprint(f\"预测模型: {forecast.model}\")\nprint(f\"历史分钟数: {forecast.history_minutes}\")\nprint(f\"预测提前分钟数: {forecast.lead_minutes}\")\nprint(f\"预测均值形状: {forecast.mean.shape}\")\nprint(f\"预测成员形状: {forecast.members.shape}\")\nprint(f\"是否有地面实况: {forecast.ground_truth is not None}\")\n\n# 获取当前事件的位置信息\nlocation = geolocator.event()\nprint(f\"事件中心位置: {location.center}\")\nprint(f\"事件边界: {location.bounds}\")\n\nresult = {\n    \"forecast_available\": True,\n    \"forecast_shape\": forecast.mean.shape,\n    \"event_center\": location.center,\n    \"event_bounds\": location.bounds\n}\n",
+      "finish_reason": "stop",
+      "characters": 901
+    },
+    {
+      "content": "<execute>\n# 查找附近的历史相似天气过程\n# 使用事件中心位置和较大半径搜索历史事件\nlatitude, longitude = location.center\nhistorical_events = sevir.nearby(latitude, longitude, radius_km=200.0, year=2019, month=6, limit=100)\nprint(f\"找到 {len(historical_events)} 个附近历史事件\")\n\n# 筛选有本地数据的事件\navailable_events = [e for e in historical_events if e.local_data]\nprint(f\"其中 {len(available_events)} 个有本地观测数据\")\n\n# 获取当前事件的观测数据\ncurrent_event = sevir.event()\nprint(f\"当前事件ID: {current_event.id}\")\nprint(f\"当前事件时间: {current_event.time_utc}\")\nprint(f\"当前事件类型: {current_event.event_type}\")\n\n# 获取当前事件的观测立方体\ncurrent_cube = sevir.observations()\nprint(f\"当前观测立方体形状: {current_cube.values.shape}\")\nprint(f\"当前观测分钟数范围: {current_cube.minutes.min()} 到 {current_cube.minutes.max()}\")\n\nresult = {\n    \"total_nearby_events\": len(historical_events),\n    \"available_events\": len(available_events),\n    \"current_event_id\": current_event.id,\n    \"current_event_time\": str(current_event.time_utc),\n    \"current_event_type\": current_event.event_type,\n    \"current_obs_shape\": current_cube.values.shape,\n    \"current_obs_minutes_range\": [int(current_cube.minutes.min()), int(current_cube.minutes.max())]\n}",
+      "finish_reason": "stop",
+      "characters": 1124
+    },
+    {
+      "content": "<execute># 分析当前事件的预测和历史相似性\n# 首先，我们需要定义相似性标准：使用预测前60分钟的历史观测作为相似性匹配\n\n# 获取预测前的历史观测（分钟-60到0）\nhistory_mask = (current_cube.minutes >= -60) & (current_cube.minutes <= 0)\nhistory_frames = current_cube.values[history_mask]\nhistory_minutes = current_cube.minutes[history_mask]\nprint(f\"历史观测帧数: {len(history_frames)}\")\nprint(f\"历史分钟数: {history_minutes}\")\n\n# 计算历史观测的统计特征\nhistory_valid = np.where(history_frames == current_cube.missing_value, np.nan, history_frames)\nhistory_mean = np.nanmean(history_valid, axis=(1, 2))\nhistory_max = np.nanmax(history_valid, axis=(1, 2))\nhistory_area = np.sum(history_valid > 10, axis=(1, 2))  # VIL > 10 dBZ的面积\n\nprint(f\"历史平均VIL范围: {np.nanmin(history_mean):.2f} 到 {np.nanmax(history_mean):.2f}\")\nprint(f\"历史最大VIL范围: {np.nanmin(history_max):.2f} 到 {np.nanmax(history_max):.2f}\")\nprint(f\"历史活跃面积范围: {np.nanmin(history_area):.0f} 到 {np.nanmax(history_area):.0f} 像素\")\n\n# 加载历史事件并计算相似性\nsimilar_events = []\nfor event in available_events[:20]:  # 先分析前20个事件\n    try:\n        # 加载历史事件的观测数据\n        hist_cube = sevir.observations(event_id=event.id)\n        \n        # 获取相同时间范围的历史观测（分钟-60到0）\n        hist_mask = (hist_cube.minutes >= -60) & (hist_cube.minutes <= 0)\n        if np.sum(hist_mask) < 5:  # 至少需要5帧\n            continue\n            \n        hist_frames = hist_cube.values[hist_mask]\n        hist_valid = np.where(hist_frames == hist_cube.missing_value, np.nan, hist_frames)\n        \n        # 计算特征\n        hist_mean = np.nanmean(hist_valid, axis=(1, 2))\n        hist_max = np.nanmax(hist_valid, axis=(1, 2))\n        hist_area = np.sum(hist_valid > 10, axis=(1, 2))\n        \n        # 计算相似性分数（使用最后5帧的均方根误差）\n        if len(history_mean) >= 5 and len(hist_mean) >= 5:\n            # 对齐时间序列\n            min_len = min(len(history_mean), len(hist_mean))\n            hist_rmsd = np.sqrt(np.mean((history_mean[-min_len:] - hist_mean[-min_len:])**2))\n            \n            # 记录相似事件\n            similar_events.append({\n                'event_id': event.id,\n                'time_utc': str(event.time_utc),\n                'distance_km': event.distance_km,\n                'rmsd': hist_rmsd,\n                'mean_vil': np.nanmean(hist_mean),\n                'max_vil': np.nanmax(hist_max),\n                'mean_area': np.nanmean(hist_area)\n            })\n    except Exception as e:\n        continue\n\nprint(f\"成功分析 {len(similar_events)} 个历史事件\")\n\n# 按相似性排序\nsimilar_events.sort(key=lambda x: x['rmsd'])\ntop_similar = similar_events[:5] if len(similar_events) >= 5 else similar_events\n\nresult = {\n    \"history_stats\": {\n        \"mean_vil_range\": [float(np.nanmin(history_mean)), float(np.nanmax(history_mean))],\n        \"max_vil_range\": [float(np.nanmin(history_max)), float(np.nanmax(history_max))],\n        \"area_range\": [float(np.nanmin(history_area)), float(np.nanmax(history_area))]\n    },\n    \"similar_events_count\": len(similar_events),\n    \"top_similar_events\": top_similar[:3] if len(top_similar) >= 3 else top_similar\n}",
+      "finish_reason": "stop",
+      "characters": 2934
+    },
+    {
+      "content": "<execute># 现在比较CasCast预测与历史相似事件的发展方向\n# 首先分析CasCast预测的未来演变\n\n# 获取预测均值的时间演变\nforecast_mean = forecast.mean  # 形状: [12, 384, 384]\nlead_minutes = forecast.lead_minutes  # 预测提前分钟数\nprint(f\"预测提前分钟数: {lead_minutes}\")\n\n# 计算预测的统计特征随时间变化\nforecast_mean_valid = np.where(forecast_mean == 255, np.nan, forecast_mean)\nforecast_mean_ts = np.nanmean(forecast_mean_valid, axis=(1, 2))\nforecast_max_ts = np.nanmax(forecast_mean_valid, axis=(1, 2))\nforecast_area_ts = np.sum(forecast_mean_valid > 10, axis=(1, 2))\n\nprint(f\"预测平均VIL变化: {forecast_mean_ts}\")\nprint(f\"预测最大VIL变化: {forecast_max_ts}\")\nprint(f\"预测活跃面积变化: {forecast_area_ts}\")\n\n# 分析历史相似事件的后续发展（分钟0到60）\nhistorical_evolutions = []\nfor event_info in top_similar_events[1:4]:  # 排除自身，取前3个相似事件\n    try:\n        hist_cube = sevir.observations(event_id=event_info['event_id'])\n        \n        # 获取未来演变（分钟0到60）\n        future_mask = (hist_cube.minutes >= 0) & (hist_cube.minutes <= 60)\n        if np.sum(future_mask) < -5:  # 至少需要5帧\n            continue\n            \n        future_frames = hist_cube.values[future_mask]\n        future_minutes = hist_cube.minutes[future_mask]\n        future_valid = np.where(future_frames == hist_cube.missing_value, np.nan, future_frames)\n        \n        # 计算未来演变特征\n        future_mean = np.nanmean(future_valid, axis=(1, 2))\n        future_max = np.nanmax(future_valid, axis=(1, 2))\n        future_area = np.sum(future_valid > 10, axis=(1, 2))\n        \n        historical_evolutions.append({\n            'event_id': event_info['event_id'],\n            'minutes': future_minutes,\n            'mean_vil': future_mean,\n            'max_vil': future_max,\n            'area': future_area,\n            'initial_mean': event_info['mean_vil'],\n            'initial_max': event_info['max_vil']\n        })\n    except Exception as e:\n        continue\n\nprint(f\"成功获取 {len(historical_evolutions)} 个历史事件的未来演变\")\n\n# 创建比较图表\nartifact_dir = os.environ.get('SEVIR_ARTIFACT_DIR', '/tmp')\nfig, axes = plt.subplots(2, 2, figsize=(12, 10))\n\n# 1. 平均VIL随时间变化\nax1 = axes[0, 0]\nax1.plot(lead_minutes, forecast_mean_ts, 'b-', linewidth=2, marker='o', label='CasCast预测')\nfor i, hist in enumerate(historical_evolutions):\n    if len(hist['minutes']) > 0:\n        ax1.plot(hist['minutes'], hist['mean_vil'], '--', alpha=0.7, \n                label=f'历史事件 {hist[\"event_id\"][-6:]}')\nax1.set_xlabel('分钟 (相对于事件时间)')\nax1.set_ylabel('平均VIL (dBZ)')\nax1.set_title('平均强度演变比较')\nax1.legend()\nax1.grid(True, alpha=0.3)\n\n# 2. 最大VIL随时间变化\nax2 = axes[0, 1]\nax2.plot(lead_minutes, forecast_max_ts, 'b-', linewidth=2, marker='o', label='CasCast预测')\nfor i, hist in enumerate(historical_evolutions):\n    if len(hist['minutes']) > 0:\n        ax2.plot(hist['minutes'], hist['max_vil'], '--', alpha=0.7,\n                label=f'历史事件 {hist[\"event_id\"][-6:]}')\nax2.set_xlabel('分钟 (相对于事件时间)')\nax2.set_ylabel('最大VIL (dBZ)')\nax2.set_title('最大强度演变比较')\nax2.legend()\nax2.grid(True, alpha=0.3)\n\n# 3. 活跃面积随时间变化\nax3 = axes[1, 0]\nax3.plot(lead_minutes, forecast_area_ts, 'b-', linewidth=2, marker='o', label='CasCast预测')\nfor i, hist in enumerate(historical_evolutions):\n    if len(hist['minutes']) > 0:\n        ax3.plot(hist['minutes'], hist['area'], '--', alpha=0.7,\n                label=f'历史事件 {hist[\"event_id\"][-6:]}')\nax3.set_xlabel('分钟 (相对于事件时间)')\nax3.set_ylabel('活跃面积 (像素数)')\nax3.set_title('影响范围演变比较')\nax3.legend()\nax3.grid(True, alpha=0.3)\n\n# 4. 预测与历史趋势对比统计\nax4 = axes[1, 1]\n# 计算趋势：最后值相对于初始值的变化百分比\nforecast_trend_mean = (forecast_mean_ts[-1] - forecast_mean_ts[0]) / forecast_mean_ts[0] * 100\nforecast_trend_area = (forecast_area_ts[-1] - forecast_area_ts[0]) / forecast_area_ts[0] * 100\n\nhistorical_trends_mean = []\nhistorical_trends_area = []\nfor hist in historical_evolutions:\n    if len(hist['mean_vil']) > -1:\n        hist_trend_mean = (hist['mean_vil'][-1] - hist['mean_vil'][0]) / hist['mean_vil'][0] * 100\n        hist_trend_area = (hist['area'][-1] - hist['area'][0]) / hist['area'][0] * 100\n        historical_trends_mean.append(hist_trend_mean)\n        historical_trends_area.append(hist_trend_area)\n\n# 绘制箱线图比较趋势\npositions = [1, 2]\nmean_trend_data = [historical_trends_mean, [forecast_trend_mean]]\narea_trend_data = [historical_trends_area, [forecast_trend_area]]\n\nax4.boxplot(mean_trend_data, positions=[1, 2], widths=0.6)\nax4.set_xticks([1, 2])\nax4.set_xticklabels(['历史样本', 'CasCast预测'])\nax4.set_ylabel('平均VIL变化百分比 (%)')\nax4.set_title('强度变化趋势比较')\nax4.grid(True, alpha=0.3)\n\nplt.tight_layout()\nchart_path = os.path.join(artifact_dir, 'forecast_vs_history_comparison.png')\nplt.savefig(chart_path, dpi=150, bbox_inches='tight')\nplt.close()\n\n# 计算一致性指标\nconsistency_metrics = {\n    'forecast_trend_mean': float(forecast_trend_mean),\n    'forecast_trend_area': float(forecast_trend_area),\n    'historical_mean_trend_avg': float(np.mean(historical_trends_mean)) if historical_trends_mean else None,\n    'historical_area_trend_avg': float(np.mean(historical_trends_area)) if historical_trends_area else None,\n    'historical_sample_count': len(historical_evolutions)\n}\n\nresult = {\n    \"forecast_evolution\": {\n        \"mean_vil\": [float(x) for x in forecast_mean_ts],\n        \"max_vil\": [float(x) for x in forecast_max_ts],\n        \"area\": [float(x) for x in forecast_area_ts],\n        \"lead_minutes\": [int(x) for x in lead_minutes]\n    },\n    \"historical_evolutions_count\": len(historical_evolutions),\n    \"consistency_metrics\": consistency_metrics,\n    \"chart_path\": chart_path\n}",
+      "finish_reason": "stop",
+      "characters": 5387
+    },
+    {
+      "content": "<execute># 修复变量名错误，重新分析\n# 使用之前计算出的similar_events变量\n\nprint(f\"可用的相似事件数量: {len(similar_events)}\")\n\n# 分析CasCast预测的未来演变\nforecast_mean = forecast.mean  # 形状: [12, 384, 384]\nlead_minutes = forecast.lead_minutes  # 预测提前分钟数\nprint(f\"预测提前分钟数: {lead_minutes}\")\n\n# 计算预测的统计特征随时间变化\nforecast_mean_valid = np.where(forecast_mean == 255, np.nan, forecast_mean)\nforecast_mean_ts = np.nanmean(forecast_mean_valid, axis=(1, 2))\nforecast_max_ts = np.nanmax(forecast_mean_valid, axis=(1, 2))\nforecast_area_ts = np.sum(forecast_mean_valid > 10, axis=(1, 2))\n\nprint(f\"预测平均VIL变化范围: {forecast_mean_ts[0]:.2f} 到 {forecast_mean_ts[-1]:.2f}\")\nprint(f\"预测最大VIL变化范围: {forecast_max_ts[0]:.2f} 到 {forecast_max_ts[-1]:.2f}\")\nprint(f\"预测活跃面积变化范围: {forecast_area_ts[0]:.0f} 到 {forecast_area_ts[-1]:.0f}\")\n\n# 分析历史相似事件的后续发展（分钟0到60）\nhistorical_evolutions = []\n# 排除当前事件自身，取前3个最相似的历史事件\nfor event_info in similar_events[1:4]:  # 索引0是当前事件自身\n    try:\n        hist_cube = sevir.observations(event_id=event_info['event_id'])\n        \n        # 获取未来演变（分钟0到60）\n        future_mask = (hist_cube.minutes >= 0) & (hist_cube.minutes <= 60)\n        future_frames = hist_cube.values[future_mask]\n        future_minutes = hist_cube.minutes[future_mask]\n        \n        if len(future_minutes) < 5:  # 至少需要5帧\n            continue\n            \n        future_valid = np.where(future_frames == hist_cube.missing_value, np.nan, future_frames)\n        \n        # 计算未来演变特征\n        future_mean = np.nanmean(future_valid, axis=(1, 2))\n        future_max = np.nanmax(future_valid, axis=(1, 2))\n        future_area = np.sum(future_valid > 10, axis=(1, 2))\n        \n        historical_evolutions.append({\n            'event_id': event_info['event_id'],\n            'minutes': future_minutes,\n            'mean_vil': future_mean,\n            'max_vil': future_max,\n            'area': future_area,\n            'initial_mean': event_info['mean_vil'],\n            'initial_max': event_info['max_vil'],\n            'rmsd': event_info['rmsd']  # 相似性分数\n        })\n    except Exception as e:\n        print(f\"处理事件 {event_info['event_id']} 时出错: {e}\")\n        continue\n\nprint(f\"成功获取 {len(historical_evolutions)} 个历史事件的未来演变\")\n\n# 创建比较图表\nartifact_dir = os.environ.get('SEVIR_ARTIFACT_DIR', '/tmp')\nfig, axes = plt.subplots(2, 2, figsize=(12, 10))\n\n# 1. 平均VIL随时间变化\nax1 = axes[0, 0]\nax1.plot(lead_minutes, forecast_mean_ts, 'b-', linewidth=2, marker='o', label='CasCast预测')\nfor i, hist in enumerate(historical_evolutions):\n    if len(hist['minutes']) > 0:\n        ax1.plot(hist['minutes'], hist['mean_vil'], '--', alpha=0.7, \n                label=f'历史样本 {i+1} (RMSD={hist[\"rmsd\"]:.2f})')\nax1.set_xlabel('分钟 (相对于事件时间)')\nax1.set_ylabel('平均VIL (dBZ)')\nax1.set_title('平均强度演变比较')\nax1.legend()\nax1.grid(True, alpha=0.3)\n\n# 2. 最大VIL随时间变化\nax2 = axes[0, 1]\nax2.plot(lead_minutes, forecast_max_ts, 'b-', linewidth=2, marker='o', label='CasCast预测')\nfor i, hist in enumerate(historical_evolutions):\n    if len(hist['minutes']) > 0:\n        ax2.plot(hist['minutes'], hist['max_vil'], '--', alpha=0.7,\n                label=f'历史样本 {i+1}')\nax2.set_xlabel('分钟 (相对于事件时间)')\nax2.set_ylabel('最大VIL (dBZ)')\nax2.set_title('最大强度演变比较')\nax2.legend()\nax2.grid(True, alpha=0.3)\n\n# 3. 活跃面积随时间变化\nax3 = axes[1, 0]\nax3.plot(lead_minutes, forecast_area_ts, 'b-', linewidth=2, marker='o', label='CasCast预测')\nfor i, hist in enumerate(historical_evolutions):\n    if len(hist['minutes']) > 0:\n        ax3.plot(hist['minutes'], hist['area'], '--', alpha=0.7,\n                label=f'历史样本 {i+1}')\nax3.set_xlabel('分钟 (相对于事件时间)')\nax3.set_ylabel('活跃面积 (像素数)')\nax3.set_title('影响范围演变比较')\nax3.legend()\nax3.grid(True, alpha=0.3)\n\n# 4. 趋势一致性分析\nax4 = axes[1, 1]\n# 计算趋势：最后值相对于初始值的变化百分比\nif len(forecast_mean_ts) > 1:\n    forecast_trend_mean = (forecast_mean_ts[-1] - forecast_mean_ts[0]) / forecast_mean_ts[0] * 100\n    forecast_trend_area = (forecast_area_ts[-1] - forecast_area_ts[0]) / forecast_area_ts[0] * 100\nelse:\n    forecast_trend_mean = forecast_trend_area = 0\n\nhistorical_trends_mean = []\nhistorical_trends_area = []\nfor hist in historical_evolutions:\n    if len(hist['mean_vil']) > 1:\n        hist_trend_mean = (hist['mean_vil'][-1] - hist['mean_vil'][0]) / hist['mean_vil'][0] * 100\n        hist_trend_area = (hist['area'][-1] - hist['area'][0]) / hist['area'][0] * 100\n        historical_trends_mean.append(hist_trend_mean)\n        historical_trends_area.append(hist_trend_area)\n\n# 绘制箱线图比较趋势\nif historical_trends_mean:\n    positions = [1, 2]\n    mean_trend_data = [historical_trends_mean, [forecast_trend_mean]]\n    \n    ax4.boxplot(mean_trend_data, positions=[1, 2], widths=0.6)\n    ax4.set_xticks([1, 2])\n    ax4.set_xticklabels([f'历史样本\\n(n={len(historical_trends_mean)})', 'CasCast预测'])\n    ax4.set_ylabel('平均VIL变化百分比 (%)')\n    ax4.set_title('强度变化趋势一致性')\n    ax4.grid(True, alpha=0.3)\n    \n    # 添加数值标注\n    ax4.text(1, np.median(historical_trends_mean), f'中值: {np.median(historical_trends_mean):.1f}%', \n             ha='center', va='bottom')\n    ax4.text(2, forecast_trend_mean, f'{forecast_trend_mean:.1f}%', \n             ha='center', va='bottom')\nelse:\n    ax4.text(0.5, 0.5, '历史样本数据不足\\n无法进行趋势比较', \n             ha='center', va='center', transform=ax4.transAxes)\n    ax4.set_title('趋势比较 (数据不足)')\n\nplt.tight_layout()\nchart_path = os.path.join(artifact_dir, 'forecast_vs_history_comparison.png')\nplt.savefig(chart_path, dpi=150, bbox_inches='tight')\nplt.close()\n\n# 计算一致性指标\nif historical_trends_mean:\n    hist_mean_avg = np.mean(historical_trends_mean)\n    hist_std = np.std(historical_trends_mean)\n    # 预测趋势是否在历史趋势的1个标准差范围内\n    trend_within_1std = abs(forecast_trend_mean - hist_mean_avg) <= hist_std\nelse:\n    hist_mean_avg = hist_std = None\n    trend_within_1std = False\n\n# 计算移动方向一致性（使用质心移动）\ndef calculate_centroid_movement(vil_array):\n    \"\"\"计算VIL场的质心移动\"\"\"\n    if len(vil_array.shape) != 3:\n        return None\n    \n    movements = []\n    for i in range(len(vil_array)-1):\n        frame1 = vil_array[i]\n        frame2 = vil_array[i+1]\n        \n        # 计算质心（加权平均位置）\n        y1, x1 = np.indices(frame1.shape)\n        valid1 = ~np.isnan(frame1) & (frame1 > 10)\n        valid2 = ~np.isnan(frame2) & (frame2 > 10)\n        \n        if np.sum(valid1) > 0 and np.sum(valid2) > 0:\n            weights1 = frame1[valid1]\n            weights2 = frame2[valid2]\n            \n            centroid1_x = np.average(x1[valid1], weights=weights1)\n            centroid1_y = np.average(y1[valid1], weights=weights1)\n            centroid2_x = np.average(x2[valid2], weights=weights2)\n            centroid2_y = np.average(y2[valid2], weights=weights2)\n            \n            # 计算移动距离（像素）\n            movement = np.sqrt((centroid2_x - centroid1_x)**2 + (centroid2_y - centroid1_y)**2)\n            movements.append(movement)\n    \n    return np.mean(movements) if movements else 0\n\n# 计算预测的移动速度\nforecast_movement = calculate_centroid_movement(forecast_mean_valid)\n\n# 计算历史样本的移动速度\nhistorical_movements = []\nfor hist in historical_evolutions:\n    # 重建历史事件的VIL数组\n    hist_cube = sevir.observations(event_id=hist['event_id'])\n    future_mask = (hist_cube.minutes >= 0) & (hist_cube.minutes <= 60)\n    future_frames = hist_cube.values[future_mask]\n    future_valid = np.where(future_frames == hist_cube.missing_value, np.nan, future_frames)\n    \n    movement = calculate_centroid_movement(future_valid)\n    if movement is not None:\n        historical_movements.append(movement)\n\nconsistency_metrics = {\n    'forecast_trend_mean': float(forecast_trend_mean),\n    'forecast_trend_area': float(forecast_trend_area),\n    'historical_mean_trend_avg': float(hist_mean_avg) if hist_mean_avg is not None else None,\n    'historical_mean_trend_std': float(hist_std) if hist_std is not None else None,\n    'trend_within_1std': bool(trend_within_1std),\n    'forecast_movement_speed': float(forecast_movement) if forecast_movement is not None else None,\n    'historical_movement_avg': float(np.mean(historical_movements)) if historical_movements else None,\n    'historical_sample_count': len(historical_evolutions),\n    'total_historical_candidates': len(similar_events) - 1  # 排除自身\n}\n\nresult = {\n    \"forecast_evolution\": {\n        \"mean_vil_trend\": float(forecast_trend_mean),\n        \"area_trend\": float(forecast_trend_area),\n        \"movement_speed\": float(forecast_movement) if forecast_movement is not None else None\n    },\n    \"historical_comparison\": {\n        \"sample_count\": len(historical_evolutions),\n        \"mean_trend_avg\": float(hist_mean_avg) if hist_mean_avg is not None else None,\n        \"movement_speed_avg\": float(np.mean(historical_movements)) if historical_movements else None\n    },\n    \"consistency_assessment\": {\n        \"trend_consistent\": trend_within_1std,\n        \"chart_path\": chart_path\n    }\n}",
+      "finish_reason": "stop",
+      "characters": 8676
+    }
+  ],
+  "diagnostic_elapsed_seconds": 115.646
+}

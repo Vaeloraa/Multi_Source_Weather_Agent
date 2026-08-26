@@ -1,0 +1,281 @@
+{
+  "event_id": "R19062708588472",
+  "single": {
+    "status": "ok",
+    "upload_id": "f00aa21132ae4e3abfe6b4f4e7d7dd24",
+    "filename": "R19062708588472_history_13_+000min.png",
+    "source": "user_uploaded_sevir_vil_image",
+    "shape": [
+      384,
+      384
+    ],
+    "dtype": "uint8",
+    "grayscale_source": true,
+    "kind": "single_frame",
+    "created_at_utc": "2026-08-25T09:23:28.062878+00:00",
+    "event_match": {
+      "status": "matched",
+      "event_id": "R19062708588472",
+      "candidates": [
+        {
+          "event_id": "R19062708588472",
+          "score": 1.0,
+          "match_basis": "explicit_metadata"
+        }
+      ],
+      "confidence": 1.0,
+      "method": "explicit_metadata",
+      "metadata_source": "SEVIR CATALOG",
+      "note": "仅依据明确的event_id或文件名匹配；不是基于图像像素反推位置。"
+    },
+    "min_vil": 0,
+    "max_vil": 238,
+    "mean_vil": 51.5366,
+    "preview_grid": [
+      [
+        139,
+        95,
+        97,
+        84,
+        69,
+        149,
+        149,
+        202,
+        227,
+        192,
+        46,
+        9
+      ],
+      [
+        149,
+        141,
+        118,
+        95,
+        100,
+        145,
+        167,
+        208,
+        215,
+        65,
+        17,
+        7
+      ],
+      [
+        123,
+        159,
+        143,
+        102,
+        142,
+        144,
+        203,
+        213,
+        99,
+        71,
+        36,
+        7
+      ],
+      [
+        111,
+        163,
+        130,
+        142,
+        164,
+        227,
+        198,
+        140,
+        74,
+        131,
+        11,
+        3
+      ],
+      [
+        182,
+        207,
+        196,
+        226,
+        238,
+        234,
+        217,
+        209,
+        95,
+        15,
+        5,
+        5
+      ],
+      [
+        207,
+        196,
+        211,
+        223,
+        234,
+        220,
+        196,
+        115,
+        81,
+        7,
+        7,
+        15
+      ],
+      [
+        148,
+        157,
+        135,
+        148,
+        139,
+        125,
+        104,
+        95,
+        39,
+        6,
+        81,
+        77
+      ],
+      [
+        65,
+        101,
+        103,
+        120,
+        114,
+        108,
+        80,
+        62,
+        33,
+        6,
+        7,
+        8
+      ],
+      [
+        50,
+        53,
+        60,
+        74,
+        75,
+        59,
+        44,
+        15,
+        8,
+        8,
+        8,
+        7
+      ],
+      [
+        29,
+        29,
+        26,
+        71,
+        26,
+        34,
+        19,
+        17,
+        34,
+        66,
+        12,
+        14
+      ],
+      [
+        18,
+        8,
+        21,
+        18,
+        5,
+        7,
+        66,
+        6,
+        10,
+        18,
+        27,
+        26
+      ],
+      [
+        4,
+        6,
+        10,
+        8,
+        20,
+        9,
+        89,
+        5,
+        5,
+        19,
+        69,
+        18
+      ]
+    ],
+    "note": "已按原始灰度值读取。"
+  },
+  "sequence": {
+    "status": "ok",
+    "upload_id": "9a6bc6e5375040caa53a06612870e28b",
+    "filenames": [
+      "R19062708588472_history_01_-060min.png",
+      "R19062708588472_history_02_-055min.png",
+      "R19062708588472_history_03_-050min.png",
+      "R19062708588472_history_04_-045min.png",
+      "R19062708588472_history_05_-040min.png",
+      "R19062708588472_history_06_-035min.png",
+      "R19062708588472_history_07_-030min.png",
+      "R19062708588472_history_08_-025min.png",
+      "R19062708588472_history_09_-020min.png",
+      "R19062708588472_history_10_-015min.png",
+      "R19062708588472_history_11_-010min.png",
+      "R19062708588472_history_12_-005min.png",
+      "R19062708588472_history_13_+000min.png"
+    ],
+    "source": "user_uploaded_sevir_vil_13_frame_sequence",
+    "shape": [
+      13,
+      384,
+      384
+    ],
+    "dtype": "uint8",
+    "all_grayscale_source": true,
+    "history_minutes": [
+      -60,
+      -55,
+      -50,
+      -45,
+      -40,
+      -35,
+      -30,
+      -25,
+      -20,
+      -15,
+      -10,
+      -5,
+      0
+    ],
+    "kind": "sequence",
+    "created_at_utc": "2026-08-25T09:23:28.178900+00:00",
+    "event_match": {
+      "status": "matched",
+      "event_id": "R19062708588472",
+      "candidates": [
+        {
+          "event_id": "R19062708588472",
+          "score": 1.0,
+          "match_basis": "explicit_metadata"
+        }
+      ],
+      "confidence": 1.0,
+      "method": "explicit_metadata",
+      "metadata_source": "SEVIR CATALOG",
+      "note": "仅依据明确的event_id或文件名匹配；不是基于图像像素反推位置。"
+    },
+    "frame_count": 13,
+    "min_vil": 0,
+    "max_vil": 254,
+    "mean_vil": 44.6868,
+    "note": "已按文件名排序读取13帧；原始灰度序列可用于本地EarthFormer、CasCast和VAE现场推理。"
+  },
+  "invalid_sequence": {
+    "status": "error",
+    "answer": "Agent本轮未完成，请查看步骤日志中的失败位置。",
+    "request_id": "",
+    "route_mode": "unified_agent_failed",
+    "termination_reason": "agent_execution_failed",
+    "error": {
+      "type": "ValueError",
+      "message": "连续序列必须恰好包含13张384×384的SEVIR VIL灰度图。"
+    }
+  }
+}

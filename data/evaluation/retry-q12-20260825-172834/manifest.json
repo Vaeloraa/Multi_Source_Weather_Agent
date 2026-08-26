@@ -1,0 +1,112 @@
+{
+  "started_at": "2026-08-25T17:28:35.172125",
+  "finished_at": "2026-08-25T17:30:05.509166",
+  "event_id": "R19062708588472",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_90s_budget",
+  "diagnosis_required": true,
+  "ids": {
+    "single": "785fe7e3a21146f5af4db695ea242323",
+    "sequence": "2ee0c3952f89427cb74824cff7f949fc",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 12,
+      "question": "过去有没有与这次比较像的天气过程？它们后来通常怎样发展，这次预测有没有明显不同？",
+      "kind": "sequence",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_90s_budget",
+      "elapsed_seconds": 90.04,
+      "server_elapsed_ms": 90013,
+      "route_mode": "unified_agent",
+      "termination_reason": "model_transport_failure",
+      "answer": "固定模型调用失败；未继续重试，也未切换其他模型。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "event_resolution": {
+        "status": "resolved",
+        "event_id": "R19062708588472",
+        "source": "explicit_request"
+      },
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "112a0675a18f4df298bc20cd1b349e51",
+      "trace_file": null,
+      "session_id": "acceptance42-q12-3e468d14-3758-4be3-b3a2-7b7bc3bcd98c",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "format_repair",
+          "status": "error",
+          "error_type": null,
+          "error": "model action was truncated by the output token limit",
+          "elapsed_ms": 52360.85,
+          "summary": "模型动作协议无效：model action was truncated by the output token limit"
+        },
+        {
+          "attempt": 2,
+          "action": "model",
+          "status": "error",
+          "error_type": "RuntimeError",
+          "error": "固定模型 kimi-k2.5 调用失败；未尝试其他模型：The read operation timed out",
+          "elapsed_ms": 37647.65,
+          "summary": "模型调用失败：RuntimeError"
+        }
+      ],
+      "tool_runs": [],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 52360.84,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 37638.95
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 37647.64,
+          "status": "error",
+          "error_type": "RuntimeError",
+          "remaining_ms_after": 0.0
+        }
+      ],
+      "request_trace": {
+        "request_id": "112a0675a18f4df298bc20cd1b349e51",
+        "route": "/api/run",
+        "status": "error",
+        "started_at": "2026-08-25T09:28:35.494934+00:00",
+        "stages": [
+          {
+            "stage_id": "112a0675a18f4df298bc20cd1b349e51:1",
+            "name": "unified_agent",
+            "status": "error",
+            "elapsed_ms": 90008.84,
+            "termination_reason": "model_transport_failure",
+            "model_calls": 2,
+            "code_executions": 0
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 0,
+        "tool_calls": 0,
+        "model_calls": 2,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "model_transport_failure",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 90011.84,
+        "finished_at": "2026-08-25T09:30:05.506771+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null,
+      "diagnosis_required": true
+    }
+  ]
+}

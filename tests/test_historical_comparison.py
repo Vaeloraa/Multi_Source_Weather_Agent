@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import numpy as np
 
-from sevir_world.backends import statistics
+from sevir_world.tools.sevir import Statistics as statistics
 from sevir_world.evaluation.cases import _case_tags
 
 
@@ -25,10 +25,10 @@ class HistoricalComparisonTests(unittest.TestCase):
         self.assertEqual(result["per_frame"][0]["valid_pixel_count"], 3)
         self.assertAlmostEqual(result["per_frame"][0]["threshold_coverage"], 0.0, places=5)
 
-    @patch("sevir_world.backends.statistics._load_vil_array")
-    @patch("sevir_world.backends.statistics._catalog_vil_records")
-    @patch("sevir_world.backends.statistics._catalog_vil_event")
-    @patch("sevir_world.backends.statistics._load_cascast_ensemble")
+    @patch("sevir_world.tools.sevir.Statistics._load_vil_array")
+    @patch("sevir_world.tools.sevir.Statistics._catalog_vil_records")
+    @patch("sevir_world.tools.sevir.Statistics._catalog_vil_event")
+    @patch("sevir_world.tools.sevir.Statistics._load_cascast_ensemble")
     def test_forecast_history_comparison_is_parameterized(
         self, load_ensemble, load_reference, records, load_vil
     ):

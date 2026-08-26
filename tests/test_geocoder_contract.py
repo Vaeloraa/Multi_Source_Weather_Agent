@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import numpy as np
 
-from sevir_world.backends import geospatial
+from sevir_world.tools.geolocator import Geospatial as geospatial
 
 
 class _Response:

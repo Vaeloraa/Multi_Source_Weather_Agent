@@ -1,0 +1,172 @@
+{
+  "started_at": "2026-08-25T17:32:32.203676",
+  "finished_at": "2026-08-25T17:34:02.861333",
+  "event_id": "R19062708588472",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_90s_budget",
+  "diagnosis_required": true,
+  "ids": {
+    "single": "ef805cce5c8d4fedb684e13f09e6a80c",
+    "sequence": "6c02ebef237d499c8c47eea044ecf929",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 16,
+      "question": "综合不同预测，这次短临结果大概有多大参考价值？请告诉我最稳妥的结论，以及最需要防备的偏差。",
+      "kind": "sequence",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_90s_budget",
+      "elapsed_seconds": 90.27,
+      "server_elapsed_ms": 90261,
+      "route_mode": "unified_agent",
+      "termination_reason": "model_transport_failure",
+      "answer": "固定模型调用失败；未继续重试，也未切换其他模型。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "event_resolution": {
+        "status": "resolved",
+        "event_id": "R19062708588472",
+        "source": "explicit_request"
+      },
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "1532b473a0f846268fde0d3c3aa7b5bf",
+      "trace_file": null,
+      "session_id": "acceptance42-q16-2f2c02c1-8111-4e7c-87c3-4faec6825143",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "error",
+          "error_type": "AttributeError",
+          "error": "'numpy.ndarray' object has no attribute 'minutes'",
+          "elapsed_ms": 4438.73,
+          "summary": "代码执行失败：AttributeError"
+        },
+        {
+          "attempt": 2,
+          "action": "time_budget",
+          "status": "blocked",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 40983.55,
+          "summary": "剩余时间优先保留给最终回答，停止新的代码执行"
+        },
+        {
+          "attempt": 3,
+          "action": "model",
+          "status": "error",
+          "error_type": "RuntimeError",
+          "error": "固定模型 kimi-k2.5 调用失败；未尝试其他模型：The read operation timed out",
+          "elapsed_ms": 4138.91,
+          "summary": "模型调用失败：RuntimeError"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "cascast.forecast",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "horizon_hours": 1.0,
+            "model_name": "cascast_live",
+            "ensemble_members": 10,
+            "include_ground_truth": true,
+            "array_transport": true
+          }
+        },
+        {
+          "api": "sevir.observations",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "start_frame": 0,
+            "end_frame": 49
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 40439.36,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 49560.27
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 40983.53,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 4137.63
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 4138.89,
+          "status": "error",
+          "error_type": "RuntimeError",
+          "remaining_ms_after": 0.0
+        }
+      ],
+      "request_trace": {
+        "request_id": "1532b473a0f846268fde0d3c3aa7b5bf",
+        "route": "/api/run",
+        "status": "error",
+        "started_at": "2026-08-25T09:32:32.596927+00:00",
+        "stages": [
+          {
+            "stage_id": "1532b473a0f846268fde0d3c3aa7b5bf:1",
+            "name": "unified_agent",
+            "status": "error",
+            "elapsed_ms": 90256.05,
+            "termination_reason": "model_transport_failure",
+            "model_calls": 3,
+            "code_executions": 0
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 1,
+        "tool_calls": 4,
+        "model_calls": 3,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "model_transport_failure",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 90261.09,
+        "finished_at": "2026-08-25T09:34:02.858014+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null,
+      "diagnosis_required": true
+    }
+  ]
+}

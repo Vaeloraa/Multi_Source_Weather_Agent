@@ -9,7 +9,6 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CASE_ID = "R19062708588472"
 
 
 @dataclass
@@ -68,9 +67,13 @@ def unrestricted_execution() -> Check:
 
 def no_hidden_weather_planner() -> Check:
     app = (ROOT / "web" / "app.js").read_text(encoding="utf-8")
-    visualization = (
-        ROOT / "sevir_world" / "tools" / "visualization.py"
-    ).read_text(encoding="utf-8")
+    # Visualization is now an Agent-generated artifact, not a monolithic
+    # tools/visualization.py module. Inspect the real source tree instead of
+    # keeping a stale path from the retired architecture.
+    source_text = "\n".join(
+        path.read_text(encoding="utf-8", errors="replace")
+        for path in (ROOT / "sevir_world").rglob("*.py")
+    )
     forbidden_files = [
         ROOT / "sevir_world" / "tools" / "advisor.py",
         ROOT / "scripts" / "generate_reviewed_answer_figures.py",
@@ -81,7 +84,7 @@ def no_hidden_weather_planner() -> Check:
         reasons.append("旧规划/图表脚本仍存在")
     if "function buildQuestion()" in app:
         reasons.append("前端仍构造固定问题")
-    if "uploaded_ensemble_divergence" in visualization:
+    if "uploaded_ensemble_divergence" in source_text:
         reasons.append("uploaded_ensemble_divergence 预写分析仍存在")
     return Check(
         "无问题级预写分析",
@@ -94,7 +97,8 @@ def api_surface_consistency() -> Check:
     app = (ROOT / "web" / "app.js").read_text(encoding="utf-8")
     server = (ROOT / "sevir_world" / "api" / "server.py").read_text(encoding="utf-8")
     stale_render_calls = "/api/render-jobs/" in app and "/api/render-jobs/" not in server
-    verify_script = (ROOT / "scripts" / "verify_agent_pipeline.py").read_text(encoding="utf-8")
+    verify_path = ROOT / "scripts" / "verify_agent_pipeline.py"
+    verify_script = verify_path.read_text(encoding="utf-8") if verify_path.is_file() else ""
     stale_verifier = "SafeExecutionClient" in verify_script or "agent.artifacts" in verify_script
     reasons: list[str] = []
     if stale_render_calls:
@@ -142,19 +146,19 @@ def question_set() -> Check:
         return Check("42 题验收集", False, str(error))
     numbers = [int(item.get("number", -1)) for item in questions]
     corpus = json.dumps(payload, ensure_ascii=False)
-    ok = numbers == list(range(1, 43)) and CASE_ID in corpus and "Aurora" in corpus and "CasCast" in corpus
-    return Check("42 题验收集", ok, f"{len(questions)} 题，R190/Aurora/CasCast 覆盖={'是' if ok else '否'}")
+    ok = numbers == list(range(1, 43)) and "Aurora" in corpus and "CasCast" in corpus
+    return Check("42 题验收集", ok, f"{len(questions)} 题，Aurora/CasCast 覆盖={'是' if ok else '否'}")
 
 
 def fixed_model_policy() -> Check:
     client = (ROOT / "sevir_world" / "api" / "model_client.py").read_text(encoding="utf-8")
     env_text = (ROOT / ".env").read_text(encoding="utf-8")
     ok = (
-        "MODEL_FIXED_NAME=deepseek-v4-flash" in env_text
+        "MODEL_FIXED_NAME=qwen3.8-max" in env_text
         and "return [ModelCandidate(name, provider, model, \"fixed\")]" in client
         and "未尝试其他模型" in client
     )
-    return Check("固定单模型策略", ok, "deepseek-v4-flash 单次失败即返回" if ok else "固定模型链路不完整")
+    return Check("固定单模型策略", ok, "qwen3.8-max 单次失败即返回" if ok else "固定模型链路不完整")
 
 
 def main() -> int:

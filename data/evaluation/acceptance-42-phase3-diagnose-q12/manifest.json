@@ -1,0 +1,32 @@
+{
+  "started_at": "2026-08-26T16:29:08.506332",
+  "finished_at": "2026-08-26T16:30:38.838439",
+  "asset_event_id": "R19062708588472",
+  "study_case_event_selection": "agent_selected_from_evidence",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_90s_budget",
+  "diagnosis_required": true,
+  "ids": {
+    "single": "1e2ea7d0203441b5a4e89035048e4270",
+    "sequence": "8ab029fc7bf74f108f0e08f379d09e37",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 12,
+      "question": "过去有没有与这次比较像的天气过程？它们后来通常怎样发展，这次预测有没有明显不同？",
+      "kind": "sequence",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_90s_budget",
+      "elapsed_seconds": 90.03,
+      "request_id": "9ddf8112970e498e9d450e98c5596f2d",
+      "error": "TimeoutError: timed out",
+      "diagnosis_required": true
+    }
+  ]
+}

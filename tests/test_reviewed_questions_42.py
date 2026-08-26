@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import unittest
+from datetime import datetime
 from pathlib import Path
 
 
@@ -35,11 +36,18 @@ class ReviewedQuestionSetTests(unittest.TestCase):
         ):
             self.assertNotIn(fixed_metric, prompts)
 
-    def test_study_case_is_r190627_not_the_old_chatsworth_case(self) -> None:
+    def test_study_case_does_not_prebind_a_local_event(self) -> None:
         study = self.payload["study_case"]
-        self.assertEqual(study["event_id"], "R19062708588472")
+        self.assertIsNone(study["selected_event_id"])
+        self.assertEqual(study["requested_time_utc"], "2019-06-27T03:00:00Z")
+        self.assertEqual(study["aurora_initialization_time_utc"], "2019-06-27T03:00:00Z")
+        self.assertIsNone(study["selected_event_anchor_time_utc"])
+        self.assertEqual(study["user_region"], "North Dakota, United States")
         integrated = "\n".join(self.by_number[n]["prompt"] for n in range(33, 43))
-        self.assertIn("R19062708588472", integrated)
+        self.assertIn("North Dakota", integrated)
+        self.assertIn("北达科他州", self.by_number[33]["prompt"])
+        self.assertNotRegex(integrated, r"R\d{6,}")
+        self.assertNotIn("R19062708588472", "\n".join(str(item["prompt"]) for item in self.questions))
         self.assertNotIn("Chatsworth", integrated)
         self.assertNotIn("查茨沃思", integrated)
         self.assertNotIn("Springfield", integrated)
@@ -47,10 +55,16 @@ class ReviewedQuestionSetTests(unittest.TestCase):
     def test_integrated_chain_covers_teacher_workflow(self) -> None:
         integrated = "\n".join(self.by_number[n]["prompt"] for n in range(33, 43))
         for required in (
-            "6到24小时", "区域和时段", "此前一小时", "未来一到两小时",
-            "后来实际观测", "分别验证", "完整故事",
+            "6到24小时", "时空窗口", "前一小时", "之后60分钟",
+            "实际匹配到的局地天气事件", "实际SEVIR观测", "独立验证", "完整Study Case",
+            "显著天气", "风险区域", "风险类型",
         ):
             self.assertIn(required, integrated)
+        self.assertIn("2019年6月27日03:00 UTC", self.by_number[33]["prompt"])
+        self.assertIn("选定最早一个", self.by_number[34]["prompt"])
+        self.assertNotIn("哪些区域和时段最值得", self.by_number[34]["prompt"])
+        self.assertIn("局地观测时空窗口", self.by_number[34]["prompt"])
+        self.assertIn("目标天气形势", self.by_number[39]["prompt"])
         self.assertEqual(self.by_number[33]["payload_kind"], "event_environment")
         for number in range(36, 43):
             self.assertEqual(
@@ -71,4 +85,3 @@ class ReviewedQuestionSetTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

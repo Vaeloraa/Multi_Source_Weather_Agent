@@ -1,0 +1,935 @@
+{
+  "started_at": "2026-08-25T03:53:35.966369",
+  "finished_at": "2026-08-25T03:54:07.632631",
+  "event_id": "R19062708588472",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_30s_budget",
+  "diagnosis_required": true,
+  "ids": {
+    "single": "cf7771313bf74e1a8c9c23f44b7380b6",
+    "sequence": "aa0b65fce4bd4cea83912767c87840fa",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 1,
+      "question": "我看不懂这张天气图。请用普通人能理解的话告诉我现在大概是什么情况，也说明仅凭这一张图还不能确定什么。",
+      "kind": "single",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_30s_budget",
+      "elapsed_seconds": 30.37,
+      "server_elapsed_ms": 30360,
+      "route_mode": "unified_agent",
+      "termination_reason": "model_failure_after_observation",
+      "answer": "本轮已经获得并保留真实执行结果，但最终模型调用失败，未生成完整文字结论。请查看步骤和已生成图表。",
+      "artifacts": [
+        {
+          "artifact_id": "00bfe812d5a44556a6159a2284d5cfe5",
+          "url": "/api/artifacts/00bfe812d5a44556a6159a2284d5cfe5.png",
+          "image_url": "/api/artifacts/00bfe812d5a44556a6159a2284d5cfe5.png",
+          "title": "00bfe812d5a44556a6159a2284d5cfe5",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "0662c94101dd471b88f6f123ca5d254f",
+          "url": "/api/artifacts/0662c94101dd471b88f6f123ca5d254f.png",
+          "image_url": "/api/artifacts/0662c94101dd471b88f6f123ca5d254f.png",
+          "title": "0662c94101dd471b88f6f123ca5d254f",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "07f1afd433b64906b023302d7d336f92",
+          "url": "/api/artifacts/07f1afd433b64906b023302d7d336f92.png",
+          "image_url": "/api/artifacts/07f1afd433b64906b023302d7d336f92.png",
+          "title": "07f1afd433b64906b023302d7d336f92",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "0b04fc5f8a77494091fb23e27bc5f9c8",
+          "url": "/api/artifacts/0b04fc5f8a77494091fb23e27bc5f9c8.png",
+          "image_url": "/api/artifacts/0b04fc5f8a77494091fb23e27bc5f9c8.png",
+          "title": "0b04fc5f8a77494091fb23e27bc5f9c8",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "0b7370e5a4084faea363a64c9d56ff84",
+          "url": "/api/artifacts/0b7370e5a4084faea363a64c9d56ff84.png",
+          "image_url": "/api/artifacts/0b7370e5a4084faea363a64c9d56ff84.png",
+          "title": "0b7370e5a4084faea363a64c9d56ff84",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "0cf8db5cbed2d2b4145b92ecc2da4d21",
+          "url": "/api/artifacts/0cf8db5cbed2d2b4145b92ecc2da4d21.png",
+          "image_url": "/api/artifacts/0cf8db5cbed2d2b4145b92ecc2da4d21.png",
+          "title": "0cf8db5cbed2d2b4145b92ecc2da4d21",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "0fdcaa57918944d3baed1684e0f3839c",
+          "url": "/api/artifacts/0fdcaa57918944d3baed1684e0f3839c.png",
+          "image_url": "/api/artifacts/0fdcaa57918944d3baed1684e0f3839c.png",
+          "title": "0fdcaa57918944d3baed1684e0f3839c",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "12ae6a338c9b43bd8c1327a9b840f2b0",
+          "url": "/api/artifacts/12ae6a338c9b43bd8c1327a9b840f2b0.png",
+          "image_url": "/api/artifacts/12ae6a338c9b43bd8c1327a9b840f2b0.png",
+          "title": "12ae6a338c9b43bd8c1327a9b840f2b0",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "161446e1c97649a68784a83dbb9b738c",
+          "url": "/api/artifacts/161446e1c97649a68784a83dbb9b738c.png",
+          "image_url": "/api/artifacts/161446e1c97649a68784a83dbb9b738c.png",
+          "title": "161446e1c97649a68784a83dbb9b738c",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "1701503cb8954db8a8982d78e58c98f5",
+          "url": "/api/artifacts/1701503cb8954db8a8982d78e58c98f5.png",
+          "image_url": "/api/artifacts/1701503cb8954db8a8982d78e58c98f5.png",
+          "title": "1701503cb8954db8a8982d78e58c98f5",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "1abd70092e0b4e8aaaabe92f4bc55eb9",
+          "url": "/api/artifacts/1abd70092e0b4e8aaaabe92f4bc55eb9.png",
+          "image_url": "/api/artifacts/1abd70092e0b4e8aaaabe92f4bc55eb9.png",
+          "title": "1abd70092e0b4e8aaaabe92f4bc55eb9",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "1e47bde5a75047309972f0df5b609cc5",
+          "url": "/api/artifacts/1e47bde5a75047309972f0df5b609cc5.png",
+          "image_url": "/api/artifacts/1e47bde5a75047309972f0df5b609cc5.png",
+          "title": "1e47bde5a75047309972f0df5b609cc5",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "226196c2e1f24e74b81054b5754af82b",
+          "url": "/api/artifacts/226196c2e1f24e74b81054b5754af82b.png",
+          "image_url": "/api/artifacts/226196c2e1f24e74b81054b5754af82b.png",
+          "title": "226196c2e1f24e74b81054b5754af82b",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "2671cc395686492c9233866468eff66a",
+          "url": "/api/artifacts/2671cc395686492c9233866468eff66a.png",
+          "image_url": "/api/artifacts/2671cc395686492c9233866468eff66a.png",
+          "title": "2671cc395686492c9233866468eff66a",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "26ebbd4e1b2e4495a0d3c2ab42fb0f06",
+          "url": "/api/artifacts/26ebbd4e1b2e4495a0d3c2ab42fb0f06.png",
+          "image_url": "/api/artifacts/26ebbd4e1b2e4495a0d3c2ab42fb0f06.png",
+          "title": "26ebbd4e1b2e4495a0d3c2ab42fb0f06",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "30e579a9f0694a19a72eaf913b025628",
+          "url": "/api/artifacts/30e579a9f0694a19a72eaf913b025628.png",
+          "image_url": "/api/artifacts/30e579a9f0694a19a72eaf913b025628.png",
+          "title": "30e579a9f0694a19a72eaf913b025628",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "3335d3c90a8cbae41695273c60cebf91",
+          "url": "/api/artifacts/3335d3c90a8cbae41695273c60cebf91.png",
+          "image_url": "/api/artifacts/3335d3c90a8cbae41695273c60cebf91.png",
+          "title": "3335d3c90a8cbae41695273c60cebf91",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "478db5773f3a43f087109d14684e6402",
+          "url": "/api/artifacts/478db5773f3a43f087109d14684e6402.png",
+          "image_url": "/api/artifacts/478db5773f3a43f087109d14684e6402.png",
+          "title": "478db5773f3a43f087109d14684e6402",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "4c66a0d402f04e01b02654908c6429fd",
+          "url": "/api/artifacts/4c66a0d402f04e01b02654908c6429fd.png",
+          "image_url": "/api/artifacts/4c66a0d402f04e01b02654908c6429fd.png",
+          "title": "4c66a0d402f04e01b02654908c6429fd",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "4cd7b1db68c44a8a8078cc51c748074f",
+          "url": "/api/artifacts/4cd7b1db68c44a8a8078cc51c748074f.png",
+          "image_url": "/api/artifacts/4cd7b1db68c44a8a8078cc51c748074f.png",
+          "title": "4cd7b1db68c44a8a8078cc51c748074f",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "5543cc4332ef4aeba8fa58bde5477598",
+          "url": "/api/artifacts/5543cc4332ef4aeba8fa58bde5477598.png",
+          "image_url": "/api/artifacts/5543cc4332ef4aeba8fa58bde5477598.png",
+          "title": "5543cc4332ef4aeba8fa58bde5477598",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "55807c81516143ed87874c38b74b9df8",
+          "url": "/api/artifacts/55807c81516143ed87874c38b74b9df8.png",
+          "image_url": "/api/artifacts/55807c81516143ed87874c38b74b9df8.png",
+          "title": "55807c81516143ed87874c38b74b9df8",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "59f342ed30884aa39be48d93596caf75",
+          "url": "/api/artifacts/59f342ed30884aa39be48d93596caf75.png",
+          "image_url": "/api/artifacts/59f342ed30884aa39be48d93596caf75.png",
+          "title": "59f342ed30884aa39be48d93596caf75",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "59f8f862d745eb8c683edf4270dda9e2",
+          "url": "/api/artifacts/59f8f862d745eb8c683edf4270dda9e2.png",
+          "image_url": "/api/artifacts/59f8f862d745eb8c683edf4270dda9e2.png",
+          "title": "59f8f862d745eb8c683edf4270dda9e2",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "5b7db0b994cc45609179eeb508e6f90c",
+          "url": "/api/artifacts/5b7db0b994cc45609179eeb508e6f90c.png",
+          "image_url": "/api/artifacts/5b7db0b994cc45609179eeb508e6f90c.png",
+          "title": "5b7db0b994cc45609179eeb508e6f90c",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "5bbe1f1eb94c4112a9f277aef5a6095f",
+          "url": "/api/artifacts/5bbe1f1eb94c4112a9f277aef5a6095f.png",
+          "image_url": "/api/artifacts/5bbe1f1eb94c4112a9f277aef5a6095f.png",
+          "title": "5bbe1f1eb94c4112a9f277aef5a6095f",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "5cacc1e416691e12e3a0ba1a7949a26b",
+          "url": "/api/artifacts/5cacc1e416691e12e3a0ba1a7949a26b.png",
+          "image_url": "/api/artifacts/5cacc1e416691e12e3a0ba1a7949a26b.png",
+          "title": "5cacc1e416691e12e3a0ba1a7949a26b",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "5ee66e18ecb3b7171d6c0b196ecb0229",
+          "url": "/api/artifacts/5ee66e18ecb3b7171d6c0b196ecb0229.png",
+          "image_url": "/api/artifacts/5ee66e18ecb3b7171d6c0b196ecb0229.png",
+          "title": "5ee66e18ecb3b7171d6c0b196ecb0229",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "629a9e6dccea4488b7410b151e6d1957",
+          "url": "/api/artifacts/629a9e6dccea4488b7410b151e6d1957.png",
+          "image_url": "/api/artifacts/629a9e6dccea4488b7410b151e6d1957.png",
+          "title": "629a9e6dccea4488b7410b151e6d1957",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "64babb2ca95a44c2a73648c725f0b2f5",
+          "url": "/api/artifacts/64babb2ca95a44c2a73648c725f0b2f5.png",
+          "image_url": "/api/artifacts/64babb2ca95a44c2a73648c725f0b2f5.png",
+          "title": "64babb2ca95a44c2a73648c725f0b2f5",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "66733851d8e3459b96ac3b6cf2dd4a80",
+          "url": "/api/artifacts/66733851d8e3459b96ac3b6cf2dd4a80.png",
+          "image_url": "/api/artifacts/66733851d8e3459b96ac3b6cf2dd4a80.png",
+          "title": "66733851d8e3459b96ac3b6cf2dd4a80",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "66e46b505ba48efa3e1e111bb2575b4b",
+          "url": "/api/artifacts/66e46b505ba48efa3e1e111bb2575b4b.png",
+          "image_url": "/api/artifacts/66e46b505ba48efa3e1e111bb2575b4b.png",
+          "title": "66e46b505ba48efa3e1e111bb2575b4b",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "698fcfca83c14db2b7e879e31fbf832d",
+          "url": "/api/artifacts/698fcfca83c14db2b7e879e31fbf832d.png",
+          "image_url": "/api/artifacts/698fcfca83c14db2b7e879e31fbf832d.png",
+          "title": "698fcfca83c14db2b7e879e31fbf832d",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "6eda21e04ebb4f789870631ddbf4e4b8",
+          "url": "/api/artifacts/6eda21e04ebb4f789870631ddbf4e4b8.png",
+          "image_url": "/api/artifacts/6eda21e04ebb4f789870631ddbf4e4b8.png",
+          "title": "6eda21e04ebb4f789870631ddbf4e4b8",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "713bae4d2f484936bead6b909a923b9a",
+          "url": "/api/artifacts/713bae4d2f484936bead6b909a923b9a.png",
+          "image_url": "/api/artifacts/713bae4d2f484936bead6b909a923b9a.png",
+          "title": "713bae4d2f484936bead6b909a923b9a",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "77bb76a561bb4924a1e861538cf21148",
+          "url": "/api/artifacts/77bb76a561bb4924a1e861538cf21148.png",
+          "image_url": "/api/artifacts/77bb76a561bb4924a1e861538cf21148.png",
+          "title": "77bb76a561bb4924a1e861538cf21148",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "77dcaf395c5343efa0d1df2869c96a63",
+          "url": "/api/artifacts/77dcaf395c5343efa0d1df2869c96a63.png",
+          "image_url": "/api/artifacts/77dcaf395c5343efa0d1df2869c96a63.png",
+          "title": "77dcaf395c5343efa0d1df2869c96a63",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "8176d924291db96c33cc04c61ebbdc51",
+          "url": "/api/artifacts/8176d924291db96c33cc04c61ebbdc51.png",
+          "image_url": "/api/artifacts/8176d924291db96c33cc04c61ebbdc51.png",
+          "title": "8176d924291db96c33cc04c61ebbdc51",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "844c861fe5cc529906847b959ee96bd5",
+          "url": "/api/artifacts/844c861fe5cc529906847b959ee96bd5.png",
+          "image_url": "/api/artifacts/844c861fe5cc529906847b959ee96bd5.png",
+          "title": "844c861fe5cc529906847b959ee96bd5",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "8b88ed6d3a2b264fb4fe6f4d607e048a",
+          "url": "/api/artifacts/8b88ed6d3a2b264fb4fe6f4d607e048a.png",
+          "image_url": "/api/artifacts/8b88ed6d3a2b264fb4fe6f4d607e048a.png",
+          "title": "8b88ed6d3a2b264fb4fe6f4d607e048a",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "91b503bc89e78d74565a6b7826884e9d",
+          "url": "/api/artifacts/91b503bc89e78d74565a6b7826884e9d.png",
+          "image_url": "/api/artifacts/91b503bc89e78d74565a6b7826884e9d.png",
+          "title": "91b503bc89e78d74565a6b7826884e9d",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "92a18ceba4a7d800d5b5e9fb756a99a2",
+          "url": "/api/artifacts/92a18ceba4a7d800d5b5e9fb756a99a2.png",
+          "image_url": "/api/artifacts/92a18ceba4a7d800d5b5e9fb756a99a2.png",
+          "title": "92a18ceba4a7d800d5b5e9fb756a99a2",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "948d7633bdb04447982fc4479695e411",
+          "url": "/api/artifacts/948d7633bdb04447982fc4479695e411.png",
+          "image_url": "/api/artifacts/948d7633bdb04447982fc4479695e411.png",
+          "title": "948d7633bdb04447982fc4479695e411",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "94d58b2d533f477193c9b8d22dce76fd",
+          "url": "/api/artifacts/94d58b2d533f477193c9b8d22dce76fd.png",
+          "image_url": "/api/artifacts/94d58b2d533f477193c9b8d22dce76fd.png",
+          "title": "94d58b2d533f477193c9b8d22dce76fd",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "961f187c89d10e1e5ac13716f4920cda",
+          "url": "/api/artifacts/961f187c89d10e1e5ac13716f4920cda.png",
+          "image_url": "/api/artifacts/961f187c89d10e1e5ac13716f4920cda.png",
+          "title": "961f187c89d10e1e5ac13716f4920cda",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "9cf8bcd471704adcb42ada33cef89b85",
+          "url": "/api/artifacts/9cf8bcd471704adcb42ada33cef89b85.png",
+          "image_url": "/api/artifacts/9cf8bcd471704adcb42ada33cef89b85.png",
+          "title": "9cf8bcd471704adcb42ada33cef89b85",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "9d6263a9933b493bb1570a1e8bf41bbd",
+          "url": "/api/artifacts/9d6263a9933b493bb1570a1e8bf41bbd.png",
+          "image_url": "/api/artifacts/9d6263a9933b493bb1570a1e8bf41bbd.png",
+          "title": "9d6263a9933b493bb1570a1e8bf41bbd",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "9f515494ba83465db6e16cee2302b914",
+          "url": "/api/artifacts/9f515494ba83465db6e16cee2302b914.png",
+          "image_url": "/api/artifacts/9f515494ba83465db6e16cee2302b914.png",
+          "title": "9f515494ba83465db6e16cee2302b914",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "a11f367ccd7a44caa11f79b640d1bf32",
+          "url": "/api/artifacts/a11f367ccd7a44caa11f79b640d1bf32.png",
+          "image_url": "/api/artifacts/a11f367ccd7a44caa11f79b640d1bf32.png",
+          "title": "a11f367ccd7a44caa11f79b640d1bf32",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "a76b82d3d85d405a8ae65bf0db5dca84",
+          "url": "/api/artifacts/a76b82d3d85d405a8ae65bf0db5dca84.png",
+          "image_url": "/api/artifacts/a76b82d3d85d405a8ae65bf0db5dca84.png",
+          "title": "a76b82d3d85d405a8ae65bf0db5dca84",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "aac38e20fe9d3dbdc55f90a0cb541f24",
+          "url": "/api/artifacts/aac38e20fe9d3dbdc55f90a0cb541f24.png",
+          "image_url": "/api/artifacts/aac38e20fe9d3dbdc55f90a0cb541f24.png",
+          "title": "aac38e20fe9d3dbdc55f90a0cb541f24",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "abb7ead51d414fc8aee1b4062badd28b",
+          "url": "/api/artifacts/abb7ead51d414fc8aee1b4062badd28b.png",
+          "image_url": "/api/artifacts/abb7ead51d414fc8aee1b4062badd28b.png",
+          "title": "abb7ead51d414fc8aee1b4062badd28b",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "af6da8ef15484c45900060021f43b641",
+          "url": "/api/artifacts/af6da8ef15484c45900060021f43b641.png",
+          "image_url": "/api/artifacts/af6da8ef15484c45900060021f43b641.png",
+          "title": "af6da8ef15484c45900060021f43b641",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "af9fb57e6e2745fe8e3d23e81f7ebf14",
+          "url": "/api/artifacts/af9fb57e6e2745fe8e3d23e81f7ebf14.png",
+          "image_url": "/api/artifacts/af9fb57e6e2745fe8e3d23e81f7ebf14.png",
+          "title": "af9fb57e6e2745fe8e3d23e81f7ebf14",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "b34762d7da194612b37e7e97efdf01b0",
+          "url": "/api/artifacts/b34762d7da194612b37e7e97efdf01b0.png",
+          "image_url": "/api/artifacts/b34762d7da194612b37e7e97efdf01b0.png",
+          "title": "b34762d7da194612b37e7e97efdf01b0",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "b5bb2590ea704a3b91a123367fde0157",
+          "url": "/api/artifacts/b5bb2590ea704a3b91a123367fde0157.png",
+          "image_url": "/api/artifacts/b5bb2590ea704a3b91a123367fde0157.png",
+          "title": "b5bb2590ea704a3b91a123367fde0157",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "b8e4e56be517dc1520b57bc2844387aa",
+          "url": "/api/artifacts/b8e4e56be517dc1520b57bc2844387aa.png",
+          "image_url": "/api/artifacts/b8e4e56be517dc1520b57bc2844387aa.png",
+          "title": "b8e4e56be517dc1520b57bc2844387aa",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "b8e886d29f3344ae8bec057ffd2c6393",
+          "url": "/api/artifacts/b8e886d29f3344ae8bec057ffd2c6393.png",
+          "image_url": "/api/artifacts/b8e886d29f3344ae8bec057ffd2c6393.png",
+          "title": "b8e886d29f3344ae8bec057ffd2c6393",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "bb6028b3105e4310aad64bd4596cd8c8",
+          "url": "/api/artifacts/bb6028b3105e4310aad64bd4596cd8c8.png",
+          "image_url": "/api/artifacts/bb6028b3105e4310aad64bd4596cd8c8.png",
+          "title": "bb6028b3105e4310aad64bd4596cd8c8",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "bd3bb8167a2144bfb8ac31c61b830a09",
+          "url": "/api/artifacts/bd3bb8167a2144bfb8ac31c61b830a09.png",
+          "image_url": "/api/artifacts/bd3bb8167a2144bfb8ac31c61b830a09.png",
+          "title": "bd3bb8167a2144bfb8ac31c61b830a09",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "c220d74bb25241e78aa6f92c13bbc300",
+          "url": "/api/artifacts/c220d74bb25241e78aa6f92c13bbc300.png",
+          "image_url": "/api/artifacts/c220d74bb25241e78aa6f92c13bbc300.png",
+          "title": "c220d74bb25241e78aa6f92c13bbc300",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "c4f421e3611c49b3b77588abdd6a50ba",
+          "url": "/api/artifacts/c4f421e3611c49b3b77588abdd6a50ba.png",
+          "image_url": "/api/artifacts/c4f421e3611c49b3b77588abdd6a50ba.png",
+          "title": "c4f421e3611c49b3b77588abdd6a50ba",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "c62052e801c847a9aeabe12e1d60bbce",
+          "url": "/api/artifacts/c62052e801c847a9aeabe12e1d60bbce.png",
+          "image_url": "/api/artifacts/c62052e801c847a9aeabe12e1d60bbce.png",
+          "title": "c62052e801c847a9aeabe12e1d60bbce",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "cccaab0e2e5c4d5b90f5180b46d64211",
+          "url": "/api/artifacts/cccaab0e2e5c4d5b90f5180b46d64211.png",
+          "image_url": "/api/artifacts/cccaab0e2e5c4d5b90f5180b46d64211.png",
+          "title": "cccaab0e2e5c4d5b90f5180b46d64211",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "ce25f5b34fc44067af417b92c5058e8c",
+          "url": "/api/artifacts/ce25f5b34fc44067af417b92c5058e8c.png",
+          "image_url": "/api/artifacts/ce25f5b34fc44067af417b92c5058e8c.png",
+          "title": "ce25f5b34fc44067af417b92c5058e8c",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "d4b44269c27e4599990090518bf3ccf4",
+          "url": "/api/artifacts/d4b44269c27e4599990090518bf3ccf4.png",
+          "image_url": "/api/artifacts/d4b44269c27e4599990090518bf3ccf4.png",
+          "title": "d4b44269c27e4599990090518bf3ccf4",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "d67f661eeaf14321920e594806d3ba84",
+          "url": "/api/artifacts/d67f661eeaf14321920e594806d3ba84.png",
+          "image_url": "/api/artifacts/d67f661eeaf14321920e594806d3ba84.png",
+          "title": "d67f661eeaf14321920e594806d3ba84",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "6a9aede2960b4db79afd64a3f35faa21",
+          "url": "/api/artifacts/6a9aede2960b4db79afd64a3f35faa21.png",
+          "image_url": "/api/artifacts/6a9aede2960b4db79afd64a3f35faa21.png",
+          "title": "divergence_bar",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "2f4f1cb372764ae1a4d26598104e2cb5",
+          "url": "/api/artifacts/2f4f1cb372764ae1a4d26598104e2cb5.png",
+          "image_url": "/api/artifacts/2f4f1cb372764ae1a4d26598104e2cb5.png",
+          "title": "divergence_heatmap",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "e5755a252a4e408ba8caa9ebdc984def",
+          "url": "/api/artifacts/e5755a252a4e408ba8caa9ebdc984def.png",
+          "image_url": "/api/artifacts/e5755a252a4e408ba8caa9ebdc984def.png",
+          "title": "e5755a252a4e408ba8caa9ebdc984def",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "e9d36fa958434309ab2fc2b76635dffc",
+          "url": "/api/artifacts/e9d36fa958434309ab2fc2b76635dffc.png",
+          "image_url": "/api/artifacts/e9d36fa958434309ab2fc2b76635dffc.png",
+          "title": "e9d36fa958434309ab2fc2b76635dffc",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "ecf170a400d54daca071b3103af97a89",
+          "url": "/api/artifacts/ecf170a400d54daca071b3103af97a89.png",
+          "image_url": "/api/artifacts/ecf170a400d54daca071b3103af97a89.png",
+          "title": "ecf170a400d54daca071b3103af97a89",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "eea6be4bf8104cc4264f331411564b1b",
+          "url": "/api/artifacts/eea6be4bf8104cc4264f331411564b1b.png",
+          "image_url": "/api/artifacts/eea6be4bf8104cc4264f331411564b1b.png",
+          "title": "eea6be4bf8104cc4264f331411564b1b",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "efb3e6d565354167ae4b45dc9b1be2fe",
+          "url": "/api/artifacts/efb3e6d565354167ae4b45dc9b1be2fe.png",
+          "image_url": "/api/artifacts/efb3e6d565354167ae4b45dc9b1be2fe.png",
+          "title": "efb3e6d565354167ae4b45dc9b1be2fe",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "dae2745d7fec46a3bdf00913f95a76c7",
+          "url": "/api/artifacts/dae2745d7fec46a3bdf00913f95a76c7.png",
+          "image_url": "/api/artifacts/dae2745d7fec46a3bdf00913f95a76c7.png",
+          "title": "ensemble_divergence_analysis",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "972f5dd170704418977567356a4da890",
+          "url": "/api/artifacts/972f5dd170704418977567356a4da890.png",
+          "image_url": "/api/artifacts/972f5dd170704418977567356a4da890.png",
+          "title": "ensemble_divergence_bar",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "c4c548fd432d40d0ba70521215c696e1",
+          "url": "/api/artifacts/c4c548fd432d40d0ba70521215c696e1.png",
+          "image_url": "/api/artifacts/c4c548fd432d40d0ba70521215c696e1.png",
+          "title": "ensemble_divergence_heatmap",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "f0b6c2cc978144b181952ca54bcb5dfa",
+          "url": "/api/artifacts/f0b6c2cc978144b181952ca54bcb5dfa.png",
+          "image_url": "/api/artifacts/f0b6c2cc978144b181952ca54bcb5dfa.png",
+          "title": "f0b6c2cc978144b181952ca54bcb5dfa",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "f22f1b4141464461a2cdce8ce14b87e6",
+          "url": "/api/artifacts/f22f1b4141464461a2cdce8ce14b87e6.png",
+          "image_url": "/api/artifacts/f22f1b4141464461a2cdce8ce14b87e6.png",
+          "title": "f22f1b4141464461a2cdce8ce14b87e6",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "f41bed4cf0e840269179ef32f2428b4a",
+          "url": "/api/artifacts/f41bed4cf0e840269179ef32f2428b4a.png",
+          "image_url": "/api/artifacts/f41bed4cf0e840269179ef32f2428b4a.png",
+          "title": "f41bed4cf0e840269179ef32f2428b4a",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "f4ec4adbdbbb0447f84fae0f8c12e81c",
+          "url": "/api/artifacts/f4ec4adbdbbb0447f84fae0f8c12e81c.png",
+          "image_url": "/api/artifacts/f4ec4adbdbbb0447f84fae0f8c12e81c.png",
+          "title": "f4ec4adbdbbb0447f84fae0f8c12e81c",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "fa07b32b48474c0d94bd781e59ba9a1f",
+          "url": "/api/artifacts/fa07b32b48474c0d94bd781e59ba9a1f.png",
+          "image_url": "/api/artifacts/fa07b32b48474c0d94bd781e59ba9a1f.png",
+          "title": "fa07b32b48474c0d94bd781e59ba9a1f",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "ffe3a83a1a39413bb4e672e3ea8e31af",
+          "url": "/api/artifacts/ffe3a83a1a39413bb4e672e3ea8e31af.png",
+          "image_url": "/api/artifacts/ffe3a83a1a39413bb4e672e3ea8e31af.png",
+          "title": "max_vil_location",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "2859ef338eb6425d947959e8fc35e370",
+          "url": "/api/artifacts/2859ef338eb6425d947959e8fc35e370.png",
+          "image_url": "/api/artifacts/2859ef338eb6425d947959e8fc35e370.png",
+          "title": "plain-test-name",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "0044b983f594426299337a1f36589b86",
+          "url": "/api/artifacts/0044b983f594426299337a1f36589b86.png",
+          "image_url": "/api/artifacts/0044b983f594426299337a1f36589b86.png",
+          "title": "plain_name",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "653542b7709a426eb13859ddd93e76b1",
+          "url": "/api/artifacts/653542b7709a426eb13859ddd93e76b1.png",
+          "image_url": "/api/artifacts/653542b7709a426eb13859ddd93e76b1.png",
+          "title": "weather_chart",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "396a6c73d41043fbac45148ef544887f",
+          "url": "/api/artifacts/396a6c73d41043fbac45148ef544887f.png",
+          "image_url": "/api/artifacts/396a6c73d41043fbac45148ef544887f.png",
+          "title": "weather_intensity_map",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "09ebcf07e399442c971ff2b7b2524522",
+          "url": "/api/artifacts/09ebcf07e399442c971ff2b7b2524522.png",
+          "image_url": "/api/artifacts/09ebcf07e399442c971ff2b7b2524522.png",
+          "title": "weather_map",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        }
+      ],
+      "artifact_count": 88,
+      "event_resolution": {
+        "status": "resolved",
+        "event_id": "R19062708588472",
+        "source": "bound_upload_exact_match"
+      },
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "b82e87657dc049ffa64aefd7ab922839",
+      "trace_file": null,
+      "session_id": "acceptance42-q01-4d57f66f-f628-426f-8c01-9f951a22d02b",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 3704.75,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 2,
+          "action": "model",
+          "status": "error",
+          "error_type": "RuntimeError",
+          "error": "固定模型 deepseek-v3.2 调用失败；未尝试其他模型：The read operation timed out",
+          "elapsed_ms": 15274.1,
+          "summary": "模型调用失败：RuntimeError"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "sevir.observations",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "start_frame": 0,
+            "end_frame": 49
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 11100.55,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 18879.25
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 15274.08,
+          "status": "error",
+          "error_type": "RuntimeError",
+          "remaining_ms_after": 0.0
+        }
+      ],
+      "request_trace": {
+        "request_id": "b82e87657dc049ffa64aefd7ab922839",
+        "route": "/api/run",
+        "status": "partial",
+        "started_at": "2026-08-24T19:53:37.268465+00:00",
+        "stages": [
+          {
+            "stage_id": "b82e87657dc049ffa64aefd7ab922839:1",
+            "name": "unified_agent",
+            "status": "partial",
+            "elapsed_ms": 30358.05,
+            "termination_reason": "model_failure_after_observation",
+            "model_calls": 2,
+            "code_executions": 1
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 0,
+        "tool_calls": 3,
+        "model_calls": 2,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "model_failure_after_observation",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 30359.38,
+        "finished_at": "2026-08-24T19:54:07.627853+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null,
+      "diagnosis_required": true
+    }
+  ]
+}

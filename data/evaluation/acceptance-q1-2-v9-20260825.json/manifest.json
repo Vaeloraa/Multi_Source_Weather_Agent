@@ -1,0 +1,236 @@
+{
+  "started_at": "2026-08-25T03:31:39.210532",
+  "finished_at": "2026-08-25T03:32:10.983145",
+  "event_id": "R19062708588472",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_30s_budget",
+  "diagnosis_required": true,
+  "ids": {
+    "single": "dadd4ddd520e48d38002a93d6c89b71e",
+    "sequence": "e42cb67afbea4f8cb20149340e649763",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 1,
+      "question": "我看不懂这张天气图。请用普通人能理解的话告诉我现在大概是什么情况，也说明仅凭这一张图还不能确定什么。",
+      "kind": "single",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_30s_budget",
+      "elapsed_seconds": 30.44,
+      "server_elapsed_ms": 30419,
+      "route_mode": "unified_agent",
+      "termination_reason": "model_failure_after_observation",
+      "answer": "本轮已经获得并保留真实执行结果，但最终模型调用失败，未生成完整文字结论。请查看步骤和已生成图表。",
+      "artifacts": [
+        {
+          "artifact_id": "0b04fc5f8a77494091fb23e27bc5f9c8",
+          "url": "/api/artifacts/0b04fc5f8a77494091fb23e27bc5f9c8.png",
+          "image_url": "/api/artifacts/0b04fc5f8a77494091fb23e27bc5f9c8.png",
+          "title": "Agent生成图",
+          "description": "由本轮生成代码基于真实数据绘制。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        }
+      ],
+      "artifact_count": 1,
+      "event_resolution": {
+        "status": "resolved",
+        "event_id": "R19062708588472",
+        "source": "bound_upload_exact_match"
+      },
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "71367280a4934315b045e5db187f3e9a",
+      "trace_file": null,
+      "session_id": "acceptance42-q01-8e53b49d-9189-4060-b913-bd157bcc0d21",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 3486.89,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 2,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 5.25,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 3,
+          "action": "execute",
+          "status": "error",
+          "error_type": "AttributeError",
+          "error": "'Location' object has no attribute 'center_latitude'",
+          "elapsed_ms": 178.61,
+          "summary": "代码执行失败：AttributeError"
+        },
+        {
+          "attempt": 4,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 5.95,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 5,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 525.11,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 6,
+          "action": "model",
+          "status": "error",
+          "error_type": "RuntimeError",
+          "error": "固定模型 deepseek-v3.2 调用失败；未尝试其他模型：The read operation timed out",
+          "elapsed_ms": 7721.63,
+          "summary": "模型调用失败：RuntimeError"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "sevir.observations",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "start_frame": 0,
+            "end_frame": 49
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "sevir.observations",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "start_frame": 0,
+            "end_frame": 49
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 3108.05,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 26873.03
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 2834.89,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 20550.74
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 3138.54,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 17406.61
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 2255.03,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 14972.47
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 6827.66,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 8138.63
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 7721.58,
+          "status": "error",
+          "error_type": "RuntimeError",
+          "remaining_ms_after": 0.0
+        }
+      ],
+      "request_trace": {
+        "request_id": "71367280a4934315b045e5db187f3e9a",
+        "route": "/api/run",
+        "status": "partial",
+        "started_at": "2026-08-24T19:31:40.560386+00:00",
+        "stages": [
+          {
+            "stage_id": "71367280a4934315b045e5db187f3e9a:1",
+            "name": "unified_agent",
+            "status": "partial",
+            "elapsed_ms": 30417.74,
+            "termination_reason": "model_failure_after_observation",
+            "model_calls": 6,
+            "code_executions": 4
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 2,
+        "tool_calls": 5,
+        "model_calls": 6,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "model_failure_after_observation",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 30419.08,
+        "finished_at": "2026-08-24T19:32:10.979469+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null,
+      "diagnosis_required": true
+    }
+  ]
+}

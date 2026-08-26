@@ -1,36 +1,28 @@
-"""Request-bound capabilities exposed to generated Python programs."""
+"""Request-bound capabilities and their small semantic metadata values."""
 
 from .models import (
     AdministrativeArea,
-    Bounds,
-    CatalogEvent,
-    EnvironmentFields,
     Event,
-    Forecast,
     Location,
-    ObservationCube,
     PixelLocation,
     Place,
     RegionCoverage,
     UploadMatch,
 )
-from .weather import Aurora, CasCast, Geolocator, Sevir
+
+
+def __getattr__(name: str):
+    """Lazily expose capability classes without importing data backends."""
+
+    if name in {"Aurora", "CasCast", "Geolocator", "Sevir"}:
+        from .. import tools
+
+        return getattr(tools, name)
+    raise AttributeError(name)
+
 
 __all__ = [
-    "AdministrativeArea",
-    "Aurora",
-    "Bounds",
-    "CasCast",
-    "CatalogEvent",
-    "EnvironmentFields",
-    "Event",
-    "Forecast",
-    "Geolocator",
-    "Location",
-    "ObservationCube",
-    "PixelLocation",
-    "Place",
-    "RegionCoverage",
-    "Sevir",
+    "AdministrativeArea", "Aurora", "CasCast", "Event", "Geolocator",
+    "Location", "PixelLocation", "Place", "RegionCoverage", "Sevir",
     "UploadMatch",
 ]

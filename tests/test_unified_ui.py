@@ -12,7 +12,8 @@ class UnifiedUiTests(unittest.TestCase):
         cls.js = (ROOT / "web" / "app.js").read_text(encoding="utf-8")
 
     def test_ui_exposes_one_agent_execution_flow(self) -> None:
-        self.assertIn("生成代码 → 执行 → 观察 → 继续或回答", self.js)
+        self.assertIn("理解问题 → 按需读取数据 → 计算/绘图 → 根据证据回答", self.js)
+        self.assertIn("agent_request_budget_seconds || 90", self.js)
         self.assertIn("统一 Agent", self.js)
         for retired in (
             "Reflective", "reflective_trace", "Direct 快速分析",

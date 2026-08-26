@@ -52,7 +52,12 @@ from sevir_world.api.unified_service import (
     request_budget_seconds,
 )
 from sevir_world.agent.unified import AgentCancelled
-from sevir_world.backends.geospatial import resolve_place
+from sevir_world.agent.study import (
+    apply_study_case_context,
+    evidence_index,
+    should_inherit_study_case_context,
+)
+from sevir_world.tools.geolocator.Geospatial import resolve_place
 from sevir_world.data_access.ensemble import get_cascast_display_frame
 from sevir_world.data_access.request_context import enrich_request_context
 from sevir_world.data_access.uploads import (
@@ -239,7 +244,10 @@ class DemoHandler(SimpleHTTPRequestHandler):
         if parsed.path == "/api/config":
             self.send_json({
                 "providers": provider_status(),
-                "runtime": runtime_status(),
+                "runtime": {
+                    **runtime_status(),
+                    "agent_request_budget_seconds": request_budget_seconds(),
+                },
                 "mode": "unified",
                 "model_routing": {
                     "strategy": "fixed_single_model",
@@ -286,6 +294,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
                 state = load_session(session_id)
             self.send_json({
                 "session_id": session_id,
+                "study_case": evidence_index(state.get("study_case")),
                 "turns": [
                     {
                         "turn_id": item.get("turn_id"),
@@ -295,6 +304,10 @@ class DemoHandler(SimpleHTTPRequestHandler):
                         "selected_tools": item.get("selected_tools", []),
                         "termination_reason": item.get("termination_reason"),
                         "code_execution_count": item.get("code_execution_count", 0),
+                        "evidence_execution_count": item.get("evidence_execution_count", 0),
+                        "evidence_tool_call_count": item.get("evidence_tool_call_count", 0),
+                        "postprocessing_success_count": item.get("postprocessing_success_count", 0),
+                        "tool_cost_summary": item.get("tool_cost_summary", {}),
                         "artifacts": item.get("artifacts", []),
                     }
                     for item in state.get("turns", [])[-30:]
@@ -451,8 +464,12 @@ class DemoHandler(SimpleHTTPRequestHandler):
                 raise ValueError("问题不能为空。")
             request_id = str(payload.get("request_id") or uuid.uuid4().hex)
             request_started = time.perf_counter()
-            request_deadline = time.monotonic() + request_budget_seconds()
-            payload["_deadline_monotonic"] = request_deadline
+            payload["_request_received_monotonic"] = time.monotonic()
+            preflight_deadline = time.monotonic() + request_budget_seconds()
+            # The same admission deadline must flow through the Agent and
+            # response pipeline; otherwise downstream stages silently lose
+            # the request budget and can run without a real deadline.
+            payload["_deadline_monotonic"] = preflight_deadline
             payload["_cancelled"] = cancelled.is_set
             cancel_watch = threading.Thread(
                 target=_watch_client_disconnect,
@@ -466,7 +483,8 @@ class DemoHandler(SimpleHTTPRequestHandler):
 
             session_id = normalize_session_id(payload.get("session_id"))
             payload["session_id"] = session_id
-            active_upload = load_session(session_id).get("active_upload", {})
+            session_state = load_session(session_id)
+            active_upload = session_state.get("active_upload", {})
             has_upload = bool(
                 str(payload.get("upload_id", ""))
                 or str(payload.get("sequence_upload_id", ""))
@@ -481,13 +499,20 @@ class DemoHandler(SimpleHTTPRequestHandler):
             if cancelled.is_set():
                 raise AgentCancelled("client disconnected during asset binding")
             payload["context_resolution"] = enrich_request_context(question, payload)
+            if payload["context_resolution"].get("status") == "conflict":
+                raise ValueError(
+                    "请求时间与问题中的时间不一致；请只提供一个明确的UTC时间。"
+                )
+            if payload["context_resolution"].get("status") == "invalid":
+                field = str(payload["context_resolution"].get("field") or "request")
+                raise ValueError(f"请求字段 {field} 无效。")
             if (
                 payload["context_resolution"].get("status") == "unresolved"
                 and str(payload.get("place_name", "")).strip()
             ):
-                remaining = request_deadline - time.monotonic()
+                remaining = preflight_deadline - time.monotonic()
                 if remaining <= 0:
-                    raise TimeoutError("地点解析前已达到30秒请求上限")
+                    raise TimeoutError("地点解析前已达到请求时间上限")
                 place = resolve_place(
                     str(payload["place_name"]),
                     timeout_seconds=min(8.0, max(0.1, remaining)),
@@ -496,7 +521,23 @@ class DemoHandler(SimpleHTTPRequestHandler):
                 if place.get("status") == "ok":
                     payload["latitude"] = float(place["latitude"])
                     payload["longitude"] = float(place["longitude"])
+            inherit_study_context = should_inherit_study_case_context(
+                question, payload, session_state
+            )
+            payload["_study_context_active"] = inherit_study_context
+            if inherit_study_context:
+                study_case = session_state.get("study_case", {})
+                if isinstance(study_case, dict) and study_case.get("case_id"):
+                    payload.setdefault("study_case_id", str(study_case["case_id"]))
+                apply_study_case_context(payload, session_state)
             bind_request_assets(question, payload)
+            if not inherit_study_context and not str(payload.get("study_case_id") or "").strip():
+                # A self-contained question starts an isolated evidence scope,
+                # while remaining visible in the same conversation history.
+                scope_token = uuid.uuid5(
+                    uuid.NAMESPACE_URL, f"{session_id}:{request_id}"
+                ).hex[:16]
+                payload["study_case_id"] = f"{session_id}-{scope_token}"
             # Client-supplied choices are intentionally ignored. The current
             # demo uses one fixed model and returns its first error without
             # probing fallback candidates.
@@ -541,11 +582,12 @@ class DemoHandler(SimpleHTTPRequestHandler):
                 presentation={
                     "event_id": str(payload.get("event_id", "")),
                     "requested_visualization": bool(
-                        re.search(r"图|chart|heatmap|bar", question, re.IGNORECASE)
+                        payload.get("visual_artifact_required")
+                        or re.search(r"图|chart|heatmap|bar", question, re.IGNORECASE)
                     ),
                 },
                 artifact_root=ARTIFACT_ROOT,
-                deadline_monotonic=request_deadline,
+                deadline_monotonic=float(payload.get("_deadline_monotonic", time.monotonic())),
                 cancelled=cancelled.is_set,
             )
             if not cancelled.is_set():

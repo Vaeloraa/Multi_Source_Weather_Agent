@@ -1,0 +1,215 @@
+{
+  "started_at": "2026-08-26T03:40:51.542864",
+  "finished_at": "2026-08-26T03:43:22.147740",
+  "asset_event_id": null,
+  "study_case_event_selection": "agent_selected_from_evidence",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_150s_budget",
+  "diagnosis_required": true,
+  "ids": {},
+  "results": [
+    {
+      "number": 36,
+      "question": "在刚才检索到的事件中，哪个最适合继续做局地追踪？请根据与Aurora窗口的时空匹配、此前一小时观测的连续性和数据完整性进行选择，并说明最终选中的事件是否由这些条件筛选出来，而不是因为已有缓存就直接指定它。",
+      "kind": "sequence_environment",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_150s_budget",
+      "elapsed_seconds": 150.6,
+      "server_elapsed_ms": 150542,
+      "route_mode": "unified_agent",
+      "termination_reason": "model_failure_after_observation",
+      "answer": "本轮已经获得并保留真实执行结果，但最终模型调用失败，未生成完整文字结论。请查看步骤和已生成图表。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "446b7f58c4674039977a045cb3c5c658",
+      "trace_file": null,
+      "session_id": "acceptance42-foundation-0badc110-31a3-49ce-a339-6007510349da",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "expand",
+          "status": "ok",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 768.38,
+          "summary": "已按需展开能力契约：sevir, aurora"
+        },
+        {
+          "attempt": 2,
+          "action": "execute",
+          "status": "error",
+          "error_type": "ValueError",
+          "error": "this request has no bound SEVIR event",
+          "elapsed_ms": 2116.02,
+          "summary": "代码执行失败：ValueError"
+        },
+        {
+          "attempt": 3,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 32.24,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 4,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 16.27,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 5,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 825.74,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 6,
+          "action": "execute",
+          "status": "error",
+          "error_type": "ValueError",
+          "error": "this request has no bound Aurora initialization time",
+          "elapsed_ms": 29.47,
+          "summary": "代码执行失败：ValueError"
+        },
+        {
+          "attempt": 7,
+          "action": "execute",
+          "status": "error",
+          "error_type": "ExecutionTimeout",
+          "error": "execution exceeded 78.6729 seconds",
+          "elapsed_ms": 79213.33,
+          "summary": "代码执行失败：ExecutionTimeout"
+        },
+        {
+          "attempt": 8,
+          "action": "model",
+          "status": "error",
+          "error_type": "TimeoutError",
+          "error": "统一Agent本轮总时间已达到上限",
+          "elapsed_ms": 0.01,
+          "summary": "模型调用失败：TimeoutError"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "sevir.search",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "query": "",
+            "year": null,
+            "month": null,
+            "event_type": "",
+            "region": null,
+            "latitude": null,
+            "longitude": null,
+            "radius_km": null,
+            "start_time_utc": null,
+            "end_time_utc": null,
+            "require_prior_minutes": null,
+            "limit": 5
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 768.34,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 149208.09
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 18300.49,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 130882.42
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 11616.3,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 117149.5
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 5571.46,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 111545.46
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 4239.96,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 107289.01
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 15108.63,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 91354.18
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 12651.25,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 78673.1
+        }
+      ],
+      "request_trace": {
+        "request_id": "446b7f58c4674039977a045cb3c5c658",
+        "route": "/api/run",
+        "status": "partial",
+        "started_at": "2026-08-25T19:40:51.591173+00:00",
+        "stages": [
+          {
+            "stage_id": "446b7f58c4674039977a045cb3c5c658:1",
+            "name": "unified_agent",
+            "status": "partial",
+            "elapsed_ms": 150540.82,
+            "termination_reason": "model_failure_after_observation",
+            "model_calls": 8,
+            "code_executions": 3
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 0,
+        "tool_calls": 1,
+        "model_calls": 8,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "model_failure_after_observation",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 150541.89,
+        "finished_at": "2026-08-25T19:43:22.133064+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null,
+      "diagnosis_required": true
+    }
+  ]
+}

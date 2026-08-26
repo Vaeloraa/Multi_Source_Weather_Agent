@@ -1,0 +1,30 @@
+{
+  "started_at": "2026-08-25T02:32:07.508741",
+  "finished_at": "2026-08-25T02:32:38.008753",
+  "event_id": "R19062708588472",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_30s_budget",
+  "diagnosis_required": true,
+  "ids": {
+    "single": "b717b73102e14fc6bc098c0ad68e6344",
+    "sequence": "9a34001625834bcf9d71d274e98d54db",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 2,
+      "question": "图里哪里最值得注意？如果现有资料能够定位，请告诉我现实中大概在什么地方，并在图上标出来。",
+      "kind": "single",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_30s_budget",
+      "elapsed_seconds": 30.03,
+      "error": "TimeoutError: timed out",
+      "diagnosis_required": true
+    }
+  ]
+}

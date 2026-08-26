@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import numpy as np
 
-from sevir_world.backends.statistics import (
+from sevir_world.tools.sevir.Statistics import (
     aggregate_sevir_catalog,
     compare_sevir_catalog_groups,
     compare_event_with_history,
@@ -16,7 +16,7 @@ from sevir_world.backends.statistics import (
     find_similar_event_candidates,
     load_event_history_frame_primitives,
 )
-from sevir_world.data_access.catalog import load_sevir_vil_frame_histograms
+from sevir_world.tools.sevir.Catalog import load_sevir_vil_frame_histograms
 
 
 class StatisticsPrimitiveTests(unittest.TestCase):
@@ -33,13 +33,13 @@ class StatisticsPrimitiveTests(unittest.TestCase):
         frames = np.zeros((3, 2, 2), dtype=np.uint8)
         frames[1, 0, 0] = 133
         with (
-            patch("sevir_world.data_access.catalog._catalog_vil_event", return_value=record),
+            patch("sevir_world.tools.sevir.Catalog._catalog_vil_event", return_value=record),
             patch(
-                "sevir_world.data_access.catalog._load_vil_array",
+                "sevir_world.tools.sevir.Catalog._load_vil_array",
                 return_value=(frames, Path("D:/Profile/专业实习/sevir-agent-demo/data/sevir_complete/data/vil/test.h5")),
             ),
             patch(
-                "sevir_world.data_access.catalog.LOCAL_SEVIR_DATA_ROOT",
+                "sevir_world.tools.sevir.Catalog.LOCAL_SEVIR_DATA_ROOT",
                 Path("D:/Profile/专业实习/sevir-agent-demo/data/sevir_complete/data"),
             ),
         ):
@@ -66,14 +66,14 @@ class StatisticsPrimitiveTests(unittest.TestCase):
         frames[:, 0, 0] = 133
         with (
             patch(
-                "sevir_world.backends.statistics._catalog_vil_records",
+                "sevir_world.tools.sevir.Statistics._catalog_vil_records",
                 return_value=[record],
             ),
             patch(
-                "sevir_world.backends.statistics._load_vil_array",
+                "sevir_world.tools.sevir.Statistics._load_vil_array",
                 return_value=(frames, "vil/test.h5"),
             ),
-            patch("sevir_world.backends.statistics._load_cascast_ensemble") as ensemble,
+            patch("sevir_world.tools.sevir.Statistics._load_cascast_ensemble") as ensemble,
         ):
             result = compare_event_with_history("R-test", threshold=133.0)
 
@@ -100,8 +100,8 @@ class StatisticsPrimitiveTests(unittest.TestCase):
         frames = np.zeros((3, 2, 2), dtype=np.uint8)
         frames[1, 0, 0] = 133
         with (
-            patch("sevir_world.backends.statistics._catalog_vil_event", return_value=record),
-            patch("sevir_world.backends.statistics._load_vil_array", return_value=(frames, "vil/test.h5")),
+            patch("sevir_world.tools.sevir.Statistics._catalog_vil_event", return_value=record),
+            patch("sevir_world.tools.sevir.Statistics._load_vil_array", return_value=(frames, "vil/test.h5")),
         ):
             result = load_event_history_frame_primitives(["R-test"], 0, 3)
         self.assertEqual(result["statistics_computed"], [])
@@ -116,9 +116,9 @@ class StatisticsPrimitiveTests(unittest.TestCase):
         ]
         reference = {**rows[0], "file_name": "x", "file_index": 0, "minute_offsets": tuple(range(49))}
         with (
-            patch("sevir_world.backends.statistics._catalog_vil_event", return_value=reference),
-            patch("sevir_world.backends.statistics._catalog_vil_records", return_value=rows),
-            patch("sevir_world.backends.statistics.catalog_schema", return_value={"fields": {"data_max": {"numeric": True}}}),
+            patch("sevir_world.tools.sevir.Statistics._catalog_vil_event", return_value=reference),
+            patch("sevir_world.tools.sevir.Statistics._catalog_vil_records", return_value=rows),
+            patch("sevir_world.tools.sevir.Statistics.catalog_schema", return_value={"fields": {"data_max": {"numeric": True}}}),
         ):
             result = find_similar_event_candidates(
                 "R0", field="data_max", candidate_limit=2,

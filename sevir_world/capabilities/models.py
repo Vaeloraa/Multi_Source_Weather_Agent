@@ -1,122 +1,104 @@
 from __future__ import annotations
 
-"""Small Python values returned by the four public capabilities.
+"""Small semantic metadata values used at capability boundaries.
 
-These classes deliberately contain no transport status, schema envelope, or
-legacy adapter payload.  A failed operation raises an exception; a successful
-operation returns a value whose attributes can be used directly by NumPy code.
+Scientific grids and tables are returned as xarray or pandas objects. These
+records are deliberately flat, immutable metadata only; they do not emulate
+NumPy or xarray APIs.
 """
 
 from dataclasses import dataclass, fields
 from typing import Any, Iterator
 
 import numpy as np
+import pandas as pd
 
 
 class CapabilityValue:
-    """Base with concise representation and predictable field iteration."""
+    """Provide predictable field iteration for small metadata records."""
 
     def items(self) -> Iterator[tuple[str, Any]]:
-        for field in fields(self):
-            yield field.name, getattr(self, field.name)
-
-    def __repr__(self) -> str:
-        parts: list[str] = []
-        for name, value in self.items():
-            if isinstance(value, np.ndarray):
-                shown = f"ndarray(shape={value.shape}, dtype={value.dtype})"
-            elif isinstance(value, (list, tuple)) and len(value) > 8:
-                shown = f"{type(value).__name__}(len={len(value)})"
-            elif isinstance(value, dict) and len(value) > 8:
-                shown = f"dict(keys={list(value)[:8]}...)"
-            else:
-                shown = repr(value)
-            parts.append(f"{name}={shown}")
-        return f"{type(self).__name__}({', '.join(parts)})"
-
-
-@dataclass(frozen=True, slots=True)
-class Bounds(CapabilityValue):
-    south: float
-    west: float
-    north: float
-    east: float
+        for item in fields(self):
+            yield item.name, getattr(self, item.name)
 
 
 @dataclass(frozen=True, slots=True)
 class Event(CapabilityValue):
+    """Metadata and timing axes for one SEVIR event."""
+
+    subject_key: str
     id: str
-    time_utc: str
+    event_anchor_time_utc: str
     event_type: str
     frame_times_utc: tuple[str, ...]
     minute_offsets: np.ndarray
-    bounds: Bounds | None
-    metadata: dict[str, Any]
-
-
-@dataclass(frozen=True, slots=True)
-class CatalogEvent(CapabilityValue):
-    id: str
-    time_utc: str
-    event_type: str
-    data_min: float | None
-    data_max: float | None
-    missing_fraction: float | None
-    bounds: Bounds | None
-    distance_km: float | None
-    local_data: bool
-    metadata: dict[str, Any]
-
-
-@dataclass(frozen=True, slots=True)
-class ObservationCube(CapabilityValue):
-    event_id: str
-    values: np.ndarray
-    minutes: np.ndarray
-    missing_value: int
-    dimensions: tuple[str, str, str] = ("time", "row", "column")
+    south: float | None
+    west: float | None
+    north: float | None
+    east: float | None
 
 
 @dataclass(frozen=True, slots=True)
 class UploadMatch(CapabilityValue):
+    """Result of matching an uploaded sequence to a catalog event."""
+
     upload_id: str
+    subject_key: str | None
     event_id: str | None
     confidence: float | None
     method: str
 
 
 @dataclass(frozen=True, slots=True)
+class Location(CapabilityValue):
+    """Flat geographic metadata for an event raster."""
+
+    subject_key: str
+    event_id: str
+    latitude: float
+    longitude: float
+    south: float
+    west: float
+    north: float
+    east: float
+    row_count: int
+    column_count: int
+    crs: str
+
+
+@dataclass(frozen=True, slots=True)
 class PixelLocation(CapabilityValue):
+    """Geographic and projected coordinates for one raster pixel."""
+
     row: int
     column: int
     latitude: float
     longitude: float
-    projected_x: float | None = None
-    projected_y: float | None = None
-
-
-@dataclass(frozen=True, slots=True)
-class Location(CapabilityValue):
-    event_id: str
-    center: tuple[float, float]
-    bounds: Bounds
-    image_shape: tuple[int, int]
-    projection: str
+    projected_x: float | None
+    projected_y: float | None
+    crs: str
 
 
 @dataclass(frozen=True, slots=True)
 class Place(CapabilityValue):
+    """Resolved place with a standard pandas candidate table."""
+
     query: str
+    status: str
+    name: str
     latitude: float
     longitude: float
-    name: str
-    candidates: tuple[dict[str, Any], ...] = ()
+    candidates: pd.DataFrame
 
 
 @dataclass(frozen=True, slots=True)
 class AdministrativeArea(CapabilityValue):
+    """Administrative names resolved for one WGS84 point."""
+
     latitude: float
     longitude: float
+    status: str
+    match_method: str
     country: str | None
     state: str | None
     state_code: str | None
@@ -126,39 +108,20 @@ class AdministrativeArea(CapabilityValue):
 
 @dataclass(frozen=True, slots=True)
 class RegionCoverage(CapabilityValue):
+    """Flat geographic coverage and standard pandas area table."""
+
+    subject_key: str
     event_id: str
     pixel_count: int
-    pixel_box: tuple[int, int, int, int]
-    bounds: Bounds
-    center: PixelLocation
-    areas: tuple[dict[str, Any], ...]
-    unresolved_pixels: int
-
-
-@dataclass(frozen=True, slots=True)
-class Forecast(CapabilityValue):
-    subject_id: str
-    model: str
-    mean: np.ndarray
-    members: np.ndarray
-    lead_minutes: np.ndarray
-    ground_truth: np.ndarray | None
-    member_seeds: tuple[int, ...]
-    cache_hit: bool
-
-    @property
-    def horizon_minutes(self) -> int:
-        return int(self.lead_minutes[-1]) if self.lead_minutes.size else 0
-
-
-@dataclass(frozen=True, slots=True)
-class EnvironmentFields(CapabilityValue):
-    event_id: str | None
-    analysis_time_utc: str
-    latitude: np.ndarray
-    longitude: np.ndarray
-    era5: dict[str, Any]
-    forecast: dict[int, dict[str, Any]]
-    lead_hours: np.ndarray
-    cache_hit: bool
-
+    min_row: int
+    min_column: int
+    max_row: int
+    max_column: int
+    latitude: float
+    longitude: float
+    south: float
+    west: float
+    north: float
+    east: float
+    unresolved_pixel_count: int
+    areas: pd.DataFrame

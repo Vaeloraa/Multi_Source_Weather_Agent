@@ -104,13 +104,28 @@ def _call_once(
         "model": candidate.model,
         "messages": messages,
         "temperature": 0.1,
+        # The Reflective controller owns the execute-observe loop.  Stop the
+        # text completion at the first action boundary so one model turn can
+        # never emit a speculative chain of several execute blocks.
+            "stop": ["</execute>", "</solution>", "</expand>"],
     }
     lowered = candidate.model.lower()
     if provider.get("label") == "Qwen":
-        payload["max_tokens"] = int(os.getenv("QWEN_MAX_TOKENS", "8192"))
+        # The Agent protocol needs short action/answer messages.  An 8192
+        # token ceiling lets a single reflective turn consume the whole
+        # 30-second request budget even when the user asks a simple question.
+        # Agent turns are either a compact Python action or a concise Chinese
+        # synthesis.  A bounded output avoids spending the whole request
+        # budget on speculative prose while leaving room for figures' URLs.
+        payload["max_tokens"] = int(os.getenv("QWEN_MAX_TOKENS", "2048"))
         if lowered.startswith(("qwen", "qwq")):
-            payload["enable_thinking"] = _bool_env("QWEN_ENABLE_THINKING", True)
-            payload["thinking_budget"] = int(os.getenv("QWEN_THINKING_BUDGET", "4096"))
+            # Thinking output is decoded token by token and dominates request
+            # latency.  Agent turns must stay compact action/answer messages,
+            # so reasoning is opt-in instead of paying a 4096-token thinking
+            # budget on every call.  Models without the parameter (e.g. the
+            # fixed kimi-k2.6) deliberately receive none of it.
+            payload["enable_thinking"] = _bool_env("QWEN_ENABLE_THINKING", False)
+            payload["thinking_budget"] = int(os.getenv("QWEN_THINKING_BUDGET", "512"))
     url = _endpoint(provider)
     proxy = (
         os.getenv("QWEN_SOCKS5_PROXY", "").strip()

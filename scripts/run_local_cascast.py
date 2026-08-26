@@ -25,6 +25,7 @@ def _arguments() -> argparse.Namespace:
     source.add_argument("--hdf5", type=Path)
     source.add_argument("--input-npz", type=Path)
     parser.add_argument("--event-id")
+    parser.add_argument("--hdf5-row", type=int)
     parser.add_argument("--source-id")
     parser.add_argument("--segment", type=int, choices=(0, 1, 2), default=0)
     parser.add_argument("--ensemble-members", type=int, default=1)
@@ -57,14 +58,31 @@ def _checkpoint_state(path: Path, submodel: str) -> OrderedDict[str, torch.Tenso
     )
 
 
-def _read_event(path: Path, event_id: str, segment: int) -> tuple[np.ndarray, np.ndarray, int]:
+def _read_event(
+    path: Path,
+    event_id: str,
+    segment: int,
+    hdf5_row: int | None = None,
+) -> tuple[np.ndarray, np.ndarray, int]:
     encoded_id = event_id.encode("ascii")
     with h5py.File(path, "r") as handle:
         ids = handle["id"][:]
-        matches = np.flatnonzero(ids == encoded_id)
-        if len(matches) != 1:
-            raise ValueError(f"event {event_id!r} occurs {len(matches)} times in {path.name}")
-        row = int(matches[0])
+        if hdf5_row is not None:
+            row = int(hdf5_row)
+            if not 0 <= row < len(ids):
+                raise IndexError(f"HDF5 row {row} is outside {path.name}")
+            if ids[row] != encoded_id:
+                raise ValueError(
+                    f"HDF5 row {row} contains {ids[row]!r}, not event {event_id!r}"
+                )
+        else:
+            matches = np.flatnonzero(ids == encoded_id)
+            if len(matches) != 1:
+                raise ValueError(
+                    f"event {event_id!r} occurs {len(matches)} times in {path.name}; "
+                    "an exact --hdf5-row is required"
+                )
+            row = int(matches[0])
         event = np.asarray(handle["vil"][row], dtype=np.uint8)
     if event.shape != (384, 384, 49):
         raise ValueError(f"unexpected VIL event shape: {event.shape}")
@@ -272,8 +290,10 @@ def main() -> None:
     dtype = torch.float16 if args.precision == "fp16" else torch.float32
     started = time.time()
     if args.hdf5 is not None:
-        history, ground_truth, row = _read_event(args.hdf5, args.event_id, args.segment)
-        source_id = args.event_id
+        history, ground_truth, row = _read_event(
+            args.hdf5, args.event_id, args.segment, args.hdf5_row
+        )
+        source_id = args.source_id or args.event_id
     else:
         history, ground_truth = _read_uploaded_sequence(args.input_npz)
         row = -1
@@ -325,9 +345,7 @@ def main() -> None:
     # to all recursively forecast blocks (not only the first 60 minutes).
     if args.hdf5 is not None and args.rolling_segments > 1:
         with h5py.File(args.hdf5, "r") as handle:
-            encoded_id = args.event_id.encode("ascii")
-            matches = np.flatnonzero(handle["id"][:] == encoded_id)
-            full_event = np.asarray(handle["vil"][int(matches[0])], dtype=np.uint8)
+            full_event = np.asarray(handle["vil"][row], dtype=np.uint8)
         start = SEGMENT_STARTS[args.segment]
         truth_end = min(start + 13 + 12 * args.rolling_segments, full_event.shape[-1])
         ground_truth = np.moveaxis(full_event[:, :, start + 13:truth_end], -1, 0)

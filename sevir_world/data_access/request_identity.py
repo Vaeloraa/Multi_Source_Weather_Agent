@@ -53,6 +53,59 @@ def request_identity(**kwargs: Any) -> dict[str, Any]:
     return {"request_key": request_key(canonical), "canonical": canonical}
 
 
+def regional_forecast_identity(
+    *,
+    initialization_time_utc: str,
+    region: dict[str, Any],
+    forecast_leads_hours: list[int] | tuple[int, ...],
+    variables: list[str] | tuple[str, ...] | None = None,
+    pressure_levels: list[int] | tuple[int, ...] | None = None,
+    model: str = "aurora",
+    model_version: str = "",
+    resolution: str = "",
+) -> dict[str, Any]:
+    """Build the physical identity of one regional Aurora prediction.
+
+    Parameters
+    ----------
+    initialization_time_utc : str
+        UTC initialization time of the regional prediction.
+    region : dict
+        Geographic bounds that define the forecast grid.
+    forecast_leads_hours : list or tuple of int
+        Requested forecast lead hours.
+    variables : list or tuple of str, optional
+        Input/output variable names that affect the cached product.
+    pressure_levels : list or tuple of int, optional
+        Pressure levels included in the atmospheric state.
+    model : str, default "aurora"
+        Forecast model family.
+    model_version : str, optional
+        Model checkpoint or release identifier.
+    resolution : str, optional
+        Forecast grid resolution.
+
+    Returns
+    -------
+    dict
+        ``request_key`` and its canonical regional forecast identity. SEVIR
+        event IDs, local target points and verification windows are excluded
+        because they do not change the physical Aurora forecast field.
+    """
+
+    canonical = _clean({
+        "initialization_time_utc": str(initialization_time_utc or "").strip(),
+        "region": region or {},
+        "forecast_leads_hours": sorted({int(value) for value in forecast_leads_hours}),
+        "variables": sorted({str(value) for value in (variables or [])}),
+        "pressure_levels": sorted({int(value) for value in (pressure_levels or [])}),
+        "model": str(model or "aurora"),
+        "model_version": str(model_version or ""),
+        "resolution": str(resolution or ""),
+    })
+    return {"request_key": request_key(canonical), "canonical": canonical}
+
+
 def request_compatible(expected: dict[str, Any], actual: dict[str, Any]) -> bool:
     """Compatibility means the requested evidence fields are identical."""
     return request_key(expected) == request_key(actual)

@@ -1,7 +1,9 @@
 {
   "case_id": "R19062708588472",
   "title": "R190627 区域发现—局地追踪主案例",
-  "analysis_time_utc": "2019-06-27T08:58:20Z",
+  "requested_time_utc": "2019-06-27T03:00:00Z",
+  "aurora_initialization_time_utc": "2019-06-27T03:00:00Z",
+  "selected_event_anchor_time_utc": "2019-06-27T08:58:20Z",
   "location": {
     "latitude": 47.0543161257054,
     "longitude": -99.9760441976778,
@@ -23,6 +25,8 @@
     "CasCast 对后续 SEVIR、Aurora 对后续 ERA5 分别验证"
   ],
   "cache_contract": {
+    "aurora_request_key": "d642984aa795f338595ed8532346aecc",
+    "aurora_identity_manifest": "data/foundation_live_cache/aurora/d642984aa795f338595ed8532346aecc/manifest.json",
     "foundation_root": "data/foundation_live_cache/R19062708588472",
     "aurora_aligned": "data/foundation_live_cache/R19062708588472/06090dd5dc26ec7819eb15f29dd8e982/aurora_forecast_aligned_0300.npz",
     "aurora_aligned_summary": "data/foundation_live_cache/R19062708588472/06090dd5dc26ec7819eb15f29dd8e982/aurora_forecast_aligned_0300.json",
@@ -34,7 +38,7 @@
     "verification_images": "data/examples/uploads/R19062708588472/ground_truth"
   },
   "time_contract": {
-    "aurora_initialization_utc": "2019-06-27T03:00:00Z",
+    "aurora_initialization_time_utc": "2019-06-27T03:00:00Z",
     "history_frames": 13,
     "history_minutes": 60,
     "cascast_primary_minutes": 60,

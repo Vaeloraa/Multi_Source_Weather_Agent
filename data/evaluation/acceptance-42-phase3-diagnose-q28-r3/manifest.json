@@ -1,0 +1,32 @@
+{
+  "started_at": "2026-08-26T16:22:24.916507",
+  "finished_at": "2026-08-26T16:23:56.126698",
+  "asset_event_id": "R19062708588472",
+  "study_case_event_selection": "agent_selected_from_evidence",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_90s_budget",
+  "diagnosis_required": true,
+  "ids": {
+    "single": "6a4a456fd84f4096a66d18c476b44a39",
+    "sequence": "4d7ab108dd7b40c089c99ae5bcdc89d1",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 28,
+      "question": "请在相同的现实地理范围内找几次相似历史天气，和这次作一个直观比较；不要因为图片像素位置一样就当成同一个地方。",
+      "kind": "sequence",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_90s_budget",
+      "elapsed_seconds": 90.04,
+      "request_id": "77a3ecce326345d3ad25b2ef059b301f",
+      "error": "TimeoutError: timed out",
+      "diagnosis_required": true
+    }
+  ]
+}

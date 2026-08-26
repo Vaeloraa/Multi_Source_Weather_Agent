@@ -1,0 +1,715 @@
+{
+  "started_at": "2026-08-26T03:20:44.607690",
+  "finished_at": "2026-08-26T03:26:00.127297",
+  "asset_event_id": null,
+  "study_case_event_selection": "agent_selected_from_evidence",
+  "question_count": 42,
+  "result_count": 4,
+  "status_counts": {
+    "failed": 2,
+    "passed": 1,
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_150s_budget",
+  "diagnosis_required": true,
+  "ids": {},
+  "results": [
+    {
+      "number": 33,
+      "question": "现在是2019年6月27日03:00 UTC，我想了解美国北达科他州（North Dakota）及周边未来6到24小时的天气。大范围环境有没有值得留意的变化，最早可能在哪个时段开始影响这里？请先用Aurora做区域判断，不要一开始就锁定某个城市或局地事件。",
+      "kind": "event_environment",
+      "status": "failed",
+      "failure_class": "agent_or_protocol_failure",
+      "elapsed_seconds": 67.15,
+      "server_elapsed_ms": 67099,
+      "route_mode": "unified_agent",
+      "termination_reason": "max_steps_without_solution",
+      "answer": "本轮已保留全部真实执行结果，但智能体没有在分析轮次内完成最终回答。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "5d238ae62d9646aab6abd1de4d7158f8",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\5d238ae62d9646aab6abd1de4d7158f8.trace.json",
+      "session_id": "acceptance42-foundation-a938bbc8-c6b7-44a4-bcdf-3ceb87ddb27d",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "expand",
+          "status": "ok",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 1613.4,
+          "summary": "已按需展开能力契约：aurora"
+        },
+        {
+          "attempt": 2,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 2457.69,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 3,
+          "action": "execute",
+          "status": "error",
+          "error_type": "AttributeError",
+          "error": "'EnvironmentFields' object has no attribute 'get_fields'",
+          "elapsed_ms": 20.9,
+          "summary": "代码执行失败：AttributeError"
+        },
+        {
+          "attempt": 4,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 16.86,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 5,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 27.41,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 6,
+          "action": "execute",
+          "status": "error",
+          "error_type": "ValueError",
+          "error": "operands could not be broadcast together with shapes (48,) (96,) ",
+          "elapsed_ms": 20.96,
+          "summary": "代码执行失败：ValueError"
+        },
+        {
+          "attempt": 7,
+          "action": "execute",
+          "status": "error",
+          "error_type": "AttributeError",
+          "error": "'FieldArray' object has no attribute 'data'",
+          "elapsed_ms": 21.26,
+          "summary": "代码执行失败：AttributeError"
+        },
+        {
+          "attempt": 8,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 19.03,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 8,
+          "action": "stop",
+          "status": "incomplete",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 0,
+          "summary": "Agent已执行4次，但未在轮次内形成最终回答"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "aurora.regional_fields",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": null,
+            "initialization_time_utc": "2019-06-27T03:00:00Z",
+            "latitude": null,
+            "longitude": null,
+            "region": {
+              "north": 53.05,
+              "west": -111.98,
+              "south": 41.3,
+              "east": -88.23
+            },
+            "forecast_leads": [
+              6,
+              12,
+              18,
+              24
+            ],
+            "history_before_hours": 6,
+            "history_after_hours": 24,
+            "data_policy": "cached"
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 1613.38,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 148365.71
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 2189.85,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 146167.77
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 26297.34,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 117411.6
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 1499.8,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 115890.55
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 1441.16,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 114432.28
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 16719.65,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 97684.98
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 13247.97,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 84415.67
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 1340.89,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 83053.2
+        }
+      ],
+      "request_trace": {
+        "request_id": "5d238ae62d9646aab6abd1de4d7158f8",
+        "route": "/api/run",
+        "status": "incomplete",
+        "started_at": "2026-08-25T19:20:44.643742+00:00",
+        "stages": [
+          {
+            "stage_id": "5d238ae62d9646aab6abd1de4d7158f8:1",
+            "name": "unified_agent",
+            "status": "incomplete",
+            "elapsed_ms": 67097.62,
+            "termination_reason": "max_steps_without_solution",
+            "model_calls": 8,
+            "code_executions": 4
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 1,
+        "tool_calls": 1,
+        "model_calls": 8,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "max_steps_without_solution",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 67102.82,
+        "finished_at": "2026-08-25T19:21:51.746561+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null
+    },
+    {
+      "number": 34,
+      "question": "请把刚才Aurora发现的最值得关注的信号落实成可查找局地观测的时空窗口：它大致覆盖北达科他州的哪一部分、对应什么UTC时段、主要需要留意什么变化？重点先看起报后约6小时的第一个窗口，不要重复整段大范围预报，也不要把环境信号说成已经发生的局地灾害。",
+      "kind": "event_environment",
+      "status": "failed",
+      "failure_class": "agent_or_protocol_failure",
+      "elapsed_seconds": 24.12,
+      "server_elapsed_ms": 24088,
+      "route_mode": "unified_agent",
+      "termination_reason": "consecutive_execution_errors",
+      "answer": "本轮代码连续执行失败，完整步骤已保留供检查。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "5bb76284ee5d47da8b2ab2cd16325e65",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\5bb76284ee5d47da8b2ab2cd16325e65.trace.json",
+      "session_id": "acceptance42-foundation-a938bbc8-c6b7-44a4-bcdf-3ceb87ddb27d",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "expand",
+          "status": "ok",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 545.26,
+          "summary": "已按需展开能力契约：aurora"
+        },
+        {
+          "attempt": 2,
+          "action": "execute",
+          "status": "error",
+          "error_type": "AttributeError",
+          "error": "'numpy.ndarray' object has no attribute 'values'",
+          "elapsed_ms": 2714.02,
+          "summary": "代码执行失败：AttributeError"
+        },
+        {
+          "attempt": 3,
+          "action": "execute",
+          "status": "error",
+          "error_type": "ValueError",
+          "error": "operands could not be broadcast together with shapes (48,) (96,) ",
+          "elapsed_ms": 18.1,
+          "summary": "代码执行失败：ValueError"
+        },
+        {
+          "attempt": 4,
+          "action": "execute",
+          "status": "error",
+          "error_type": "AttributeError",
+          "error": "'FieldArray' object has no attribute 'data'",
+          "elapsed_ms": 20.85,
+          "summary": "代码执行失败：AttributeError"
+        },
+        {
+          "attempt": 4,
+          "action": "stop",
+          "status": "error",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 0,
+          "summary": "连续3次执行失败，停止本轮"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "aurora.regional_fields",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": null,
+            "initialization_time_utc": "2019-06-27T03:00:00Z",
+            "latitude": null,
+            "longitude": null,
+            "region": {
+              "north": 53.05,
+              "west": -111.98,
+              "south": 41.3,
+              "east": -88.23
+            },
+            "forecast_leads": [
+              6,
+              12,
+              18,
+              24
+            ],
+            "history_before_hours": 6,
+            "history_after_hours": 24,
+            "data_policy": "cached"
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 545.24,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 149453.39
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 8004.94,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 141448.35
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 5976.9,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 132756.42
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 6654.25,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 126083.76
+        }
+      ],
+      "request_trace": {
+        "request_id": "5bb76284ee5d47da8b2ab2cd16325e65",
+        "route": "/api/run",
+        "status": "error",
+        "started_at": "2026-08-25T19:21:51.776446+00:00",
+        "stages": [
+          {
+            "stage_id": "5bb76284ee5d47da8b2ab2cd16325e65:1",
+            "name": "unified_agent",
+            "status": "error",
+            "elapsed_ms": 24077.1,
+            "termination_reason": "consecutive_execution_errors",
+            "model_calls": 4,
+            "code_executions": 0
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 1,
+        "tool_calls": 1,
+        "model_calls": 4,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "consecutive_execution_errors",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 24102.26,
+        "finished_at": "2026-08-25T19:22:15.878710+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null
+    },
+    {
+      "number": 35,
+      "question": "请按照这个区域和时间窗口检索SEVIR目录，把实际匹配到的局地天气事件都列出来。说明每个事件的编号、时间、位置或覆盖范围、与Aurora信号的时空关系，以及目标时刻前是否有一小时连续观测；如果没有多个匹配，也请如实说明，不要为了凑数扩大范围。",
+      "kind": "event_environment",
+      "status": "passed",
+      "failure_class": "",
+      "elapsed_seconds": 72.91,
+      "server_elapsed_ms": 72866,
+      "route_mode": "unified_agent",
+      "termination_reason": "agent_completed",
+      "answer": "经复核，在指定区域（N41.3°–53.05°, W111.98°–88.23°）及2019-06-27 03:00 UTC分析窗口内，SEVIR目录严格匹配到25个局地天气事件。所有事件数据缺失率均<0.5%，目标时刻前1小时连续观测完整可用。\n\n**已标注验证事件（11个）：**\n1. **S831916** (冰雹): 03:50 UTC，WY/NE交界(42.2°N–45.8°N)，Aurora起报后+0.8h，与初始化信号时空重合度最高；\n2. **S834575** (雷暴大风): 01:55 UTC，IL/IN边界，起报前-1.1h；\n3. **S823756** (冰雹): 01:00 UTC，WY北部，起报前-2.0h；\n4. **S822059** (冰雹): 前日23:50 UTC，CO/WY交界，起报前-3.2h；\n5. **S838628** (强降雨): 07:53 UTC，IL东部，起报后+4.9h；\n6. **S837670** (山洪): 12:15 UTC，NE中部，起报后+9.2h；\n7. **S831689** (强降雨): 14:00 UTC，MT/ND北部，起报后+11.0h；\n8. **S834294** (冰雹): 17:46 UTC，IA/NE交界，起报后+14.8h；\n9. **S842399** (雷暴大风): 21:25 UTC，IA/IL边界，起报后+18.4h；\n10. **S836515** (雷暴大风): 22:15 UTC，MT西部，起报后+19.2h；\n11. **S836537** (雷暴大风): 次日01:18 UTC，MT/WY交界，起报后+22.3h。\n\n**未标注雷达回波事件（14个）：**\n集中出现在08:00 UTC（13个）和23:32 UTC（1个），主要覆盖ND/MT南部至WY东北部区域。这些事件无对应地面灾情报告，但雷达特征显著且数据完整，属于Aurora预报窗口内的潜在对流活动，未扩大检索范围。\n\n![事件空间分布图](/api/artifacts/a0d23e6b5e6f4e7eab7149a9d2edd5cc.png)",
+      "artifacts": [
+        {
+          "artifact_id": "a0d23e6b5e6f4e7eab7149a9d2edd5cc",
+          "url": "/api/artifacts/a0d23e6b5e6f4e7eab7149a9d2edd5cc.png",
+          "image_url": "/api/artifacts/a0d23e6b5e6f4e7eab7149a9d2edd5cc.png",
+          "title": "Agent生成图",
+          "description": "由本轮生成代码基于真实数据绘制。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "adfa93306658444f98a346b8256c1d80",
+          "url": "/api/artifacts/adfa93306658444f98a346b8256c1d80.png",
+          "image_url": "/api/artifacts/adfa93306658444f98a346b8256c1d80.png",
+          "title": "agent_figure_1",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "9706d2ce9fd045d994a56af9875e291f",
+          "url": "/api/artifacts/9706d2ce9fd045d994a56af9875e291f.png",
+          "image_url": "/api/artifacts/9706d2ce9fd045d994a56af9875e291f.png",
+          "title": "agent_figure_1",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        },
+        {
+          "artifact_id": "86117aabad89438b87c0c76ac02a63ac",
+          "url": "/api/artifacts/86117aabad89438b87c0c76ac02a63ac.png",
+          "image_url": "/api/artifacts/86117aabad89438b87c0c76ac02a63ac.png",
+          "title": "agent_figure_1",
+          "description": "由本轮执行代码生成。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        }
+      ],
+      "artifact_count": 4,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "ffa4f709102d4ed39bb7589b226f27e0",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\ffa4f709102d4ed39bb7589b226f27e0.trace.json",
+      "session_id": "acceptance42-foundation-a938bbc8-c6b7-44a4-bcdf-3ceb87ddb27d",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 1585.75,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 2,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 1651.54,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 3,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 304.39,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 4,
+          "action": "solution_review",
+          "status": "pending",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 10135.48,
+          "summary": "复杂分析进入一次最终目标与证据自审"
+        },
+        {
+          "attempt": 5,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 245.86,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 6,
+          "action": "finish",
+          "status": "ok",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 9191.91,
+          "summary": "已根据现有证据完成回答"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "sevir.search",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "query": "",
+            "year": null,
+            "month": null,
+            "event_type": "",
+            "region": {
+              "north": 53.05,
+              "west": -111.98,
+              "south": 41.3,
+              "east": -88.23
+            },
+            "latitude": null,
+            "longitude": null,
+            "radius_km": null,
+            "start_time_utc": "2019-06-26T21:00:00Z",
+            "end_time_utc": "2019-06-28T03:00:00Z",
+            "require_prior_minutes": null,
+            "limit": 20
+          }
+        },
+        {
+          "api": "sevir.search",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "query": "",
+            "year": null,
+            "month": null,
+            "event_type": "",
+            "region": {
+              "north": 53.05,
+              "west": -111.98,
+              "south": 41.3,
+              "east": -88.23
+            },
+            "latitude": null,
+            "longitude": null,
+            "radius_km": null,
+            "start_time_utc": "2019-06-26T21:00:00Z",
+            "end_time_utc": "2019-06-28T03:00:00Z",
+            "require_prior_minutes": null,
+            "limit": 50
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 6962.01,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 143035.74
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 21805.38,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 119644.16
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 13454.24,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 104537.8
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 10135.46,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 94097.43
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 7293.17,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 86804.01
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 9191.87,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 77365.92
+        }
+      ],
+      "request_trace": {
+        "request_id": "ffa4f709102d4ed39bb7589b226f27e0",
+        "route": "/api/run",
+        "status": "ok",
+        "started_at": "2026-08-25T19:22:15.902260+00:00",
+        "stages": [
+          {
+            "stage_id": "ffa4f709102d4ed39bb7589b226f27e0:1",
+            "name": "unified_agent",
+            "status": "ok",
+            "elapsed_ms": 72854.39,
+            "termination_reason": "agent_completed",
+            "model_calls": 6,
+            "code_executions": 4
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 0,
+        "tool_calls": 2,
+        "model_calls": 6,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "agent_completed",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 72875.72,
+        "finished_at": "2026-08-25T19:23:28.777985+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null
+    },
+    {
+      "number": 36,
+      "question": "在刚才检索到的事件中，哪个最适合继续做局地追踪？请根据与Aurora窗口的时空匹配、此前一小时观测的连续性和数据完整性进行选择，并说明最终选中的事件是否由这些条件筛选出来，而不是因为已有缓存就直接指定它。",
+      "kind": "sequence_environment",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_150s_budget",
+      "elapsed_seconds": 151.33,
+      "server_elapsed_ms": 151308,
+      "route_mode": "unified_agent",
+      "termination_reason": "model_transport_failure",
+      "answer": "固定模型调用失败；未继续重试，也未切换其他模型。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "1c04099119004541ac452c0817ab649f",
+      "trace_file": null,
+      "session_id": "acceptance42-foundation-a938bbc8-c6b7-44a4-bcdf-3ceb87ddb27d",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "error",
+          "error_type": "ExecutionTimeout",
+          "error": "execution exceeded 132.161 seconds",
+          "elapsed_ms": 133455.57,
+          "summary": "代码执行失败：ExecutionTimeout"
+        },
+        {
+          "attempt": 2,
+          "action": "model",
+          "status": "error",
+          "error_type": "TimeoutError",
+          "error": "统一Agent本轮总时间已达到上限",
+          "elapsed_ms": 0.01,
+          "summary": "模型调用失败：TimeoutError"
+        }
+      ],
+      "tool_runs": [],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 17835.96,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 132161.04
+        }
+      ],
+      "request_trace": {
+        "request_id": "1c04099119004541ac452c0817ab649f",
+        "route": "/api/run",
+        "status": "error",
+        "started_at": "2026-08-25T19:23:28.805971+00:00",
+        "stages": [
+          {
+            "stage_id": "1c04099119004541ac452c0817ab649f:1",
+            "name": "unified_agent",
+            "status": "error",
+            "elapsed_ms": 151295.07,
+            "termination_reason": "model_transport_failure",
+            "model_calls": 2,
+            "code_executions": 0
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 0,
+        "tool_calls": 0,
+        "model_calls": 2,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "model_transport_failure",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 151307.61,
+        "finished_at": "2026-08-25T19:26:00.113574+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null,
+      "diagnosis_required": true
+    }
+  ]
+}

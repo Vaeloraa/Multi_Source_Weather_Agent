@@ -1,0 +1,733 @@
+{
+  "started_at": "2026-08-25T17:34:16.948033",
+  "finished_at": "2026-08-25T17:38:33.710325",
+  "event_id": "R19062708588472",
+  "question_count": 42,
+  "result_count": 4,
+  "status_counts": {
+    "passed": 3,
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_90s_budget",
+  "diagnosis_required": true,
+  "ids": {
+    "single": "2c97b3151fbc457983b0f0d83a5bdb08",
+    "sequence": "010cd4562840473ba7ee153d1fbceb0b",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 22,
+      "question": "为什么预测看得越远通常越不可靠？请结合这次不同结果的分歧，用普通人的话解释。",
+      "kind": "sequence",
+      "status": "passed",
+      "failure_class": "",
+      "elapsed_seconds": 66.39,
+      "server_elapsed_ms": 66374,
+      "route_mode": "unified_agent",
+      "termination_reason": "agent_completed",
+      "answer": "预测看得越远越不可靠，核心原因是**混沌效应**——天气系统对初始条件的微小误差极其敏感，误差会随时间指数级放大。\n\n从这次实际预报结果看：\n\n1. **分歧度显著增长**：2小时预报的集合成员最大分歧度（8.73）比1小时预报（6.95）高出26%，说明随着时间推移，不同预报成员之间的差异越来越大。\n\n2. **右图直观展示**：在2小时预报中，10个集合成员从相同的初始状态出发，到120分钟时已呈现明显的发散趋势——有的成员预测强对流维持，有的则预测快速减弱。\n\n3. **为什么普通人能理解**：就像你往河里扔两片树叶，刚开始它们靠得很近，但漂得越远，水流、漩涡会让它们分开得越远。天气预报也一样，现在的观测总有微小误差，这些误差在1小时内影响有限，但累积到2-3小时后，就可能导致\"下雨\"和\"不下雨\"两种截然不同的结果。\n\n![预报不确定性增长图](/api/artifacts/e93b6c4c8086447d80430cffc1319d23.png)",
+      "artifacts": [
+        {
+          "artifact_id": "e93b6c4c8086447d80430cffc1319d23",
+          "url": "/api/artifacts/e93b6c4c8086447d80430cffc1319d23.png",
+          "image_url": "/api/artifacts/e93b6c4c8086447d80430cffc1319d23.png",
+          "title": "Agent生成图",
+          "description": "由本轮生成代码基于真实数据绘制。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        }
+      ],
+      "artifact_count": 1,
+      "event_resolution": {
+        "status": "resolved",
+        "event_id": "R19062708588472",
+        "source": "explicit_request"
+      },
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "4e2c7bc6d4084be88b76ac0ddce58335",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\4e2c7bc6d4084be88b76ac0ddce58335.trace.json",
+      "session_id": "acceptance42-q22-5bb390fc-732f-4f46-905f-d666e698944c",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "error",
+          "error_type": "RuntimeError",
+          "error": "cache_only_miss: refusing to run CasCast for event R19062708588472, segment 2, ensemble 10",
+          "elapsed_ms": 4490.61,
+          "summary": "代码执行失败：RuntimeError"
+        },
+        {
+          "attempt": 2,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 801.16,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 3,
+          "action": "finish",
+          "status": "ok",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 6297.62,
+          "summary": "已根据现有证据完成回答"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "sevir.observations",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "start_frame": 0,
+            "end_frame": 49
+          }
+        },
+        {
+          "api": "cascast.forecast",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "horizon_hours": 1.0,
+            "model_name": "cascast_live",
+            "ensemble_members": 10,
+            "include_ground_truth": false,
+            "array_transport": true
+          }
+        },
+        {
+          "api": "cascast.forecast",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "horizon_hours": 2.0,
+            "model_name": "cascast_live",
+            "ensemble_members": 10,
+            "include_ground_truth": false,
+            "array_transport": true
+          }
+        },
+        {
+          "api": "cascast.forecast",
+          "status": "error",
+          "cache_hit": false,
+          "error": "{'type': 'RuntimeError', 'message': 'cache_only_miss: refusing to run CasCast for event R19062708588472, segment 2, ensemble 10'}",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "horizon_hours": 3.0,
+            "model_name": "cascast_live",
+            "ensemble_members": 10,
+            "include_ground_truth": false,
+            "array_transport": true
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 29535.16,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 60464.49
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 24981.02,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 30992.33
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 6297.59,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 23893.24
+        }
+      ],
+      "request_trace": {
+        "request_id": "4e2c7bc6d4084be88b76ac0ddce58335",
+        "route": "/api/run",
+        "status": "ok",
+        "started_at": "2026-08-25T09:34:17.319016+00:00",
+        "stages": [
+          {
+            "stage_id": "4e2c7bc6d4084be88b76ac0ddce58335:1",
+            "name": "unified_agent",
+            "status": "ok",
+            "elapsed_ms": 66364.97,
+            "termination_reason": "agent_completed",
+            "model_calls": 3,
+            "code_executions": 1
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 2,
+        "tool_calls": 5,
+        "model_calls": 3,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "agent_completed",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 66377.83,
+        "finished_at": "2026-08-25T09:35:23.696849+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null
+    },
+    {
+      "number": 23,
+      "question": "这些天气图能不能证明某条道路一定会积水，或者车辆一定能安全通过？我还应该查看哪些官方信息？",
+      "kind": "sequence",
+      "status": "passed",
+      "failure_class": "",
+      "elapsed_seconds": 26.83,
+      "server_elapsed_ms": 26822,
+      "route_mode": "unified_agent",
+      "termination_reason": "agent_completed",
+      "answer": "**不能。** 天气图无法证明道路一定会积水或车辆一定能安全通过。\n\n**当前天气图显示**（北达科他州基德县，2019年6月27日）：\n- 最大VIL值达254（饱和），平均44.6\n- 约32%区域超过轻度降水阈值，38%超过强降水阈值\n- 但VIL仅反映云层液态水含量，不直接测量地面积水\n\n**数据局限性**：\n1. 无地形高程、排水系统、土壤饱和度数据\n2. 无道路具体位置和排水能力信息\n3. 无实时水位监测\n\n**应查看的官方信息**：\n- 国家气象局（NWS）洪水预警/警报\n- 当地应急管理部门道路封闭通知\n- USGS实时水位监测站\n- 州交通部门路况报告（如NDRoads）\n- 国家洪水保险计划（NFIP）洪水地图\n\n![当前VIL分布](/api/artifacts/b1a44aefe10d439fbc8d1fe1d2a25764.png)",
+      "artifacts": [
+        {
+          "artifact_id": "b1a44aefe10d439fbc8d1fe1d2a25764",
+          "url": "/api/artifacts/b1a44aefe10d439fbc8d1fe1d2a25764.png",
+          "image_url": "/api/artifacts/b1a44aefe10d439fbc8d1fe1d2a25764.png",
+          "title": "Agent生成图",
+          "description": "由本轮生成代码基于真实数据绘制。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        }
+      ],
+      "artifact_count": 1,
+      "event_resolution": {
+        "status": "resolved",
+        "event_id": "R19062708588472",
+        "source": "explicit_request"
+      },
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "15d318b7bc404153877d0c1a7eb46823",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\15d318b7bc404153877d0c1a7eb46823.trace.json",
+      "session_id": "acceptance42-q23-8e1f38c4-8cd6-4b32-872f-da22d12b6dc1",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 3525.93,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 2,
+          "action": "finish",
+          "status": "ok",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 6436.83,
+          "summary": "已根据现有证据完成回答"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "geolocator.administrative_area",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "latitude": 47.054316,
+            "longitude": -99.976044
+          }
+        },
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "sevir.observations",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "start_frame": 0,
+            "end_frame": 49
+          }
+        },
+        {
+          "api": "sevir.nearby",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "latitude": 47.054316,
+            "longitude": -99.976044,
+            "radius_km": 200.0,
+            "year": null,
+            "month": null,
+            "event_type": "",
+            "limit": 5
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 16625.44,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 73374.2
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 6436.81,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 63411.04
+        }
+      ],
+      "request_trace": {
+        "request_id": "15d318b7bc404153877d0c1a7eb46823",
+        "route": "/api/run",
+        "status": "ok",
+        "started_at": "2026-08-25T09:35:23.703911+00:00",
+        "stages": [
+          {
+            "stage_id": "15d318b7bc404153877d0c1a7eb46823:1",
+            "name": "unified_agent",
+            "status": "ok",
+            "elapsed_ms": 26816.41,
+            "termination_reason": "agent_completed",
+            "model_calls": 2,
+            "code_executions": 1
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 0,
+        "tool_calls": 5,
+        "model_calls": 2,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "agent_completed",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 26826.15,
+        "finished_at": "2026-08-25T09:35:50.530070+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null
+    },
+    {
+      "number": 24,
+      "question": "这次回答分别用了哪些现场观测、模型预测和后续实况？请按时间顺序说明每类资料支持了什么结论。",
+      "kind": "sequence",
+      "status": "passed",
+      "failure_class": "",
+      "elapsed_seconds": 72.93,
+      "server_elapsed_ms": 72910,
+      "route_mode": "unified_agent",
+      "termination_reason": "agent_completed",
+      "answer": "本次分析使用了三类资料，按时间顺序说明如下：\n\n**一、现场观测（SEVIR）**\n- 时间范围：事件前120分钟至事件后120分钟（共49帧）\n- 作用：提供-60至0分钟的历史VIL序列作为CasCast模型输入，描述风暴发展现状\n\n**二、模型预测（CasCast live）**\n- 时间范围：0至60分钟（12个预报时次，间隔5分钟）\n- 作用：基于观测输入生成10成员集合预报，预测未来1小时风暴演变趋势\n\n**三、后续实况（Ground Truth）**\n- 时间范围：60至120分钟（12帧，384×384网格）\n- 作用：用于验证预报准确性，评估模型性能\n\n时间线如下图所示：\n![数据时间线](/api/artifacts/cb53f9e75ac147daaf3e5cf0a868613b.png)\n\n三类资料形成\"观测→预报→验证\"的完整链条：现场观测提供模型输入，模型预测输出未来趋势，后续实况用于检验预报效果。",
+      "artifacts": [
+        {
+          "artifact_id": "cb53f9e75ac147daaf3e5cf0a868613b",
+          "url": "/api/artifacts/cb53f9e75ac147daaf3e5cf0a868613b.png",
+          "image_url": "/api/artifacts/cb53f9e75ac147daaf3e5cf0a868613b.png",
+          "title": "Agent生成图",
+          "description": "由本轮生成代码基于真实数据绘制。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        }
+      ],
+      "artifact_count": 1,
+      "event_resolution": {
+        "status": "resolved",
+        "event_id": "R19062708588472",
+        "source": "explicit_request"
+      },
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "b75bb3ad144246189be62b21d2339c56",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\b75bb3ad144246189be62b21d2339c56.trace.json",
+      "session_id": "acceptance42-q24-23815a66-e2ff-4e7d-a7a8-cf173fddb832",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "error",
+          "error_type": "TypeError",
+          "error": "can only concatenate str (not \"numpy.timedelta64\") to str",
+          "elapsed_ms": 2975.15,
+          "summary": "代码执行失败：TypeError"
+        },
+        {
+          "attempt": 2,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 391.68,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 3,
+          "action": "finish",
+          "status": "ok",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 6674.11,
+          "summary": "已根据现有证据完成回答"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "sevir.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "geolocator.event",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472"
+          }
+        },
+        {
+          "api": "sevir.observations",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "start_frame": 0,
+            "end_frame": 49
+          }
+        },
+        {
+          "api": "cascast.forecast",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "horizon_hours": 1.0,
+            "model_name": "cascast_live",
+            "ensemble_members": 10,
+            "include_ground_truth": true,
+            "array_transport": true
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 34660.95,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 55338.86
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 27955.55,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 24407.89
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 6674.08,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 17341.51
+        }
+      ],
+      "request_trace": {
+        "request_id": "b75bb3ad144246189be62b21d2339c56",
+        "route": "/api/run",
+        "status": "ok",
+        "started_at": "2026-08-25T09:35:50.550444+00:00",
+        "stages": [
+          {
+            "stage_id": "b75bb3ad144246189be62b21d2339c56:1",
+            "name": "unified_agent",
+            "status": "ok",
+            "elapsed_ms": 72906.26,
+            "termination_reason": "agent_completed",
+            "model_calls": 3,
+            "code_executions": 1
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 1,
+        "tool_calls": 4,
+        "model_calls": 3,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "agent_completed",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 72912.33,
+        "finished_at": "2026-08-25T09:37:03.462780+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null
+    },
+    {
+      "number": 25,
+      "question": "我没有天气图片。系统能不能直接帮我查某个时间和地点的天气资料，并说明你能主动获取哪些数据？",
+      "kind": "region",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_90s_budget",
+      "elapsed_seconds": 90.24,
+      "server_elapsed_ms": 90224,
+      "route_mode": "unified_agent",
+      "termination_reason": "model_failure_after_observation",
+      "answer": "本轮已经获得并保留真实执行结果，但最终模型调用失败，未生成完整文字结论。请查看步骤和已生成图表。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "b1dea2f8922a4892b077d4b807473b89",
+      "trace_file": null,
+      "session_id": "acceptance42-q25-b0e802b3-1444-4bc2-8ba0-b5b3f6771f99",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 761.42,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 2,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 8818.21,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 3,
+          "action": "model",
+          "status": "error",
+          "error_type": "RuntimeError",
+          "error": "固定模型 kimi-k2.5 调用失败；未尝试其他模型：The read operation timed out",
+          "elapsed_ms": 21893.26,
+          "summary": "模型调用失败：RuntimeError"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "geolocator.place",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "place": "Beijing, China",
+            "country_codes": "cn,us"
+          }
+        },
+        {
+          "api": "sevir.nearby",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "latitude": 39.9057136,
+            "longitude": 116.3912972,
+            "radius_km": 200.0,
+            "year": null,
+            "month": null,
+            "event_type": "",
+            "limit": 5
+          }
+        },
+        {
+          "api": "geolocator.place",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "place": "Shanghai, China",
+            "country_codes": "cn,us"
+          }
+        },
+        {
+          "api": "sevir.nearby",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "latitude": 31.2312707,
+            "longitude": 121.4700152,
+            "radius_km": 200.0,
+            "year": null,
+            "month": null,
+            "event_type": "",
+            "limit": 5
+          }
+        },
+        {
+          "api": "geolocator.place",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "place": "New York, USA",
+            "country_codes": "cn,us"
+          }
+        },
+        {
+          "api": "sevir.nearby",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "latitude": 40.7127281,
+            "longitude": -74.0060152,
+            "radius_km": 200.0,
+            "year": null,
+            "month": null,
+            "event_type": "",
+            "limit": 5
+          }
+        },
+        {
+          "api": "geolocator.place",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "place": "Chicago, Illinois",
+            "country_codes": "us"
+          }
+        },
+        {
+          "api": "geolocator.administrative_area",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "latitude": 41.8755616,
+            "longitude": -87.6244212
+          }
+        },
+        {
+          "api": "sevir.nearby",
+          "status": "ok",
+          "cache_hit": false,
+          "error": "None",
+          "arguments": {
+            "latitude": 41.8755616,
+            "longitude": -87.6244212,
+            "radius_km": 150.0,
+            "year": 2019,
+            "month": null,
+            "event_type": "",
+            "limit": 10
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 18315.81,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 71683.96
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 40211.21,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 30711.07
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 21893.24,
+          "status": "error",
+          "error_type": "RuntimeError",
+          "remaining_ms_after": 0.0
+        }
+      ],
+      "request_trace": {
+        "request_id": "b1dea2f8922a4892b077d4b807473b89",
+        "route": "/api/run",
+        "status": "partial",
+        "started_at": "2026-08-25T09:37:03.483950+00:00",
+        "stages": [
+          {
+            "stage_id": "b1dea2f8922a4892b077d4b807473b89:1",
+            "name": "unified_agent",
+            "status": "partial",
+            "elapsed_ms": 90222.85,
+            "termination_reason": "model_failure_after_observation",
+            "model_calls": 3,
+            "code_executions": 2
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 0,
+        "tool_calls": 9,
+        "model_calls": 3,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "model_failure_after_observation",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 90223.58,
+        "finished_at": "2026-08-25T09:38:33.707529+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null,
+      "diagnosis_required": true
+    }
+  ]
+}

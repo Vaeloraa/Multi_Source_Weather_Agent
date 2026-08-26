@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 import numpy as np
 
-from sevir_world.backends import geospatial
+from sevir_world.tools.geolocator import Geospatial as geospatial
 
 
 ROOT = Path(__file__).resolve().parents[1]

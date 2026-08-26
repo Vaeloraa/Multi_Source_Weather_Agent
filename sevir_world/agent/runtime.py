@@ -3,10 +3,16 @@ from __future__ import annotations
 import json
 import importlib
 import inspect
+import os
 from dataclasses import fields, is_dataclass
+from pathlib import Path
 from typing import Any, Callable
 
 import numpy as np
+import pandas as pd
+import xarray as xr
+import scipy
+import skimage
 
 from .contracts import CANONICAL_ARGUMENTS, ExecutionRequest
 from .diagnostics import (
@@ -14,16 +20,19 @@ from .diagnostics import (
     describe_dataset,
 )
 from ..data_access.uploads import _load_uploaded_vil, _load_uploaded_vil_sequence
+from .study import StudyEvidence
 
 
 _TOOL_IMPORTS = {
-    "sevir": ("sevir_world.capabilities.weather", "Sevir"),
-    "geolocator": ("sevir_world.capabilities.weather", "Geolocator"),
-    "cascast": ("sevir_world.capabilities.weather", "CasCast"),
-    "aurora": ("sevir_world.capabilities.weather", "Aurora"),
+    "sevir": ("sevir_world.tools.sevir.Sevir", "Sevir"),
+    "geolocator": ("sevir_world.tools.geolocator.Geolocator", "Geolocator"),
+    "cascast": ("sevir_world.tools.cascast.CasCast", "CasCast"),
+    "aurora": ("sevir_world.tools.aurora.Aurora", "Aurora"),
 }
 
 _LOADED_TOOL_CLASSES: dict[str, type[Any]] = {}
+
+AVAILABLE_MODULES = ("numpy", "pandas", "xarray", "matplotlib", "scipy", "skimage")
 
 
 def _load_tool_class(name: str) -> type[Any]:
@@ -40,10 +49,6 @@ def _load_tool_class(name: str) -> type[Any]:
     return loaded
 
 
-def canonical_tool_name(name: str) -> str:
-    return str(name)
-
-
 def _trace_result(result: Any) -> Any:
     def array_metadata(value: Any) -> Any:
         if isinstance(value, np.ndarray):
@@ -52,6 +57,42 @@ def _trace_result(result: Any) -> Any:
                 "shape": [int(item) for item in value.shape],
                 "dtype": str(value.dtype),
                 "elements": int(value.size),
+                "trace_values_omitted": True,
+            }
+        if isinstance(value, pd.DataFrame):
+            return {
+                "type": "DataFrame",
+                "representation": "metadata_only",
+                "read_scope": "worker_only",
+                "shape": [int(item) for item in value.shape],
+                "columns": [str(item) for item in value.columns],
+                "records": [
+                    {str(key): array_metadata(item) for key, item in row.items()}
+                    for row in value.head(20).to_dict(orient="records")
+                ],
+                "records_returned": min(20, int(len(value))),
+                "trace_values_omitted": True,
+            }
+        if type(value).__module__.startswith("xarray"):
+            data_vars = getattr(value, "data_vars", None)
+            if data_vars is not None:
+                return {
+                    "type": type(value).__name__,
+                    "representation": "metadata_only",
+                    "read_scope": "worker_only",
+                    "dimensions": {str(key): int(size) for key, size in value.sizes.items()},
+                    "variables": [str(name) for name in data_vars],
+                    "coordinates": [str(name) for name in value.coords],
+                    "trace_values_omitted": True,
+                }
+            return {
+                "type": type(value).__name__,
+                "representation": "metadata_only",
+                "read_scope": "worker_only",
+                "name": str(getattr(value, "name", "") or ""),
+                "dimensions": [str(name) for name in getattr(value, "dims", ())],
+                "shape": [int(size) for size in getattr(value, "shape", ())],
+                "dtype": str(getattr(value, "dtype", "")),
                 "trace_values_omitted": True,
             }
         if is_dataclass(value) and not isinstance(value, type):
@@ -125,11 +166,70 @@ def _trace_arguments(arguments: dict[str, Any]) -> dict[str, Any]:
     return compact
 
 
-class ToolUsageRecorder:
-    """Record bounded results and failures for every injected tool call."""
+class ToolCostBudgetExceeded(RuntimeError):
+    """Raised before a backend call would exceed the request cost budget."""
 
-    def __init__(self) -> None:
+
+class ToolUsageRecorder:
+    """Record calls and enforce a persistent weighted runtime cost budget."""
+
+    def __init__(self, cost_budget_units: float | None = None) -> None:
         self.calls: list[dict[str, Any]] = []
+        configured = (
+            float(cost_budget_units)
+            if cost_budget_units is not None
+            else float(os.getenv("SEVIR_AGENT_TOOL_COST_BUDGET", "30"))
+        )
+        if configured <= 0:
+            raise ValueError("tool cost budget must be positive")
+        self.cost_budget_units = configured
+        self.cost_used_units = 0.0
+
+    @staticmethod
+    def estimate_cost(name: str, arguments: dict[str, Any], *, cache_hit: bool = False) -> float:
+        """Estimate backend work in stable abstract units, independent of Python syntax."""
+
+        base = {
+            "sevir.event": 1.0,
+            "sevir.search": 1.5,
+            "sevir.observations": 3.0,
+            "sevir.match_upload": 1.0,
+            "cascast.forecast": 7.0,
+            "aurora.regional_fields": 8.0,
+        }.get(name, 1.0)
+        if name == "sevir.observation_batch":
+            count = len(arguments.get("subject_keys") or ())
+            base = 2.0 + min(max(count, 1), 20) * 0.75
+        if cache_hit:
+            base = min(base, 0.25)
+        return round(float(base), 2)
+
+    def reserve(
+        self, name: str, arguments: dict[str, Any], *, cache_hit: bool = False
+    ) -> float:
+        """Reserve cost before backend execution so loops cannot evade the budget."""
+
+        cost = self.estimate_cost(name, arguments, cache_hit=cache_hit)
+        projected = self.cost_used_units + cost
+        if projected > self.cost_budget_units + 1e-9:
+            raise ToolCostBudgetExceeded(
+                f"{name} costs {cost:g} units but only "
+                f"{self.remaining_cost_units:g} of {self.cost_budget_units:g} remain"
+            )
+        self.cost_used_units = round(projected, 2)
+        return cost
+
+    @property
+    def remaining_cost_units(self) -> float:
+        return round(max(0.0, self.cost_budget_units - self.cost_used_units), 2)
+
+    def summary(self) -> dict[str, float | bool]:
+        return {
+            "budget_units": self.cost_budget_units,
+            "used_units": self.cost_used_units,
+            "remaining_units": self.remaining_cost_units,
+            "exhausted": self.remaining_cost_units <= 0,
+        }
 
     def __call__(
         self,
@@ -138,6 +238,7 @@ class ToolUsageRecorder:
         result: Any = None,
         error: Exception | None = None,
         cache_hit: bool = False,
+        cost_units: float | None = None,
     ) -> None:
         execution_status = "error" if error else "ok"
         item: dict[str, Any] = {
@@ -146,6 +247,9 @@ class ToolUsageRecorder:
             "arguments": _trace_arguments(arguments),
             "status": execution_status,
             "cache_hit": bool(cache_hit),
+            "cost_units": float(cost_units or 0.0),
+            "cumulative_cost_units": self.cost_used_units,
+            "remaining_cost_units": self.remaining_cost_units,
         }
         if error:
             item["error"] = {"type": type(error).__name__, "message": str(error)}
@@ -302,7 +406,7 @@ class DataIndexer:
         for description in data_descs:
             source = str(description.get("source", "sevir")).lower()
             if source == "sevir":
-                from ..data_access.catalog import (
+                from ..tools.sevir.Catalog import (
                     get_sevir_event_metadata,
                     load_sevir_vil_event,
                 )
@@ -429,6 +533,50 @@ class DataIndexer:
         return datasets
 
 
+def _plot_field(
+    data: Any,
+    title: str = "",
+    cmap: str = "viridis",
+    filename: str | None = None,
+) -> str:
+    """Save one quick evidence figure and return the PNG path.
+
+    Pre-imported into the execution namespace as ``plot_field`` so generated
+    programs can produce the mandatory figure with a single call instead of
+    spending hundreds of output tokens on matplotlib boilerplate.  A 3-D cube
+    plots its last frame.
+    """
+
+    import os
+    import uuid
+
+    import matplotlib
+
+    matplotlib.use("Agg", force=True)
+    import matplotlib.pyplot as plt
+
+    array = np.asarray(data)
+    if array.ndim == 3:
+        array = array[-1]
+    if array.ndim != 2:
+        raise ValueError("plot_field expects a 2-D field or a 3-D cube")
+    figure, axis = plt.subplots(figsize=(6, 5))
+    image = axis.imshow(array, cmap=cmap, origin="upper")
+    figure.colorbar(image, ax=axis)
+    if title:
+        axis.set_title(str(title))
+    artifact_dir = os.environ.get("SEVIR_ARTIFACT_DIR", "")
+    if not artifact_dir:
+        raise RuntimeError("SEVIR_ARTIFACT_DIR is not configured")
+    name = str(filename).strip() if filename else f"{uuid.uuid4().hex}.png"
+    if not name.lower().endswith(".png"):
+        name += ".png"
+    path = Path(artifact_dir) / name
+    figure.savefig(path, bbox_inches="tight")
+    plt.close(figure)
+    return str(path)
+
+
 class ExecutionEnvironment:
     """Assemble request-scoped resources in the canonical Zephyrus order."""
 
@@ -438,18 +586,27 @@ class ExecutionEnvironment:
     ) -> None:
         self.request = request
         self.recorder = ToolUsageRecorder()
-        requested_names = {
-            canonical_tool_name(name)
-            for name in request.selected_tools
-            if name not in {"ds"}
+        self.resources: dict[str, Any] = {
+            "ds": DataIndexer().load(request.data_descs),
+            "study": StudyEvidence(request.evidence_state),
+            "plot_field": _plot_field,
+            "pd": pd,
+            "xr": xr,
+            "scipy": scipy,
+            "skimage": skimage,
         }
-        self.resources: dict[str, Any] = {"ds": DataIndexer().load(request.data_descs)}
         def load_capability(name: str) -> Any:
             tool_class = _load_tool_class(name)
             return tool_class(self.recorder, request.binding)
 
+        # Runtime availability is independent of prompt/document selection.
+        # Every request receives the same four lazy capability objects; no
+        # backend is imported until generated code first accesses that object.
+        # ``selected_tools`` only determines which contracts are expanded in
+        # the prompt, so a routing hint can shorten context without removing
+        # an Agent capability from the persistent namespace.
         for name in CANONICAL_ARGUMENTS:
-            if name == "ds" or name not in requested_names:
+            if name == "ds":
                 continue
             self.resources[name] = LazyToolInterface(
                 name,
@@ -460,14 +617,19 @@ class ExecutionEnvironment:
         """Expose the actual request-scoped data shape and selected tool contract."""
         return {
             "schema_version": SCHEMA_VERSION,
+            "available_modules": AVAILABLE_MODULES,
             "dataset": describe_dataset(self.resources["ds"]),
+            "study": {
+                "case_id": self.resources["study"].case_id,
+                "revision": self.resources["study"].revision,
+            },
             "tools": [
                 {
                     "name": name,
                     "loading": "lazy",
                     "loaded": bool(getattr(self.resources[name], "loaded", False)),
                 }
-                for name in self.request.selected_tools
+                for name in CANONICAL_ARGUMENTS
                 if name != "ds"
             ],
         }

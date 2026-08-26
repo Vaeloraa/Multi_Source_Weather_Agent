@@ -99,6 +99,22 @@ python server.py
 
 ## 测试
 
+安装开发测试依赖：
+
+```powershell
+python -m pip install -r requirements-dev.txt
+```
+
+其中包含三条现场数据链所需的依赖：`cdsapi`/`netCDF4` 用于按时间和区域下载历史 ERA5，`h5py`/`fsspec` 用于读取本地或远程 SEVIR VIL，`microsoft-aurora` 用于 Aurora 推理。ERA5 在线下载仍需要在用户目录配置 CDS 凭据；Aurora 现场推理还需要可用的 checkpoint。安装依赖不会自动下载这些大模型或数据文件。
+
+运行 pytest 测试：
+
+```powershell
+python -m pytest
+```
+
+项目原有的 unittest 测试也可以继续运行：
+
 ```powershell
 python -m unittest discover -s tests -p "test_*.py" -v
 ```

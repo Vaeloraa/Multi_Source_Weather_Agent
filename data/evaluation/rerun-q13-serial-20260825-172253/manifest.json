@@ -1,0 +1,95 @@
+{
+  "started_at": "2026-08-25T17:22:54.256483",
+  "finished_at": "2026-08-25T17:22:54.934707",
+  "event_id": "R19062708588472",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "failed": 1
+  },
+  "stopped_early": false,
+  "stop_reason": "",
+  "diagnosis_required": false,
+  "ids": {
+    "single": "3ccb8cc1d4c844fe85e95af2f76442ea",
+    "sequence": "18ddfdf646dd4f04bf6fc707d159da62",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 13,
+      "question": "为什么系统给出了好几种可能结果？请挑出最有代表性的几种走向，让我看懂它们主要差在哪里。",
+      "kind": "sequence",
+      "status": "failed",
+      "failure_class": "error",
+      "elapsed_seconds": 0.24,
+      "server_elapsed_ms": 215,
+      "route_mode": "unified_agent",
+      "termination_reason": "model_transport_failure",
+      "answer": "固定模型调用失败；未继续重试，也未切换其他模型。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "event_resolution": {
+        "status": "resolved",
+        "event_id": "R19062708588472",
+        "source": "explicit_request"
+      },
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "6a405d4445794a01ba39ae8d6d849d36",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\6a405d4445794a01ba39ae8d6d849d36.trace.json",
+      "session_id": "acceptance42-q13-732f5a97-7a75-4e3d-bc5d-596390a210ec",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "model",
+          "status": "error",
+          "error_type": "RuntimeError",
+          "error": "固定模型 kimi-k2.6 调用失败；未尝试其他模型：API returned HTTP 403: {\"error\":{\"message\":\"Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the \\\"use free tier only\\\" mode in the management console.\",\"type\":\"AllocationQuota.FreeTierOnly\",\"param\":null,\"code\":\"AllocationQuota.FreeTierOnly\"},\"id\":\"chatcmpl-9d21dc19-599c-9e91-b472-be409d21162b\",\"request_id\":\"9d21dc19-599c-9e91-b472-be409d21162b\"}",
+          "elapsed_ms": 206.37,
+          "summary": "模型调用失败：RuntimeError"
+        }
+      ],
+      "tool_runs": [],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 206.34,
+          "status": "error",
+          "error_type": "RuntimeError",
+          "remaining_ms_after": 89793.23
+        }
+      ],
+      "request_trace": {
+        "request_id": "6a405d4445794a01ba39ae8d6d849d36",
+        "route": "/api/run",
+        "status": "error",
+        "started_at": "2026-08-25T09:22:54.709172+00:00",
+        "stages": [
+          {
+            "stage_id": "6a405d4445794a01ba39ae8d6d849d36:1",
+            "name": "unified_agent",
+            "status": "error",
+            "elapsed_ms": 206.91,
+            "termination_reason": "model_transport_failure",
+            "model_calls": 1,
+            "code_executions": 0
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 0,
+        "tool_calls": 0,
+        "model_calls": 1,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "model_transport_failure",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 221.31,
+        "finished_at": "2026-08-25T09:22:54.930486+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null
+    }
+  ]
+}

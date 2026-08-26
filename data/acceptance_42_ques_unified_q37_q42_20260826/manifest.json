@@ -1,0 +1,28 @@
+{
+  "started_at": "2026-08-26T15:50:34.019178",
+  "finished_at": "2026-08-26T15:52:04.067798",
+  "asset_event_id": null,
+  "study_case_event_selection": "agent_selected_from_evidence",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_90s_budget",
+  "diagnosis_required": true,
+  "ids": {},
+  "results": [
+    {
+      "number": 37,
+      "question": "请调出选中事件在目标时刻前一小时的连续SEVIR观测。这个局地天气系统在这一小时里怎样变化，目标时刻位于北达科他州什么位置，强度、范围、移动和形态中哪些变化最值得继续关注？",
+      "kind": "sequence_environment",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_90s_budget",
+      "elapsed_seconds": 90.05,
+      "request_id": "e02e6328e6db470f8730f9820481a2b9",
+      "error": "TimeoutError: timed out",
+      "diagnosis_required": true
+    }
+  ]
+}

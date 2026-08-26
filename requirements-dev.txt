@@ -1,0 +1,13 @@
+# Development and test dependencies
+pytest==9.1.1
+
+# Historical ERA5 retrieval through the Copernicus Data Space API.
+cdsapi>=0.7,<0.8
+netCDF4>=1.7,<2
+
+# SEVIR remote HDF5/VIL access.
+h5py>=3.16,<4
+fsspec>=2023.5
+
+# Microsoft Aurora inference wrapper and its model dependencies.
+microsoft-aurora==2.0.1

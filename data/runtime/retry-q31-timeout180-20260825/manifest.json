@@ -1,0 +1,107 @@
+{
+  "started_at": "2026-08-25T18:30:31.700458",
+  "finished_at": "2026-08-25T18:30:55.097789",
+  "event_id": "R19062708588472",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "failed": 1
+  },
+  "stopped_early": false,
+  "stop_reason": "",
+  "diagnosis_required": false,
+  "ids": {
+    "single": "7e21e182f581425c87c4bc014d4900d6",
+    "sequence": "8fbdf4d326714956bf87d2f5897f8aab",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 31,
+      "question": "我上传的连续图片可能少了一张或顺序不对。请先检查它们能不能用于短临预测；如果不行，直接指出问题，不要勉强运行模型。",
+      "kind": "invalid_sequence",
+      "status": "failed",
+      "failure_class": "missing_visual_artifact",
+      "elapsed_seconds": 22.95,
+      "server_elapsed_ms": 22931,
+      "route_mode": "unified_agent",
+      "termination_reason": "agent_completed",
+      "answer": "上传数据检查完成。**无法用于短临预测**。\n\n**问题：未检测到任何上传帧**\n- 上传帧数：0 帧\n- 需要帧数：13 帧（时间范围 -60 分钟至 0 分钟，间隔 5 分钟）\n\n**缺失全部时间点**：-60, -55, -50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0 分钟\n\n请确认图片是否已成功上传，或检查上传接口状态。CasCast 短临预测需要完整的 13 帧历史序列作为输入。",
+      "artifacts": [],
+      "artifact_count": 0,
+      "event_resolution": null,
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "dff8157415fd4f62ad13b5d38d11f1d5",
+      "trace_file": "C:\\Users\\zhaor\\AppData\\Local\\Temp\\sevir_world_runtime\\artifacts\\dff8157415fd4f62ad13b5d38d11f1d5.trace.json",
+      "session_id": "acceptance42-q31-dad61c3e-c8e7-4ae8-ac05-d06204a6f160",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 1935.05,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 2,
+          "action": "finish",
+          "status": "ok",
+          "error_type": null,
+          "error": "",
+          "elapsed_ms": 3947.02,
+          "summary": "已根据现有证据完成回答"
+        }
+      ],
+      "tool_runs": [],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 16905.56,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 163094.19
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 3946.99,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 157211.88
+        }
+      ],
+      "request_trace": {
+        "request_id": "dff8157415fd4f62ad13b5d38d11f1d5",
+        "route": "/api/run",
+        "status": "ok",
+        "started_at": "2026-08-25T10:30:32.149781+00:00",
+        "stages": [
+          {
+            "stage_id": "dff8157415fd4f62ad13b5d38d11f1d5:1",
+            "name": "unified_agent",
+            "status": "ok",
+            "elapsed_ms": 22930.02,
+            "termination_reason": "agent_completed",
+            "model_calls": 2,
+            "code_executions": 1
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 0,
+        "tool_calls": 0,
+        "model_calls": 2,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "agent_completed",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 22941.28,
+        "finished_at": "2026-08-25T10:30:55.091085+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "started_at": "2026-08-25T17:06:06.255283",
+  "finished_at": "2026-08-25T17:07:37.195800",
+  "event_id": "R19062708588472",
+  "question_count": 42,
+  "result_count": 1,
+  "status_counts": {
+    "deadline_exceeded": 1
+  },
+  "stopped_early": true,
+  "stop_reason": "request_exceeded_90s_budget",
+  "diagnosis_required": true,
+  "ids": {
+    "single": "bbd1d105a780404aaff5733f1bc98861",
+    "sequence": "6995f81e1f0046d89b0924845ab77b83",
+    "invalid_sequence": ""
+  },
+  "results": [
+    {
+      "number": 13,
+      "question": "为什么系统给出了好几种可能结果？请挑出最有代表性的几种走向，让我看懂它们主要差在哪里。",
+      "kind": "sequence",
+      "status": "deadline_exceeded",
+      "failure_class": "request_exceeded_90s_budget",
+      "elapsed_seconds": 90.57,
+      "server_elapsed_ms": 90540,
+      "route_mode": "unified_agent",
+      "termination_reason": "model_failure_after_observation",
+      "answer": "本轮已经获得并保留真实执行结果，但最终模型调用失败，未生成完整文字结论。请查看步骤和已生成图表。",
+      "artifacts": [
+        {
+          "artifact_id": "ef65cb1aa35042fc936fdf84b1033e79",
+          "url": "/api/artifacts/ef65cb1aa35042fc936fdf84b1033e79.png",
+          "image_url": "/api/artifacts/ef65cb1aa35042fc936fdf84b1033e79.png",
+          "title": "Agent生成图",
+          "description": "由本轮生成代码基于真实数据绘制。",
+          "chart_type": "agent_generated",
+          "status": "completed"
+        }
+      ],
+      "artifact_count": 1,
+      "event_resolution": {
+        "status": "resolved",
+        "event_id": "R19062708588472",
+        "source": "explicit_request"
+      },
+      "capability_request": null,
+      "evidence_bundle": null,
+      "request_id": "a2ed0cf2297f4c47b17c64fc9052e674",
+      "trace_file": null,
+      "session_id": "acceptance42-q13-e3fa88f0-db20-44c6-8368-f5031505b50f",
+      "agent_trace": [
+        {
+          "attempt": 1,
+          "action": "execute",
+          "status": "ok",
+          "error_type": null,
+          "error": "None",
+          "elapsed_ms": 6242.26,
+          "summary": "代码执行成功，已获得新的真实观测结果"
+        },
+        {
+          "attempt": 2,
+          "action": "model",
+          "status": "error",
+          "error_type": "RuntimeError",
+          "error": "固定模型 kimi-k2.6 调用失败；未尝试其他模型：The read operation timed out",
+          "elapsed_ms": 41172.25,
+          "summary": "模型调用失败：RuntimeError"
+        }
+      ],
+      "tool_runs": [
+        {
+          "api": "cascast.forecast",
+          "status": "ok",
+          "cache_hit": true,
+          "error": "None",
+          "arguments": {
+            "event_id": "R19062708588472",
+            "horizon_hours": 1.0,
+            "model_name": "cascast_live",
+            "ensemble_members": 10,
+            "include_ground_truth": true,
+            "array_transport": true
+          }
+        }
+      ],
+      "llm_timings": [
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 42598.55,
+          "status": "ok",
+          "error_type": null,
+          "remaining_ms_after": 47386.58
+        },
+        {
+          "kind": "agent_step",
+          "elapsed_ms": 41172.21,
+          "status": "error",
+          "error_type": "RuntimeError",
+          "remaining_ms_after": 0.0
+        }
+      ],
+      "request_trace": {
+        "request_id": "a2ed0cf2297f4c47b17c64fc9052e674",
+        "route": "/api/run",
+        "status": "partial",
+        "started_at": "2026-08-25T09:06:06.651045+00:00",
+        "stages": [
+          {
+            "stage_id": "a2ed0cf2297f4c47b17c64fc9052e674:1",
+            "name": "unified_agent",
+            "status": "partial",
+            "elapsed_ms": 90529.49,
+            "termination_reason": "model_failure_after_observation",
+            "model_calls": 2,
+            "code_executions": 1
+          }
+        ],
+        "failure_class": null,
+        "fallback": false,
+        "cache_hits": 1,
+        "tool_calls": 1,
+        "model_calls": 2,
+        "current_stage": "unified_agent",
+        "progress": 0.15,
+        "termination_reason": "model_failure_after_observation",
+        "route_mode": "unified_agent",
+        "elapsed_ms": 90539.56,
+        "finished_at": "2026-08-25T09:07:37.190605+00:00"
+      },
+      "technical_details": null,
+      "diagnostic": null,
+      "diagnosis_required": true
+    }
+  ]
+}

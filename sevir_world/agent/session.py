@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from ..data_access.config import ROOT
+from .study import prompt_context, rebuild_study_case
 
 
 _DEFAULT_ROOT = ROOT / "data" / "runtime" / "agent_sessions"
@@ -101,6 +102,11 @@ def load_session(session_id: str) -> dict[str, Any]:
             return {"session_id": session_id, "turns": []}
         value["session_id"] = session_id
         value["turns"] = [item for item in value["turns"] if isinstance(item, dict)]
+        value["study_case"] = rebuild_study_case(
+            session_id,
+            value["turns"],
+            value.get("study_case") if isinstance(value.get("study_case"), dict) else None,
+        )
         return value
 
 
@@ -164,8 +170,26 @@ def append_turn(session_id: str, turn: dict[str, Any]) -> dict[str, Any]:
             "selected_tools": list(turn.get("selected_tools", [])),
             "termination_reason": str(turn.get("termination_reason", "unknown")),
             "code_execution_count": int(turn.get("code_execution_count", 0) or 0),
+            "evidence_execution_count": int(turn.get("evidence_execution_count", 0) or 0),
+            "evidence_tool_call_count": int(turn.get("evidence_tool_call_count", 0) or 0),
+            "postprocessing_success_count": int(turn.get("postprocessing_success_count", 0) or 0),
+            "tool_cost_summary": _bounded(turn.get("tool_cost_summary", {})),
             "artifacts": _bounded(turn.get("artifacts", [])),
             "observations": _bounded(turn.get("observations", [])),
+            "evidence_record": (
+                _json_copy(turn.get("evidence_record"))
+                if isinstance(turn.get("evidence_record"), dict)
+                else None
+            ),
+            "study_case_id": str(
+                turn.get("study_case_id")
+                or (
+                    state.get("study_case", {}).get("case_id")
+                    if isinstance(state.get("study_case"), dict)
+                    else ""
+                )
+                or session_id
+            ),
         }
         turns = list(state.get("turns", []))
         match = next(
@@ -179,6 +203,16 @@ def append_turn(session_id: str, turn: dict[str, Any]) -> dict[str, Any]:
             turns[match] = record
         limit = max(0, int(os.getenv("SEVIR_SESSION_TURN_LIMIT", "0")))
         state["turns"] = turns if not limit else turns[-limit:]
+        requested_case_id = str(turn.get("study_case_id") or "").strip()
+        previous_case = state.get("study_case") if isinstance(state.get("study_case"), dict) else {}
+        if requested_case_id:
+            if requested_case_id == str(previous_case.get("case_id") or session_id):
+                previous_case = {**previous_case, "case_id": requested_case_id}
+            else:
+                previous_case = {"case_id": requested_case_id}
+        state["study_case"] = rebuild_study_case(
+            session_id, state["turns"], previous_case
+        )
         upload = turn.get("active_upload")
         if isinstance(upload, dict) and (
             upload.get("upload_id") or upload.get("sequence_upload_id")
@@ -215,6 +249,11 @@ def delete_turn(
                     kept.append(item)
             after = list(reversed(kept))
         state["turns"] = after
+        state["study_case"] = rebuild_study_case(
+            session_id,
+            after,
+            state.get("study_case") if isinstance(state.get("study_case"), dict) else None,
+        )
         _save(session_id, state)
         return {
             "session_id": session_id,
@@ -225,21 +264,12 @@ def delete_turn(
 
 
 def context_for_prompt(state: dict[str, Any]) -> str:
-    """Return only recent conversation—not cached conclusions or hidden plans."""
-    turns = state.get("turns", []) if isinstance(state, dict) else []
-    if not turns:
-        return ""
-    recent = [
-        {
-            "question": str(item.get("question", "")),
-            "answer": str(item.get("answer", "")),
-            "artifacts": item.get("artifacts", []),
-        }
-        for item in turns[-4:]
-        if isinstance(item, dict)
-    ]
-    return (
-        "Recent conversation. Treat prior answers as conversational context, "
-        "not evidence; re-read tools for factual follow-ups:\n"
-        + json.dumps(recent, ensure_ascii=False, default=str)
-    )
+    """Return only bounded structured evidence for a continuing Study Case.
+
+    Re-sending recent questions and answer prose beside the evidence ledger
+    duplicated the user's goal on every turn and encouraged the Agent to
+    restate earlier conclusions.  Prior narrative remains persisted for UI
+    history, but is deliberately not part of the analytical prompt.
+    """
+
+    return prompt_context(state.get("study_case"))

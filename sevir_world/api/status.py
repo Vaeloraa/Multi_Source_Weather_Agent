@@ -12,13 +12,12 @@ from pathlib import Path
 from typing import Any
 
 from ..data_access.config import *
-from ..data_access.catalog import _catalog_vil_records
+from ..tools.sevir.Catalog import _catalog_vil_records
 from ..data_access.live_inference import live_cascast_readiness
 from ..data_access.ensemble import (
     _earthformer_latent_status,
     _ensemble_manifest,
     _event,
-    _load_cascast_prediction,
 )
 
 import h5py
@@ -58,14 +57,13 @@ def run_simulator(event_id: str, simulator_name: str = "jcm") -> dict[str, Any]:
 def runtime_status() -> dict[str, Any]:
     manifest: dict[str, Any] = {"samples": 0, "events": []}
     try:
-        _, metadata = _load_cascast_prediction()
         manifest = _ensemble_manifest()
+        event_ids = [str(event["event_id"]) for event in manifest.get("events", [])]
         sample = {
-            "available": True,
-            "event_id": metadata["event_id"],
-            "kind": "official_cascast_test_sample",
+            "available": bool(event_ids),
+            "kind": "cascast_cached_event_collection",
             "available_event_count": int(manifest["samples"]),
-            "event_ids": [event["event_id"] for event in manifest["events"]],
+            "event_ids": event_ids,
         }
     except RuntimeError as error:
         sample = {"available": False, "error": str(error)}

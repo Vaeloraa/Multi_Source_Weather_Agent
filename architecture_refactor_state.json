@@ -1,15 +1,24 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-24T23:45:00+08:00",
-  "active_phase": "phase_2",
+  "updated_at": "2026-08-26T00:00:00+08:00",
+  "active_phase": "phase_3",
   "active_iteration": {
-    "id": "phase_2_final",
-    "phase_id": "phase_2",
-    "status": "accepted",
-    "reason": "用户要求撤出 Phase 3 和 Phase 4；治理范围恢复为已验收的 Phase 1/2。",
-    "execution_order": [],
-    "scope_rule": "Only Phase 1 and Phase 2 architecture remain in the governed project state.",
-    "stop_rule": "Do not reintroduce a case-specific weather workflow; any future phase requires a new user-approved plan."
+    "id": "phase_3_protocol_rebuild",
+    "phase_id": "phase_3",
+    "status": "in_progress",
+    "reason": "用户确认按模型无关公共协议一次修复四能力对象及其组合语义。",
+    "execution_order": [
+      "P3-01",
+      "P3-02",
+      "P3-03",
+      "P3-04",
+      "P3-05",
+      "P3-06",
+      "P3-07",
+      "P3-08"
+    ],
+    "scope_rule": "Repair shared identity, time, space, value and provenance contracts without adding a case-specific workflow.",
+    "stop_rule": "Do not run the 42-question acceptance suite before all four capability composition gates pass."
   },
   "status_policy": {
     "criterion_statuses": [
@@ -53,6 +62,31 @@
       "id": "B-05",
       "claim": "当前 Agent 默认总预算仍大于 30 秒，客户端断开不会形成完整取消链。",
       "resolved": true
+    },
+    {
+      "id": "B-06",
+      "claim": "SEVIR search 返回的 event_id 不是唯一目录身份，不能保证被 observation_batch、Geolocator 和 CasCast 唯一消费。",
+      "resolved": false
+    },
+    {
+      "id": "B-07",
+      "claim": "请求时间、事件锚点、预测起报、有效时间和验证时间仍可能被同一字段混用。",
+      "resolved": false
+    },
+    {
+      "id": "B-08",
+      "claim": "CasCast 观测重启的多小时结果可能被公开成同一起点自由滚动预测，且 SEVIR/CasCast 缺失值语义不一致。",
+      "resolved": false
+    },
+    {
+      "id": "B-09",
+      "claim": "Aurora 未公开用户区域与有效计算区域差异，也未提供对应有效时刻的后续 ERA5 验证场。",
+      "resolved": false
+    },
+    {
+      "id": "B-10",
+      "claim": "测试入口和 legacy 缓存别名仍可能把通用区域问题隐式绑定到 R190。",
+      "resolved": false
     }
   ],
   "phases": [
@@ -435,6 +469,86 @@
               "notes": "旧 R190 数据通过兼容读取分别显示 era5_environment_input、aurora_environment_forecast、model_forecast_verification；均标记 scientific_evidence 且 contains_natural_language_answer=false。"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "phase_3",
+      "title": "建立模型无关公共协议并修复四能力组合语义",
+      "status": "in_progress",
+      "allowed_paths": [
+        "sevir_world/agent/",
+        "sevir_world/api/",
+        "sevir_world/capabilities/",
+        "sevir_world/code_execution/",
+        "sevir_world/data_access/",
+        "sevir_world/tools/",
+        "web/",
+        "scripts/",
+        "tests/",
+        "data/demo_cases/",
+        "data/evaluation/resident_questions_42.json",
+        "ARCHITECTURE_REFACTOR_PLAN.md",
+        "ARCHITECTURE_BACKLOG.md",
+        "architecture_refactor_state.json",
+        "README.md"
+      ],
+      "acceptance": [
+        {
+          "id": "P3-01",
+          "description": "统一 subject_key 并保证搜索结果可被 SEVIR、Geolocator 和 CasCast 唯一消费。",
+          "status": "not_started",
+          "required_evidence": ["source_diff", "targeted_test", "composition_test"],
+          "evidence": []
+        },
+        {
+          "id": "P3-02",
+          "description": "统一时间、空间、单位、缺失值、来源和可用性协议。",
+          "status": "not_started",
+          "required_evidence": ["source_diff", "targeted_test", "schema_review"],
+          "evidence": []
+        },
+        {
+          "id": "P3-03",
+          "description": "四能力对象通过真实组合测试，CasCast 无未来泄漏且 Aurora 可独立验证。",
+          "status": "not_started",
+          "required_evidence": ["tool_review", "composition_test", "data_provenance_review"],
+          "evidence": []
+        },
+        {
+          "id": "P3-04",
+          "description": "RequestBinding 与 StudyEvidence 分开不可变事实、证据和有来源的决定。",
+          "status": "not_started",
+          "required_evidence": ["source_diff", "targeted_test", "conflict_test"],
+          "evidence": []
+        },
+        {
+          "id": "P3-05",
+          "description": "失败执行不污染 Worker，前后端只呈现一条可恢复的执行时间线。",
+          "status": "not_started",
+          "required_evidence": ["source_diff", "targeted_test", "ui_trace_review"],
+          "evidence": []
+        },
+        {
+          "id": "P3-06",
+          "description": "清除默认事件、R190 隐式选择、legacy case alias 和失效检查。",
+          "status": "not_started",
+          "required_evidence": ["negative_search", "cache_migration_test", "health_check"],
+          "evidence": []
+        },
+        {
+          "id": "P3-07",
+          "description": "契约、组合、全量离线、健康检查和新模型适配器测试通过。",
+          "status": "not_started",
+          "required_evidence": ["full_test", "health_check", "adapter_test"],
+          "evidence": []
+        },
+        {
+          "id": "P3-08",
+          "description": "42 题按依赖真实验收，回答、可视化、证据和 90 秒预算均通过。",
+          "status": "not_started",
+          "required_evidence": ["question_review", "api_acceptance", "timing_review"],
+          "evidence": []
         }
       ]
     }
