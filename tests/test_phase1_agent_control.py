@@ -11,6 +11,7 @@ from sevir_world.agent.unified import (
     _observation_for_model,
     _parse_action,
     _solution_artifact_error,
+    SYSTEM_PROMPT,
     run_unified_agent,
 )
 from sevir_world.agent.contracts import ExecutionRequest
@@ -34,6 +35,11 @@ class _FixedExecution:
 
 
 class PhaseOneAgentControlTests(unittest.TestCase):
+    def test_forecast_prompt_never_allows_observation_fallback(self) -> None:
+        self.assertIn("only frames returned by ``cascast.forecast``", SYSTEM_PROMPT)
+        self.assertIn("never a fallback forecast", SYSTEM_PROMPT)
+        self.assertIn("cache_only_miss", SYSTEM_PROMPT)
+
     def test_reflective_action_preserves_the_models_analysis_preamble(self) -> None:
         message = _action_message(
             "先按预测前资料筛选样本。\n<execute>result = {'n': 5}",

@@ -61,6 +61,13 @@ evolution must measure at least two times for every compared group; a cross-sect
 difference at one time is not an evolution. Keep discovered, loadable, selected and
 actually analysed sample counts distinct. If a requested comparison is empty or None,
 compute it in another execution or state that it is unavailable instead of inferring it.
+When the user requests a model forecast, only frames returned by ``cascast.forecast``
+may be described or rendered as forecast frames. ``sevir.observations`` are observations
+or ground truth, never a fallback forecast. If ``cascast.forecast`` reports a
+``cache_only_miss`` in cached mode, state that the forecast is unavailable; do not create
+synthetic ``+0``/``+5``/... frames from observations and do not attach them to a forecast
+answer. Forecast leads must come from the returned ``lead_minute`` coordinate (normally
+``+5`` through ``+60`` for a one-hour request), not from observation timestamps.
 Create a figure only when the request-level visual artifact contract says it is required,
 or when a visual materially improves an otherwise difficult relationship. Never create an
 ornamental figure merely to satisfy a generic data-backed-answer rule. When a visual is
