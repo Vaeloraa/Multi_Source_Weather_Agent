@@ -1236,7 +1236,7 @@ async function imageFileToGray(file) {
 }
 
 async function uploadVilSequence(files) {
-  if (files.length !== 13) throw new Error(`当前选择了${files.length}张；必须恰好选择13张。`);
+  if (files.length < 2) throw new Error("连续序列至少需要2张图片；13张才可用于CasCast。 ");
   const sortedFiles = [...files].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
   const frames = [];
   const previewCanvases = [];
@@ -1262,6 +1262,19 @@ async function uploadVilSequence(files) {
   uploadedSequenceId = result.upload_id;
   uploadedSampleId = "";
   attachmentPendingForMessage = true;
+  if (result.status !== "ok") {
+    dataSourceInput.value = "upload_sequence";
+    taskInput.value = "auto";
+    weatherModelInput.value = "persistence_baseline";
+    attachmentTitle.textContent = `${files.length}张图片 · 序列检查未通过`;
+    uploadStatus.textContent = `已保留上传诊断：${result.reason || "序列结构不完整"}。可以继续询问具体缺帧或顺序问题。`;
+    sequenceUploadStatus.textContent = "该序列不能用于CasCast；系统会先解释结构问题。";
+    sequenceUploadStatus.classList.remove("hidden");
+    syncDataSource();
+    persistActiveUpload();
+    syncComposerAvailability();
+    return;
+  }
   const previewCanvas = document.createElement("canvas");
   previewCanvas.width = 780;
   previewCanvas.height = 112;
@@ -1298,12 +1311,10 @@ async function uploadVilSequence(files) {
 uploadInput.addEventListener("change", async () => {
   const files = uploadInput.files || [];
   if (!files.length) return;
-  if (![1, 13].includes(files.length)) {
+  if (files.length > 1 && files.length < 13) {
     attachmentTray.classList.remove("hidden");
     attachmentTitle.textContent = `选择了${files.length}张图片`;
-    uploadStatus.textContent = "请选择1张图片进行当前帧分析，或恰好13张图片进行序列分析。";
-    syncComposerAvailability();
-    return;
+    uploadStatus.textContent = "当前序列数量不足13张，仍将上传以生成缺帧诊断。";
   }
   uploadedSampleId = "";
   uploadedSequenceId = "";
@@ -2423,17 +2434,14 @@ form.addEventListener("submit", async (event) => {
   const progressState = { done: false };
   const progressPromise = pollRequestProgress(requestId, progressState);
   const requestController = new AbortController();
-  // The server owns the request budget and exposes it through /api/config.
-  // Give it two seconds to serialize the terminal trace, then close the HTTP
-  // request so cancellation propagates instead of leaving hidden background work.
+  // Live requests may download data and run local inference. Do not impose
+  // the old 90-second browser abort; the server/model pipeline owns its
+  // configurable live safety ceiling and persists successful outputs.
   const requestBudgetSeconds = Math.max(
     1,
     Number(runtimeConfig.agent_request_budget_seconds || 90),
   );
-  const requestTimeout = window.setTimeout(
-    () => requestController.abort(`Agent request exceeded ${requestBudgetSeconds} seconds`),
-    (requestBudgetSeconds + 2) * 1_000,
-  );
+  const requestTimeout = null;
 
   try {
     const response = await fetch("/api/run", {
@@ -2532,12 +2540,12 @@ form.addEventListener("submit", async (event) => {
       attachmentTitle.textContent = "需要重新上传图片";
     }
     const answer = aborted
-      ? `本轮请求已在${requestBudgetSeconds}秒预算后停止，系统不会继续后台分析。请查看进度记录定位耗时步骤。`
+      ? "本轮请求已取消；如果是现场推理，请检查服务端执行记录。"
       : `本轮请求未完成：${error.message}`;
     completePendingMessage(pendingMessage, answer, { route: "request_failed", sessionId }, true);
     chatHistory.push({ role: "assistant", text: answer, meta: { route: "request_failed" }, timestamp: Date.now(), turnId });
     persistChatHistory();
-    renderError(aborted ? `请求超过${requestBudgetSeconds}秒总预算并已取消。` : error.message);
+    renderError(aborted ? "请求已取消。" : error.message);
     conversationStatus.textContent = "请求失败；你可以修改问题后继续当前对话。";
   } finally {
     window.clearTimeout(requestTimeout);

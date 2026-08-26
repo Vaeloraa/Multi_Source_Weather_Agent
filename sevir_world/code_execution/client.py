@@ -20,6 +20,7 @@ import psutil
 
 from ..agent.contracts import (
     ExecutionRequest,
+    WORKER_CONTRACT_VERSION,
     data_descs_from_context,
     request_binding_from_context,
 )
@@ -533,6 +534,7 @@ class ExecutionClient:
         configuration_key = hashlib.sha256(
             json.dumps(
                 {
+                    "worker_contract_version": WORKER_CONTRACT_VERSION,
                     "request": {
                         "data_descs": request.data_descs,
                         "selected_tools": request.selected_tools,

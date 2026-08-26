@@ -119,6 +119,26 @@ class RequestContractP2Tests(unittest.TestCase):
         ), self.assertRaisesRegex(ValueError, "conflicts with upload event_id"):
             bind_request_assets("test", payload)
 
+    def test_stale_study_event_is_overridden_by_current_upload(self) -> None:
+        payload = {
+            "event_id": "R1",
+            "upload_id": "upload-a",
+            "event_resolution": {
+                "source": "study_case_decision",
+                "event_id": "R1",
+            },
+        }
+        with patch(
+            "sevir_world.api.unified_service.uploaded_event_match",
+            return_value={"event_match": {"status": "matched", "event_id": "R2"}},
+        ), patch(
+            "sevir_world.tools.sevir.Catalog.resolve_sevir_subject_key",
+            return_value="sevir:r2",
+        ):
+            bind_request_assets("test", payload)
+        assert payload["event_id"] == "R2"
+        assert payload["event_resolution"]["source"] == "bound_upload_overrode_stale_study_case"
+
 
 if __name__ == "__main__":
     unittest.main()

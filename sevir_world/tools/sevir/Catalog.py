@@ -332,12 +332,21 @@ def _catalog_event_by_type(
 
     if target.startswith("sevir:"):
         record = _catalog_subject_index().get(target)
-        if record is None or record.get("img_type") != img_type:
+        if record is None or (
+            record.get("img_type") is not None and record.get("img_type") != img_type
+        ):
             raise ValueError(f"SEVIR CATALOG does not contain {img_type} subject {event_id}.")
         return record
 
-    # Build index on-demand for this img_type
-    candidates = [r for r in _catalog_all_records() if r["id"].lower() == target and r["img_type"] == img_type]
+    # Use the typed index for VIL so duplicate event IDs are handled by the
+    # same identity source used by public search and subject-key resolution.
+    if img_type == "vil":
+        candidates = list(_catalog_vil_index().get(target, ()))
+    else:
+        candidates = [
+            r for r in _catalog_all_records()
+            if r["id"].lower() == target and r["img_type"] == img_type
+        ]
 
     if file_name:
         normalized_file = str(file_name).replace("\\", "/").lower()
@@ -928,6 +937,7 @@ def load_sevir_vil_events(
     end_frame: int = 49,
     minutes_before: int | None = None,
     minutes_after: int | None = None,
+    threshold: float | None = None,
 ) -> dict[str, Any]:
     """Load several real SEVIR observation cubes through one public operation.
 
@@ -949,6 +959,11 @@ def load_sevir_vil_events(
     of public tool calls after a catalog search.
     """
 
+    # ``threshold`` belongs to the summary layer, but older Agent-generated
+    # calls forwarded the public summary argument to this loader. Accept and
+    # ignore it for compatibility so a harmless analysis parameter cannot
+    # turn into a deterministic TypeError and trigger repeated retries.
+    del threshold
     requested = tuple(dict.fromkeys(
         str(value).strip().lower() for value in event_ids if str(value).strip()
     ))

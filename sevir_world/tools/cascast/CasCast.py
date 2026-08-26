@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 import numpy as np
+import pandas as pd
 import xarray as xr
 
 from ...capabilities.base import BoundCapability
@@ -139,6 +140,88 @@ class CasCast(BoundCapability):
     The bound request selects either an event or an upload. The Agent does not
     choose between separate event and upload methods.
     """
+
+    def available_forecasts(self) -> pd.DataFrame:
+        """List forecast horizons and ensemble sizes actually available for this request.
+
+        Returns
+        -------
+        pandas.DataFrame
+            One row per cached forecast combination with columns
+            ``subject_key``, ``upload_id``, ``horizon_hours``,
+            ``ensemble_members``, ``ground_truth_available``, ``cache_status``
+            and ``source``. An empty frame means no compatible cached result.
+            This method discovers data only; it does not run inference.
+
+        Examples
+        --------
+        >>> available = cascast.available_forecasts()
+        >>> available[["horizon_hours", "ensemble_members"]]
+        """
+        from ...data_access.config import CASCAST_LIVE_CACHE
+        rows: list[dict[str, Any]] = []
+        upload_id = str(self.request.assets.upload_id or "").strip()
+        if upload_id:
+            paths = sorted(CASCAST_LIVE_CACHE.glob(f"upload_{upload_id}_ens*.npz"))
+            for path in paths:
+                stem = path.stem
+                marker = stem.split("_ens", 1)[-1]
+                rolling = 1
+                if "_roll" in marker:
+                    members_text, rolling_text = marker.split("_roll", 1)
+                    rolling = int(rolling_text)
+                else:
+                    members_text = marker
+                try:
+                    members = int(members_text)
+                except ValueError:
+                    continue
+                rows.append({"subject_key": "", "upload_id": upload_id,
+                             "horizon_hours": float(rolling),
+                             "ensemble_members": members,
+                             "ground_truth_available": False,
+                             "cache_status": "available", "source": str(path)})
+        else:
+            subject_key = self._subject_key(None)
+            from ...data_access.live_inference import _matching_cache
+            for segment in (0, 1, 2):
+                path = _matching_cache(subject_key, segment, None)
+                if path is None:
+                    continue
+                try:
+                    with np.load(path, allow_pickle=False) as payload:
+                        members = int(np.asarray(payload["ensemble_members"]).shape[0])
+                        has_truth = "ground_truth" in payload
+                except (OSError, KeyError, ValueError):
+                    continue
+                rows.append({"subject_key": subject_key, "upload_id": "",
+                             "horizon_hours": float(segment + 1),
+                             "ensemble_members": members,
+                             "ground_truth_available": has_truth,
+                             "cache_status": "available", "source": str(path)})
+        # Discovery must communicate the live fallback explicitly.  Otherwise
+        # an empty DataFrame is too easy for the Agent to misread as a model
+        # outage and it will never call ``forecast`` on a cache miss.
+        if not rows and self.request.data_policy == "live":
+            rows.append({
+                "subject_key": self.request.assets.sevir_subject_key or "",
+                "upload_id": upload_id,
+                "horizon_hours": None,
+                "ensemble_members": None,
+                "ground_truth_available": False,
+                "cache_status": "miss_live_can_run",
+                "source": "local_cascast_inference",
+                "action_required": "call cascast.forecast()",
+            })
+        return self._invoke(
+            "cascast.available_forecasts",
+            {"subject_key": self.request.assets.sevir_subject_key,
+             "upload_id": upload_id},
+            lambda **_: {"status": "ok", "rows": rows},
+            lambda raw: pd.DataFrame(raw.get("rows", [])),
+            public_arguments={"subject_key": self.request.assets.sevir_subject_key,
+                              "upload_id": upload_id},
+        )
 
     def forecast(
         self,

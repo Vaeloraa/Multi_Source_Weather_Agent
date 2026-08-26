@@ -193,12 +193,14 @@ class ToolUsageRecorder:
             "sevir.event": 1.0,
             "sevir.search": 1.5,
             "sevir.observations": 3.0,
+            "sevir.observation_summaries": 2.0,
             "sevir.match_upload": 1.0,
             "cascast.forecast": 7.0,
+            "cascast.available_forecasts": 0.5,
             "aurora.regional_fields": 8.0,
         }.get(name, 1.0)
-        if name == "sevir.observation_batch":
-            count = len(arguments.get("subject_keys") or ())
+        if name in {"sevir.observation_batch", "sevir.observation_summaries"}:
+            count = len(arguments.get("subject_keys") or arguments.get("event_ids") or ())
             base = 2.0 + min(max(count, 1), 20) * 0.75
         if cache_hit:
             base = min(base, 0.25)
@@ -561,7 +563,15 @@ def _plot_field(
     if array.ndim != 2:
         raise ValueError("plot_field expects a 2-D field or a 3-D cube")
     figure, axis = plt.subplots(figsize=(6, 5))
-    image = axis.imshow(array, cmap=cmap, origin="upper")
+    # CasCast/SEVIR VIL uses a discrete encoded-VIL scale rather than a
+    # continuous perceptual map. Select it for explicit VIL plots.
+    if str(cmap).lower() in {"cascast_vil", "cascast-sevir-vil"} or "vil" in str(title).lower():
+        from ..domain.vil_palette import cascast_vil_cmap, mask_missing_vil
+
+        vil_cmap, vil_norm = cascast_vil_cmap()
+        image = axis.imshow(mask_missing_vil(array), cmap=vil_cmap, norm=vil_norm, origin="upper")
+    else:
+        image = axis.imshow(array, cmap=cmap, origin="upper")
     figure.colorbar(image, ax=axis)
     if title:
         axis.set_title(str(title))

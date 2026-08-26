@@ -49,6 +49,10 @@ Completion = Callable[
 # continue for 150 seconds after the acceptance client had already timed out at
 # 90 seconds, losing the response and its diagnostics.
 AGENT_REQUEST_BUDGET_SECONDS = 90.0
+# Live inference may involve downloading ERA5 data and running local models.
+# It must not be cut off by the short interactive budget.  This remains a
+# configurable safety ceiling (rather than an arbitrary 90-second limit).
+LIVE_AGENT_REQUEST_BUDGET_SECONDS = 900.0
 
 
 def _agent_request_slots() -> threading.BoundedSemaphore:
@@ -64,16 +68,29 @@ def _agent_request_slots() -> threading.BoundedSemaphore:
 _AGENT_REQUEST_SLOTS = _agent_request_slots()
 
 
-def request_budget_seconds() -> float:
-    """Return the request budget, never exceeding the shared 90-second contract."""
+def request_budget_seconds(data_policy: str | None = None) -> float:
+    """Return the budget for a request policy.
+
+    Cached lookups retain the 90-second interactive budget.  Live requests
+    get a substantially longer budget so online retrieval/local inference can
+    finish and persist its result for later cache reuse.
+    """
+
+    is_live = str(data_policy or "").strip().lower() == "live"
+    default = (
+        os.getenv("SEVIR_LIVE_AGENT_REQUEST_TIMEOUT_SECONDS", str(LIVE_AGENT_REQUEST_BUDGET_SECONDS))
+        if is_live
+        else os.getenv("SEVIR_AGENT_REQUEST_TIMEOUT_SECONDS", "90")
+    )
 
     try:
         configured = float(
-            os.getenv("SEVIR_AGENT_REQUEST_TIMEOUT_SECONDS", "90")
+            default
         )
     except ValueError:
-        configured = AGENT_REQUEST_BUDGET_SECONDS
-    return min(AGENT_REQUEST_BUDGET_SECONDS, max(1.0, configured))
+        configured = LIVE_AGENT_REQUEST_BUDGET_SECONDS if is_live else AGENT_REQUEST_BUDGET_SECONDS
+    ceiling = LIVE_AGENT_REQUEST_BUDGET_SECONDS if is_live else AGENT_REQUEST_BUDGET_SECONDS
+    return min(ceiling, max(1.0, configured))
 
 
 def bind_request_assets(
@@ -106,9 +123,34 @@ def bind_request_assets(
             else ""
         )
         if event_id and resolved_event and resolved_event != event_id:
-            raise ValueError(
-                f"request event_id {event_id} conflicts with upload event_id {resolved_event}"
+            existing_resolution = (
+                payload.get("event_resolution")
+                if isinstance(payload.get("event_resolution"), dict)
+                else {}
             )
+            inherited = (
+                str(existing_resolution.get("source") or "")
+                == "study_case_decision"
+            )
+            upload_ui_binding = str(payload.get("data_source") or "").strip().lower() in {
+                "upload", "upload_sequence"
+            }
+            if inherited or upload_ui_binding:
+                # A stale study-case decision must not override the exact
+                # identity carried by the current upload. Keep explicit
+                # user-vs-upload conflicts as hard errors below.
+                event_id = resolved_event
+                payload.pop("sevir_subject_key", None)
+                payload["event_resolution"] = {
+                    "source": "bound_upload_overrode_stale_study_case",
+                    "previous_event_id": str(
+                        existing_resolution.get("event_id") or ""
+                    ).strip().upper(),
+                }
+            else:
+                raise ValueError(
+                    f"request event_id {event_id} conflicts with upload event_id {resolved_event}"
+                )
         if resolved_event and not event_id:
             event_id = resolved_event
             payload["event_resolution"] = {"source": "bound_upload_exact_match"}
@@ -206,7 +248,8 @@ def _execute_unified_request_held(
             payload.get("visual_artifact_required", False)
         ),
     )
-    total_seconds = request_budget_seconds()
+    data_policy = str(payload.get("data_policy") or "").strip().lower()
+    total_seconds = request_budget_seconds(data_policy)
     now = time.monotonic()
     supplied_deadline = payload.get("_deadline_monotonic")
     try:
@@ -297,9 +340,8 @@ def execute_unified_request(
 ) -> dict[str, Any]:
     """Admit one Agent request before starting its own execution budget.
 
-    Parallel HTTP callers may wait here, but that queue time is not charged to
-    the admitted Agent's configured analysis budget.  Once admitted, all
-    Reflective model calls for that request share one slot and one deadline.
+    Queue time is part of the same end-to-end request budget. Once admitted,
+    all Reflective model calls for that request share the unchanged deadline.
     """
 
     cancelled = payload.get("_cancelled")
@@ -307,18 +349,28 @@ def execute_unified_request(
     queue_started = time.perf_counter()
     acquired = False
     try:
+        supplied_deadline = payload.get("_deadline_monotonic")
+        try:
+            queue_deadline = float(supplied_deadline)
+        except (TypeError, ValueError):
+            queue_deadline = time.monotonic() + request_budget_seconds(
+                payload.get("data_policy")
+            )
         while not acquired:
             if is_cancelled():
                 raise AgentCancelled("client disconnected while waiting for Agent slot")
-            acquired = _AGENT_REQUEST_SLOTS.acquire(timeout=0.2)
+            remaining = queue_deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError("Agent槽位排队超过本轮剩余时间")
+            acquired = _AGENT_REQUEST_SLOTS.acquire(timeout=min(0.2, remaining))
         admitted_at = time.perf_counter()
-        # Admission starts the Agent budget, but preserve an earlier caller
-        # deadline (tests, cancellation bridges, and nested service calls may
-        # deliberately provide one).  Never extend an existing deadline.
-        admitted_deadline = time.monotonic() + request_budget_seconds()
-        supplied_deadline = payload.get("_deadline_monotonic")
+        # Preserve the caller's deadline. Admission must never restart or
+        # extend the end-to-end request budget.
+        admitted_deadline = time.monotonic() + request_budget_seconds(
+            payload.get("data_policy")
+        )
         try:
-            payload["_deadline_monotonic"] = min(float(supplied_deadline), admitted_deadline)
+            payload["_deadline_monotonic"] = min(queue_deadline, admitted_deadline)
         except (TypeError, ValueError):
             payload["_deadline_monotonic"] = admitted_deadline
         result = _execute_unified_request_held(

@@ -94,7 +94,10 @@ def enrich_request_context(question: str, payload: dict[str, Any]) -> dict[str, 
             }
         payload["aurora_initialization_time_utc"] = initialization
     elif payload.get("requested_time_utc") and re.search(
-        r"Aurora", str(question or ""), flags=re.IGNORECASE
+        # Accept the common ``auraro`` typo used in the demo UI/chat. The
+        # capability itself is still Aurora; this only affects ingress-time
+        # binding of the requested analysis time.
+        r"Aurora|auraro", str(question or ""), flags=re.IGNORECASE
     ):
         # In a self-contained forecast request such as “现在是 X，请用 Aurora
         # 判断未来…”, X is the forecast initialization identity. The web UI

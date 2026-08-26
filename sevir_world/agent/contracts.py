@@ -15,6 +15,10 @@ CANONICAL_ARGUMENTS = (
 )
 DEFAULT_SELECTED_TOOLS = CANONICAL_ARGUMENTS
 DATA_CONTRACT_VERSION = "sevir-data-v3"
+# Bump this whenever the injected namespace or public capability return
+# contracts change. The persistent Worker uses it as an explicit generation
+# token and must not be reused across generations.
+WORKER_CONTRACT_VERSION = "sevir-worker-v1"
 _DATA_SOURCES = {"upload", "sevir"}
 
 

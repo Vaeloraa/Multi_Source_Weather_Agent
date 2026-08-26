@@ -610,10 +610,10 @@ def get_uploaded_vil_sequence_forecast(
             "ensemble_members": ensemble_members,
             "rolling_segments": rolling_segments,
         }
-        # Keep the compatibility call shape stable for cached inference;
-        # only send `force` when the caller explicitly requests a rerun.
+        # Live policy permits inference after a cache miss; it does not force
+        # recomputation when a matching cache already exists.
         if force_live:
-            inference_kwargs["force"] = True
+            inference_kwargs["allow_live"] = True
         inference = run_uploaded_cascast_inference(upload_id, **inference_kwargs)
         arrays, live_metadata = load_uploaded_cascast_ensemble(
             upload_id,
@@ -861,7 +861,7 @@ def analyze_uploaded_vil_sequence(
             upload_id,
             ensemble_members=ensemble_members,
             rolling_segments=rolling_segments,
-            force=bool(force_live),
+            allow_live=bool(force_live),
         )
         arrays, live_metadata = load_uploaded_cascast_ensemble(
             upload_id,
@@ -1403,6 +1403,7 @@ def _prepare_prediction_data(
     input_frames: int,
     forecast_frames: int,
     ensemble_members: int = 10,
+    force_live: bool = False,
 ) -> tuple[np.ndarray, dict[str, np.ndarray] | None, dict[str, Any], np.ndarray | None]:
     """Load prediction material without formatting a public result.
 
@@ -1439,6 +1440,7 @@ def _prepare_prediction_data(
                         event_id,
                         segment=segment,
                         ensemble_members=ensemble_members,
+                        allow_live=bool(force_live),
                     )
                 )
                 loaded.append(load_live_cascast_ensemble(event_id, segment=segment, ensemble_members=ensemble_members))
@@ -1742,6 +1744,7 @@ def get_rolling_forecast_raw_values(
     ensemble_members: int = 10,
     include_ground_truth: bool = False,
     array_transport: bool = False,
+    force_live: bool = False,
 ) -> dict[str, Any]:
     """Return raw 5-minute forecast grids for a saved 1-, 2-, or 3-hour forecast.
 
@@ -1775,7 +1778,8 @@ def get_rolling_forecast_raw_values(
     forecast_frames = int(horizon * 12)
     try:
         prediction, arrays, metadata, target = _prepare_prediction_data(
-            event_id, model_name, 13, forecast_frames, ensemble_members
+            event_id, model_name, 13, forecast_frames, ensemble_members,
+            force_live=force_live,
         )
     except RuntimeError as error:
         if "HDF5" in str(error) or "not downloaded" in str(error):
@@ -2353,7 +2357,7 @@ def get_uploaded_ensemble_raw_values(
         upload_id,
         ensemble_members=ensemble_members,
         rolling_segments=rolling_segments,
-        force=bool(force_live),
+        allow_live=bool(force_live),
     )
     arrays, metadata = load_uploaded_cascast_ensemble(
         upload_id, ensemble_members=ensemble_members, rolling_segments=rolling_segments

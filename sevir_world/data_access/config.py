@@ -72,6 +72,7 @@ CASFORMER_CHECKPOINT = (
 AUTOENCODER_CHECKPOINT = CASCAST_ROOT / "ckpts" / "autoencoder" / "ckpt.pth"
 UPLOADED_VIL: dict[str, tuple[np.ndarray, dict[str, Any]]] = {}
 UPLOADED_VIL_SEQUENCES: dict[str, tuple[np.ndarray, dict[str, Any]]] = {}
+UPLOAD_DIAGNOSTICS: dict[str, dict[str, Any]] = {}
 _DEFAULT_UPLOAD_STORAGE_DIR = ROOT / "data" / "uploads"
 _FALLBACK_UPLOAD_STORAGE_DIR = Path(tempfile.gettempdir()) / "sevir_world_uploads"
 try:

@@ -128,7 +128,19 @@ def _matching_cache(
     for path in candidates:
         try:
             with np.load(path, allow_pickle=False) as payload:
-                if int(payload["hdf5_row"].item()) == int(record["file_index"]):
+                cached_row = int(payload["hdf5_row"].item())
+                cached_source = str(payload["source_id"].item()).strip().lower()
+                exact_sources = {
+                    str(record["id"]).strip().lower(),
+                    _catalog_subject_key(record).strip().lower(),
+                }
+                # Remote SEVIR inputs are materialized as NPZ files rather
+                # than read from the original HDF5, so the worker records
+                # hdf5_row=-1.  Their canonical filename plus source_id still
+                # verifies the exact catalog subject and must be accepted.
+                if cached_row == int(record["file_index"]) or (
+                    cached_row == -1 and cached_source in exact_sources
+                ):
                     return path
         except (OSError, ValueError, KeyError):
             continue
@@ -165,6 +177,7 @@ def run_local_cascast_inference(
     segment: int = 0,
     ensemble_members: int = 10,
     force: bool = False,
+    allow_live: bool = False,
     timeout_seconds: int = 900,
 ) -> dict[str, Any]:
     """Run the official local EarthFormer -> CasCast -> VAE chain for one HDF5 event.
@@ -187,7 +200,7 @@ def run_local_cascast_inference(
     existing = _matching_cache(exact_key, segment, ensemble_members)
     if existing is not None and not force:
         return {"status": "ok", "cache_hit": True, "output": str(existing)}
-    if os.getenv("SEVIR_CACHE_ONLY", "").strip().lower() in {"1", "true", "yes", "on"}:
+    if os.getenv("SEVIR_CACHE_ONLY", "").strip().lower() in {"1", "true", "yes", "on"} and not allow_live:
         raise RuntimeError(
             f"cache_only_miss: refusing to run CasCast for event {record['id']}, "
             f"segment {segment}, ensemble {ensemble_members}"
@@ -249,6 +262,8 @@ def run_local_cascast_inference(
             detail = (completed.stderr or completed.stdout or "unknown worker error")[-2000:]
             raise RuntimeError(f"Local CasCast inference failed: {detail}")
         temporary.replace(output)
+        if not output.is_file():
+            raise RuntimeError("CasCast inference completed but its cache artifact was not persisted")
         load_live_cascast_ensemble.cache_clear()
     payload = json.loads(completed.stdout.strip().splitlines()[-1])
     return {**payload, "cache_hit": False, "output": str(output)}
@@ -259,6 +274,7 @@ def run_uploaded_cascast_inference(
     ensemble_members: int = 10,
     rolling_segments: int = 1,
     force: bool = False,
+    allow_live: bool = False,
     timeout_seconds: int = 900,
 ) -> dict[str, Any]:
     """Run local CasCast for a persisted 13-frame user upload."""
@@ -278,7 +294,7 @@ def run_uploaded_cascast_inference(
     output = _uploaded_cache_path(upload_id, ensemble_members, rolling_segments)
     if output.is_file() and not force:
         return {"status": "ok", "cache_hit": True, "output": str(output)}
-    if os.getenv("SEVIR_CACHE_ONLY", "").strip().lower() in {"1", "true", "yes", "on"}:
+    if os.getenv("SEVIR_CACHE_ONLY", "").strip().lower() in {"1", "true", "yes", "on"} and not allow_live:
         raise RuntimeError(
             f"cache_only_miss: refusing to run CasCast for upload {upload_id}, "
             f"ensemble {ensemble_members}, rolling_segments {rolling_segments}"
@@ -312,6 +328,8 @@ def run_uploaded_cascast_inference(
             detail = (completed.stderr or completed.stdout or "unknown worker error")[-2000:]
             raise RuntimeError(f"Uploaded CasCast inference failed: {detail}")
         temporary.replace(output)
+        if not output.is_file():
+            raise RuntimeError("Uploaded CasCast inference completed but its cache artifact was not persisted")
         load_uploaded_cascast_ensemble.cache_clear()
     payload = json.loads(completed.stdout.strip().splitlines()[-1])
     return {**payload, "cache_hit": False, "output": str(output)}

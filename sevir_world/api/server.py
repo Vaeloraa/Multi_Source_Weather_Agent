@@ -49,6 +49,7 @@ from sevir_world.api.status import runtime_status
 from sevir_world.api.unified_service import (
     bind_request_assets,
     execute_unified_request,
+    LIVE_AGENT_REQUEST_BUDGET_SECONDS,
     request_budget_seconds,
 )
 from sevir_world.agent.unified import AgentCancelled
@@ -256,7 +257,11 @@ class DemoHandler(SimpleHTTPRequestHandler):
                 "providers": provider_status(),
                 "runtime": {
                     **runtime_status(),
-                    "agent_request_budget_seconds": request_budget_seconds(),
+                    # The demo client sends data_policy=live. Expose the
+                    # live budget here so the UI/status panel cannot keep
+                    # displaying the retired 90-second cached budget.
+                    "agent_request_budget_seconds": request_budget_seconds("live"),
+                    "live_agent_request_budget_seconds": request_budget_seconds("live"),
                 },
                 "mode": "unified",
                 "model_routing": {
@@ -475,7 +480,9 @@ class DemoHandler(SimpleHTTPRequestHandler):
             request_id = str(payload.get("request_id") or uuid.uuid4().hex)
             request_started = time.perf_counter()
             payload["_request_received_monotonic"] = time.monotonic()
-            preflight_deadline = time.monotonic() + request_budget_seconds()
+            preflight_deadline = time.monotonic() + request_budget_seconds(
+                payload.get("data_policy")
+            )
             # The same admission deadline must flow through the Agent and
             # response pipeline; otherwise downstream stages silently lose
             # the request budget and can run without a real deadline.
@@ -569,7 +576,12 @@ class DemoHandler(SimpleHTTPRequestHandler):
                     messages,
                     timeout_seconds=min(
                         timeout_seconds,
-                        float(os.getenv("MODEL_API_TIMEOUT_SECONDS", "30")),
+                        float(os.getenv(
+                            "MODEL_API_LIVE_TIMEOUT_SECONDS"
+                            if str(payload.get("data_policy") or "").lower() == "live"
+                            else "MODEL_API_TIMEOUT_SECONDS",
+                            "900" if str(payload.get("data_policy") or "").lower() == "live" else "30",
+                        )),
                     ),
                 ),
             )

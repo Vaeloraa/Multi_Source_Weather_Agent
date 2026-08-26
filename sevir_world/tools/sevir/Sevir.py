@@ -381,6 +381,79 @@ class Sevir(BoundCapability):
             },
         )
 
+    def observation_summaries(
+        self,
+        subject_keys: list[str] | tuple[str, ...],
+        minutes_before: int = 60,
+        minutes_after: int = 0,
+        threshold: float = 133.0,
+    ) -> pd.DataFrame:
+        """Return comparable per-event observation facts without exposing pixels.
+
+        Parameters
+        ----------
+        subject_keys : list or tuple of str
+            Exact candidate keys returned by :meth:`search`, limited to 20.
+        minutes_before, minutes_after : int
+            Inclusive window relative to each event anchor.
+        threshold : float, default 133.0
+            Encoded VIL threshold used for active-area and centroid summaries.
+
+        Returns
+        -------
+        pandas.DataFrame
+            One row per requested event with stable columns ``subject_key``,
+            ``event_id``, ``event_anchor_time_utc``, ``frame_count``,
+            ``peak_vil``, ``mean_vil``, ``active_area_first``,
+            ``active_area_last``, ``centroid_row_first``,
+            ``centroid_column_first``, ``centroid_row_last``,
+            ``centroid_column_last``, ``motion_row``, ``motion_column``,
+            ``motion_direction``, ``continuity`` and ``data_status``.
+            Missing events remain in the table with ``data_status`` set to
+            ``unavailable``. The method computes measurements only; it does
+            not select an analogue or make a weather conclusion.
+
+        Examples
+        --------
+        >>> found = sevir.search(region=region, limit=12)
+        >>> summary = sevir.observation_summaries(
+        ...     found["subject_key"].tolist(), minutes_before=60)
+        >>> summary.sort_values("peak_vil").tail(3)
+        """
+        from .Catalog import load_sevir_vil_events
+
+        identifiers = tuple(dict.fromkeys(
+            str(value).strip().lower() for value in subject_keys if str(value).strip()
+        ))
+        if not identifiers:
+            raise ValueError("subject_keys must contain at least one exact SEVIR subject key")
+        if len(identifiers) > 20:
+            raise ValueError("subject_keys is limited to 20 events per batch")
+        if int(minutes_before) < 0 or int(minutes_after) < 0:
+            raise ValueError("minutes_before and minutes_after must be non-negative")
+        if not np.isfinite(float(threshold)):
+            raise ValueError("threshold must be finite")
+        arguments = {
+            "event_ids": identifiers,
+            "minutes_before": int(minutes_before),
+            "minutes_after": int(minutes_after),
+            "threshold": float(threshold),
+        }
+        return self._invoke(
+            "sevir.observation_summaries",
+            arguments,
+            load_sevir_vil_events,
+            lambda raw: _observation_summary_frame(
+                raw, identifiers, float(threshold), arguments
+            ),
+            public_arguments={
+                "subject_keys": identifiers,
+                "minutes_before": int(minutes_before),
+                "minutes_after": int(minutes_after),
+                "threshold": float(threshold),
+            },
+        )
+
     def match_upload(self, upload_id: str | None = None) -> UploadMatch:
         """
         Match a request-bound upload to a verified catalog event when possible.
@@ -492,6 +565,110 @@ def _observation_batch_dataset(raw: dict[str, Any], identifiers: tuple[str, ...]
         ),
     })
     return data
+
+
+def _observation_summary_frame(
+    raw: dict[str, Any],
+    identifiers: tuple[str, ...],
+    threshold: float,
+    arguments: dict[str, Any],
+) -> pd.DataFrame:
+    """Compute bounded comparable facts from a backend observation batch.
+
+    Parameters
+    ----------
+    raw : dict
+        Backend batch payload containing loaded records and unavailable entries.
+    identifiers : tuple of str
+        Requested exact SEVIR subject keys.
+    threshold : float
+        Encoded VIL threshold for active-area measurements.
+    arguments : dict
+        Canonical request arguments preserved in the returned frame metadata.
+
+    Returns
+    -------
+    pandas.DataFrame
+        One comparable summary row per requested subject key.
+    """
+
+    rows: list[dict[str, Any]] = []
+    loaded_by_key = {
+        str(item.get("subject_key") or item.get("event_id") or "").strip().lower(): item
+        for item in raw.get("records", [])
+        if isinstance(item, dict)
+    }
+    unavailable = {
+        str(item.get("subject_key") or item.get("event_id") or "").strip().lower(): str(
+            item.get("reason") or item.get("status") or "unavailable"
+        )
+        for item in raw.get("unavailable", [])
+        if isinstance(item, dict)
+    }
+    for key in identifiers:
+        record = loaded_by_key.get(key)
+        if record is None:
+            rows.append({"subject_key": key, "event_id": "", "data_status": "unavailable",
+                         "unavailable_reason": unavailable.get(key, "unavailable")})
+            continue
+        values = np.asarray(
+            record.get("frames", record.get("values", [])), dtype=np.float32
+        )
+        values = np.where(values == 255, np.nan, values)
+        valid = np.isfinite(values)
+        valid_values = values[valid]
+        row: dict[str, Any] = {
+            "subject_key": str(record.get("subject_key") or key).lower(),
+            "event_id": str(record.get("event_id") or "").upper(),
+            "event_anchor_time_utc": str(record.get("event_anchor_time_utc") or record.get("time_utc") or ""),
+            "frame_count": int(values.shape[0]) if values.ndim == 3 else 0,
+            "peak_vil": float(np.nanmax(values)) if valid_values.size else np.nan,
+            "mean_vil": float(np.nanmean(values)) if valid_values.size else np.nan,
+            "active_area_first": np.nan,
+            "active_area_last": np.nan,
+            "centroid_row_first": np.nan,
+            "centroid_column_first": np.nan,
+            "centroid_row_last": np.nan,
+            "centroid_column_last": np.nan,
+            "motion_row": np.nan,
+            "motion_column": np.nan,
+            "motion_direction": "unknown",
+            "continuity": np.nan,
+            "data_status": "available",
+            "unavailable_reason": "",
+        }
+        if values.ndim == 3 and values.shape[0]:
+            active_areas = np.sum(np.isfinite(values) & (values >= threshold), axis=(1, 2))
+            row["active_area_first"] = int(active_areas[0])
+            row["active_area_last"] = int(active_areas[-1])
+            centroids = []
+            for frame in (values[0], values[-1]):
+                mask = np.isfinite(frame) & (frame >= threshold)
+                if mask.any():
+                    yy, xx = np.nonzero(mask)
+                    weights = frame[mask].astype(np.float64)
+                    centroids.append((float(np.average(yy, weights=weights)),
+                                      float(np.average(xx, weights=weights))))
+                else:
+                    centroids.append((np.nan, np.nan))
+            (r0, c0), (r1, c1) = centroids
+            row.update({"centroid_row_first": r0, "centroid_column_first": c0,
+                        "centroid_row_last": r1, "centroid_column_last": c1,
+                        "motion_row": r1 - r0 if np.isfinite(r0) and np.isfinite(r1) else np.nan,
+                        "motion_column": c1 - c0 if np.isfinite(c0) and np.isfinite(c1) else np.nan})
+            dr, dc = row["motion_row"], row["motion_column"]
+            if np.isfinite(dr) and np.isfinite(dc) and (abs(dr) + abs(dc) > 0):
+                vertical = "south" if dr > 0 else "north" if dr < 0 else ""
+                horizontal = "east" if dc > 0 else "west" if dc < 0 else ""
+                row["motion_direction"] = f"{vertical}-{horizontal}".strip("-")
+            expected = max(1, int(round((arguments["minutes_before"] + arguments["minutes_after"]) / 5)) + 1)
+            row["continuity"] = min(1.0, float(row["frame_count"]) / expected)
+        rows.append(row)
+    frame = pd.DataFrame(rows)
+    frame.attrs.update({"criteria": dict(arguments), "threshold": threshold,
+                        "requested_count": len(identifiers),
+                        "returned_count": len(frame)})
+    return frame
 
 
 def _multimodal_observation_dict(raw: dict[str, Any]) -> dict[str, xr.DataArray]:

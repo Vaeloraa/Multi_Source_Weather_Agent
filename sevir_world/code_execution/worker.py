@@ -39,7 +39,10 @@ from sevir_world.code_execution.safety import (  # noqa: E402
     validate_code,
     validate_imports,
 )
-from sevir_world.agent.contracts import ExecutionRequest  # noqa: E402
+from sevir_world.agent.contracts import (  # noqa: E402
+    ExecutionRequest,
+    WORKER_CONTRACT_VERSION,
+)
 from sevir_world.agent.runtime import ExecutionEnvironment  # noqa: E402
 from sevir_world.agent.diagnostics import classify_execution_error  # noqa: E402
 
@@ -344,6 +347,7 @@ class WorkerSession:
         self.request = request
         self.environment = ExecutionEnvironment(request)
         self.runtime_schema = self.environment.describe()
+        self.runtime_schema["worker_contract_version"] = WORKER_CONTRACT_VERSION
         self.namespace = {
             "__builtins__": builtins.__dict__,
             "np": np,

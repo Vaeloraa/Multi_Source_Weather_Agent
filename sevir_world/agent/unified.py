@@ -52,6 +52,16 @@ prior answer prose or repeating successful tools. When the current analysis make
 decision that later requests must inherit, publish the small validated decision in
 ``result["study_update"]`` as documented by the runtime. This is part of the evidence
 contract, not a narrative summary.
+When a prior Study Case step has frozen a candidate table, later selection steps must
+choose only from that table. Do not silently rerun discovery, widen spatial or temporal
+filters, or introduce new candidates. If discovery intentionally uses a core region and
+an expanded buffer, label those tiers explicitly and freeze the combined table once.
+For the opening regional question of a multi-request Study Case, do not terminate the
+story with an unsupported categorical “no risk” statement. Report relative ranking,
+candidate regions/times, confidence and uncertainty; if all signals are below threshold,
+say so while still publishing the best monitoring candidate (or explicitly mark the case
+as unsuitable for downstream local tracking). Later answers must not invent a risk peak
+that was absent from the opening evidence.
 
 The final answer must directly answer the user in clear Chinese. Do not show raw JSON,
 Python, schemas, retries or internal protocol details. Embed requested figures only with
@@ -68,10 +78,21 @@ or ground truth, never a fallback forecast. If ``cascast.forecast`` reports a
 synthetic ``+0``/``+5``/... frames from observations and do not attach them to a forecast
 answer. Forecast leads must come from the returned ``lead_minute`` coordinate (normally
 ``+5`` through ``+60`` for a one-hour request), not from observation timestamps.
+In ``data_policy=live``, an empty ``cascast.available_forecasts()`` result means only that
+the cache missed: call ``cascast.forecast()`` immediately so the live model can run and
+persist its result. Never report a live forecast as unavailable solely because discovery
+returned no cached rows.
+For follow-up questions in one Study Case, inspect
+``study.decisions["cascast_forecast_status"]`` before calling CasCast. When it is
+``available``, reuse the same subject/horizon forecast (a backend cache hit is reuse, not
+new inference). When it is ``failed``, do not retry in later questions unless the user
+explicitly asks to retry; inherit and explain the recorded failure instead.
 Create a figure only when the request-level visual artifact contract says it is required,
 or when a visual materially improves an otherwise difficult relationship. Never create an
 ornamental figure merely to satisfy a generic data-backed-answer rule. When a visual is
 required, save it through SEVIR_ARTIFACT_DIR and cite the registered /api/artifacts/... URL.
+All VIL figures must use the CasCast/SEVIR discrete palette: call
+``plot_field(vil, title="VIL ...", cmap="cascast_vil")``; do not use viridis for VIL.
 Never invent values just to make a figure. Keep the final answer focused and concise —
 normally within 300 Chinese characters — and free of filler.
 """
@@ -435,8 +456,9 @@ def _solution_artifact_error(
     unknown = sorted(referenced - registered)
     if unknown:
         return "solution referenced unregistered artifacts: " + ", ".join(unknown)
-    if registered and not referenced:
-        return "solution omitted all registered evidence figures"
+    # Artifact references are a transport concern, not a second LLM task.
+    # Registered artifacts are appended deterministically by the response
+    # pipeline; omission from model prose is therefore valid.
     return None
 
 

@@ -42,11 +42,17 @@ _DECISION_FIELDS = (
     "target_time_utc",
     "target_region",
     "aurora_initialization_time_utc",
+    "cascast_forecast_status",
+    "cascast_forecast_error",
+    "cascast_forecast_subject_key",
+    "cascast_forecast_horizon_hours",
+    "cascast_forecast_evidence",
 )
 
 _FOLLOW_UP_PATTERN = re.compile(
     r"(?:刚才|上述|上一步|前面|继续|接着|该事件|这个事件|所选事件|候选里|"
     r"目标时刻|对应时段|对应时间|这个区域|该区域|这张图|这些结果|"
+    r"这周围|周围|附近|周边|周边区域|"
     r"follow[ -]?up|previous|above)",
     flags=re.IGNORECASE,
 )
@@ -213,6 +219,30 @@ def build_turn_evidence(
                     ]
                     if candidate_subjects:
                         updates.append({"candidate_subjects": candidate_subjects})
+            if api == "cascast.forecast":
+                arguments = call.get("arguments") if isinstance(call.get("arguments"), dict) else {}
+                subject_key = str(
+                    payload.get("sevir_subject_key")
+                    or payload.get("event_id")
+                    or payload.get("upload_id")
+                    or ""
+                ).strip()
+                if call.get("status") == "ok":
+                    updates.append({
+                        "cascast_forecast_status": "available",
+                        "cascast_forecast_subject_key": subject_key,
+                        "cascast_forecast_horizon_hours": arguments.get("horizon_hours", 1.0),
+                        "cascast_forecast_evidence": call.get("evidence") or {
+                            "cache_hit": bool(call.get("cache_hit", False))
+                        },
+                    })
+                else:
+                    updates.append({
+                        "cascast_forecast_status": "failed",
+                        "cascast_forecast_subject_key": subject_key,
+                        "cascast_forecast_horizon_hours": arguments.get("horizon_hours", 1.0),
+                        "cascast_forecast_error": call.get("error") or "cascast.forecast failed",
+                    })
             if api == "aurora.regional_fields" and call.get("status") == "ok":
                 arguments = call.get("arguments")
                 observed_region = (

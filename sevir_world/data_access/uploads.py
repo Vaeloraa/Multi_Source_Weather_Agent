@@ -233,13 +233,20 @@ def uploaded_event_match(upload_id: str) -> dict[str, Any]:
     normalized = str(upload_id or "").strip()
     array_path, metadata_path = _upload_storage_paths(normalized)
     metadata: dict[str, Any] | None = None
+    diagnostic = UPLOAD_DIAGNOSTICS.get(normalized)
+    if isinstance(diagnostic, dict):
+        return {"status": "invalid", "upload_id": normalized,
+                "event_match": {}, "diagnostic": dict(diagnostic)}
     in_memory = UPLOADED_VIL.get(normalized) or UPLOADED_VIL_SEQUENCES.get(normalized)
     if in_memory is not None:
         metadata = dict(in_memory[1])
-    elif metadata_path.is_file() and array_path.is_file():
+    elif metadata_path.is_file():
         metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
     if metadata is None:
         raise ValueError("没有找到这次上传，无法读取事件绑定信息。")
+    if str(metadata.get("status", "")).lower() == "invalid":
+        return {"status": "invalid", "upload_id": normalized,
+                "event_match": {}, "diagnostic": dict(metadata)}
     event_match = metadata.get("event_match")
     if not isinstance(event_match, dict):
         filenames = metadata.get("filenames") or [metadata.get("filename", "")]
@@ -427,6 +434,26 @@ def match_uploaded_event(upload_id: str) -> dict[str, Any]:
     normalized = str(upload_id or "").strip()
     if not _valid_upload_id(normalized):
         raise ValueError("upload_id格式不正确。")
+    diagnostic = UPLOAD_DIAGNOSTICS.get(normalized)
+    if isinstance(diagnostic, dict):
+        return {
+            "status": "invalid",
+            "task": "uploaded_event_match",
+            "upload_id": normalized,
+            "kind": "sequence",
+            "event_match": {},
+            "diagnostic": dict(diagnostic),
+        }
+    _array_path, metadata_path = _upload_storage_paths(normalized)
+    if metadata_path.is_file():
+        try:
+            stored = json.loads(metadata_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError, TypeError):
+            stored = None
+        if isinstance(stored, dict) and str(stored.get("status", "")).lower() == "invalid":
+            return {"status": "invalid", "task": "uploaded_event_match",
+                    "upload_id": normalized, "kind": "sequence",
+                    "event_match": {}, "diagnostic": stored}
     loaded = _restore_uploaded_array(normalized, expected_kind="single_frame")
     kind = "single_frame"
     if loaded is None:
@@ -489,8 +516,32 @@ def register_uploaded_vil_sequence(
     event_id: str = "",
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    upload_id = uuid.uuid4().hex
+    provided_metadata = dict(metadata or {})
+
+    def invalid(reason: str, index: int | None = None) -> dict[str, Any]:
+        diagnostic = {
+            "status": "invalid",
+            "upload_id": upload_id,
+            "kind": "sequence",
+            "frame_count_received": len(frames),
+            "expected_frame_count": 13,
+            "invalid_frame_index": index,
+            "reason": reason,
+            "filenames": [Path(str(item.get("filename", ""))).name for item in frames if isinstance(item, dict)],
+            "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        }
+        UPLOAD_DIAGNOSTICS[upload_id] = diagnostic
+        try:
+            UPLOAD_STORAGE_DIR.mkdir(parents=True, exist_ok=True)
+            _array_path, metadata_path = _upload_storage_paths(upload_id)
+            metadata_path.write_text(json.dumps(diagnostic, ensure_ascii=False, indent=2), encoding="utf-8")
+        except OSError:
+            diagnostic["persisted"] = False
+        return diagnostic
+
     if len(frames) != 13:
-        raise ValueError("连续序列必须恰好包含13张384×384的SEVIR VIL灰度图。")
+        return invalid("连续序列必须恰好包含13张384×384的SEVIR VIL灰度图。")
     decoded: list[np.ndarray] = []
     filenames: list[str] = []
     grayscale_flags: list[bool] = []
@@ -498,19 +549,18 @@ def register_uploaded_vil_sequence(
         width = int(item.get("width", 0))
         height = int(item.get("height", 0))
         if (width, height) != (384, 384):
-            raise ValueError(f"第{index + 1}张图不是384×384。")
+            return invalid(f"第{index + 1}张图不是384×384。", index)
         try:
             raw = base64.b64decode(str(item.get("pixels_base64", "")), validate=True)
         except (binascii.Error, ValueError) as error:
-            raise ValueError(f"第{index + 1}张图的像素数据无法解析。") from error
+            return invalid(f"第{index + 1}张图的像素数据无法解析。", index)
         if len(raw) != 384 * 384:
-            raise ValueError(f"第{index + 1}张图的像素数量不正确。")
+            return invalid(f"第{index + 1}张图的像素数量不正确。", index)
         decoded.append(np.frombuffer(raw, dtype=np.uint8).reshape(384, 384).copy())
         filenames.append(Path(str(item.get("filename", f"frame_{index + 1:02d}.png"))).name)
         grayscale_flags.append(bool(item.get("grayscale_source", False)))
     sequence = np.stack(decoded, axis=0)
     provided_metadata = dict(metadata or {})
-    upload_id = uuid.uuid4().hex
     metadata = {
         "upload_id": upload_id,
         "filenames": filenames,

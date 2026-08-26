@@ -160,6 +160,44 @@ class ExecutionProtocolArchitectureTests(unittest.TestCase):
         self.assertEqual(result.coords["time"].values.tolist(), list(range(-60, 5, 5)))
         self.assertTrue(np.isnan(result["vil"].isel(event=0, time=0)).all())
 
+    def test_observation_summaries_are_one_comparable_plain_table(self) -> None:
+        recorder = ToolUsageRecorder(20)
+        tool = Sevir(recorder, RequestBinding())
+
+        backend = {
+            "status": "partial",
+            "records": [{
+                "status": "ok",
+                "event_id": "R1",
+                "subject_key": "sevir:r1",
+                "event_anchor_time_utc": "2019-06-27T00:00:00Z",
+                "values": np.asarray([
+                    [[0, 150], [0, 0]],
+                    [[0, 0], [0, 200]],
+                ], dtype=np.float32),
+                "relative_minutes": [-5, 0],
+                "missing_value": 255,
+            }],
+            "unavailable": [{"subject_key": "sevir:r2", "reason": "missing"}],
+        }
+        with patch(
+            "sevir_world.tools.sevir.Catalog.load_sevir_vil_events",
+            return_value=backend,
+        ):
+            result = tool.observation_summaries(
+                ["sevir:r1", "sevir:r2"], minutes_before=5, threshold=133
+            )
+
+        self.assertIsInstance(result, pd.DataFrame)
+        self.assertEqual(int(result.iloc[0]["frame_count"]), 2)
+        self.assertTrue(pd.isna(result.iloc[1]["frame_count"]))
+        self.assertEqual(float(result.iloc[0]["peak_vil"]), 200.0)
+        self.assertEqual(int(result.iloc[0]["active_area_first"]), 1)
+        self.assertEqual(int(result.iloc[0]["active_area_last"]), 1)
+        self.assertEqual(result.iloc[1]["data_status"], "unavailable")
+        self.assertEqual(len(recorder.calls), 1)
+        self.assertEqual(recorder.calls[0]["api"], "sevir.observation_summaries")
+
     def test_capability_contract_is_layered_and_folded_after_execute(self) -> None:
         index = capability_index(("ds", "sevir", "geolocator", "cascast", "aurora"))
         detail = selected_api_reference(("sevir",))

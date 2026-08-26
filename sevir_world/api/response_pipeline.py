@@ -8,6 +8,7 @@ trace.
 """
 
 import json
+import re
 import time
 from pathlib import Path
 from typing import Any, Callable
@@ -21,6 +22,24 @@ from sevir_world.agent.study import build_turn_evidence, evidence_index
 
 
 EvidenceSummaryBuilder = Callable[[dict[str, Any]], dict[str, Any]]
+
+
+def _attach_registered_artifacts(answer: str, artifacts: list[dict[str, Any]]) -> str:
+    """Attach current-request artifacts exactly once, independent of LLM prose."""
+    text = str(answer or "").strip()
+    existing = set(re.findall(r"/api/artifacts/[0-9a-f]{32}\.png", text, re.IGNORECASE))
+    links: list[str] = []
+    for artifact in artifacts:
+        url = str(artifact.get("url") or "").strip()
+        if not re.fullmatch(r"/api/artifacts/[0-9a-f]{32}\.png", url, re.IGNORECASE):
+            continue
+        if url in existing or url in links:
+            continue
+        title = str(artifact.get("title") or artifact.get("artifact_id") or "分析图")
+        links.append(f"![{title}]({url})")
+    if links:
+        text = (text + "\n\n" if text else "") + "\n".join(links)
+    return text
 
 
 def _public_step(item: Any) -> dict[str, Any] | None:
@@ -123,6 +142,10 @@ def finalize_agent_response(
 ) -> dict[str, Any]:
     """Attach transport metadata without changing the Agent's conclusion."""
 
+    result["answer"] = _attach_registered_artifacts(
+        str(result.get("answer", "")),
+        [item for item in result.get("artifacts", []) if isinstance(item, dict)],
+    )
     result.update({
         "elapsed_ms": round((time.perf_counter() - started) * 1000),
         "request_id": request_id,

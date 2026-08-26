@@ -49,8 +49,15 @@ POLICY = """Runtime notes:
   discovery is separate from loading pixels.
 - Call ``sevir.observations`` or ``sevir.observation_batch`` to load real observed
   pixels. The loader transparently tries the configured cache and local/remote source.
+- When comparing many historical candidates, prefer ``sevir.observation_summaries``
+  after ``sevir.search``. It returns one pandas row per ``subject_key`` with the
+  same-window peak/mean VIL, active area, centroid motion, continuity and data
+  status, so do not load full pixels for every candidate before selecting a few.
 - Selected tools are available capabilities, not mandatory workflow steps. Choose the
   data, calculations, thresholds and figures that answer the user's actual question.
+- Before calling ``cascast.forecast`` with a non-default horizon or ensemble size,
+  call ``cascast.available_forecasts()``. It returns a pandas table of combinations
+  actually present for the request; do not probe cache-missing combinations.
 - Keep large arrays inside the worker and return compact evidence, conclusions and
   artifact references. Never return an entire raster cube through JSON.
 - Before arithmetic or plotting, verify that a filtered or thresholded selection is
@@ -58,7 +65,8 @@ POLICY = """Runtime notes:
   semantics: never use an array directly inside if/and/or (use .any() or .all()),
   and keep operand shapes aligned before elementwise operations.
 - When the user asks for a figure, prefer the pre-imported helper
-  plot_field(data, title="", cmap="viridis") — it saves the PNG below
+  plot_field(data, title="", cmap="viridis") — it saves the PNG below; VIL plots
+  must use cmap="cascast_vil" (or include "VIL" in the title)
   SEVIR_ARTIFACT_DIR and returns its path, plotting the last frame of a 3-D cube.
   Ordinary matplotlib is also available for custom figures; save PNG files below
   os.environ['SEVIR_ARTIFACT_DIR'] and return their paths in ``result``. The runtime
