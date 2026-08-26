@@ -186,6 +186,16 @@ class DemoHandler(SimpleHTTPRequestHandler):
     def log_message(self, format: str, *args: Any) -> None:
         print(f"[web] {format % args}")
 
+    def end_headers(self) -> None:
+        # The demo is edited and restarted frequently. Reusing an old app.js
+        # can silently send an obsolete request contract (for example cached
+        # instead of cache-first live), so application assets must always be
+        # revalidated. Artifact PNGs keep their explicit cache policy.
+        path = urlparse(self.path).path
+        if path in {"/", "/index.html", "/app.js", "/styles.css"}:
+            self.send_header("Cache-Control", "no-store")
+        super().end_headers()
+
     def send_json(self, payload: dict[str, Any], status: int = 200) -> bool:
         body = json.dumps(payload, ensure_ascii=False, default=str).encode("utf-8")
         try:
