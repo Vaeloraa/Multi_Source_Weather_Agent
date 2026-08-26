@@ -34,7 +34,7 @@ def main() -> None:
     if callable(getattr(sys.stdout, "reconfigure", None)):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser()
-    parser.add_argument("--event-id", default="R19062708588472")
+    parser.add_argument("--event-id", default="")
     parser.add_argument("--question", required=True)
     parser.add_argument(
         "--request-budget",

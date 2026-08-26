@@ -1117,6 +1117,10 @@ function syncEventOptions() {
   const eventIds = live ? (cascast.local_hdf5_event_ids || []) : (cascast.event_ids || []);
   const currentEvent = eventInput.value;
   eventInput.innerHTML = "";
+  const unboundOption = document.createElement("option");
+  unboundOption.value = "";
+  unboundOption.textContent = "不指定事件（由当前请求或 Agent 发现）";
+  eventInput.appendChild(unboundOption);
   eventIds.forEach((eventId, index) => {
     const option = document.createElement("option");
     option.value = eventId;
@@ -1124,7 +1128,7 @@ function syncEventOptions() {
     eventInput.appendChild(option);
   });
   if (eventIds.includes(currentEvent)) eventInput.value = currentEvent;
-  if (!eventInput.value && eventInput.options.length) eventInput.selectedIndex = 0;
+  else eventInput.value = "";
 }
 
 function syncMode() {
@@ -2448,7 +2452,12 @@ form.addEventListener("submit", async (event) => {
         forecast_leads_hours: [6, 12, 18, 24],
         weather_model: weatherModelInput.value,
         lead_minutes: Number(leadInput.value),
-        event_id: eventInput?.value.trim() || "",
+        // An event identity is an explicit user choice, never the first item
+        // in the cache catalogue. Uploaded assets carry their own identity
+        // and must not conflict with a previously selected cached event.
+        event_id: (uploadedSequenceId || uploadedSampleId)
+          ? ""
+          : (eventInput?.value.trim() || ""),
         upload_id: uploadedSequenceId || uploadedSampleId,
         session_id: sessionId,
         turn_id: turnId,

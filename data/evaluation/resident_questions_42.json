@@ -233,7 +233,7 @@
       "group": "证据说明",
       "payload_kind": "sequence",
       "depends_on": [7, 9, 11],
-      "prompt": "这次回答分别用了哪些现场观测、模型预测和后续实况？请按时间顺序说明每类资料支持了什么结论。",
+      "prompt": "这次回答分别用了哪些现场观测、模型预测和后续实况？请按时间顺序说明SEVIR的VIL、VIS、IR069、IR107、LGHT各自支持什么结论，哪些通道是CasCast的输入、哪些只是Agent辅助证据，并说明每类资料的时间范围、空间范围、预测属性和局限。",
       "expected_path": ["证据时间线"],
       "acceptance_focus": "来源、时间属性和结论对应清楚。"
     },
@@ -350,7 +350,7 @@
       "group": "区域发现—局地追踪",
       "payload_kind": "sequence_environment",
       "depends_on": [36],
-      "prompt": "请读取选中事件在目标时刻前一小时的连续SEVIR观测，说明这个局地系统正在发展、维持还是减弱，并给出最关键的观测依据。",
+      "prompt": "请读取选中事件在目标时刻前一小时的连续SEVIR观测，包括VIL、VIS、IR069、IR107和LGHT；某通道缺失时要明确报告。分别概括强回波、云系/云顶温度、水汽和闪电活动的变化，说明这个局地系统正在发展、维持还是减弱，并给出最关键的观测依据。",
       "expected_path": ["此前一小时连续 SEVIR 观测", "局地过程演变"],
       "acceptance_focus": "选择事件后才进入目标时刻前一小时的连续局地观测，并保持与Aurora时空窗口的联系。"
     },
@@ -359,7 +359,7 @@
       "group": "区域发现—局地追踪",
       "payload_kind": "sequence_environment",
       "depends_on": [33, 37],
-      "prompt": "请以这段连续观测为输入，用CasCast预测目标时刻之后60分钟的局地演变，并判断该系统是否更接近Aurora提示的显著天气状态。",
+      "prompt": "请以这段连续观测中的13帧VIL作为CasCast输入，预测目标时刻之后60分钟的局地演变；同时结合VIS、IR069、IR107和LGHT观测作为辅助证据，判断该系统是否更接近Aurora提示的显著天气状态，不能把卫星或闪电通道误当作CasCast必需输入。",
       "expected_path": ["CasCast未来60分钟", "第二小时趋势边界"],
       "acceptance_focus": "CasCast以未来60分钟为主要结论，第二小时只能滚动解释趋势并主动说明误差累积。"
     },
@@ -368,7 +368,7 @@
       "group": "区域发现—局地追踪",
       "payload_kind": "sequence_environment",
       "depends_on": [33, 34, 37, 38],
-      "prompt": "请结合Aurora的大尺度风险信号、此前一小时SEVIR观测和CasCast未来一小时预测，判断这个局地过程是否正在向目标天气形势演变，并说明主要依据和不确定性。",
+      "prompt": "请结合Aurora的大尺度风险信号、此前一小时SEVIR的VIL、VIS、IR069、IR107、LGHT多通道观测和CasCast未来一小时VIL预测，判断这个局地过程是否正在向目标天气形势演变，并按环境、雷达回波、卫星云系、闪电活动和预测结果分别说明主要依据与不确定性；不得将这些证据直接表述为未经校准的灾害概率。",
       "expected_path": ["Aurora区域环境证据", "SEVIR连续观测", "CasCast局地演变", "跨尺度证据解释"],
       "acceptance_focus": "判断局地过程是否向大尺度环境形势发展，不把Aurora与CasCast简化为同变量、同时效的数值一致性比较。"
     },
@@ -377,7 +377,7 @@
       "group": "区域发现—局地追踪",
       "payload_kind": "sequence_environment",
       "depends_on": [38],
-      "prompt": "请用目标时刻之后的实际SEVIR观测验证CasCast，说明预测正确的主要趋势和最明显的偏差。",
+      "prompt": "请用目标时刻之后的实际SEVIR观测（重点是VIL）验证CasCast，并在可用时对照VIS、IR069、IR107和LGHT的后续观测，说明预测正确的主要趋势、各通道是否支持同一演变判断以及最明显的偏差；区分VIL预测验证与卫星/闪电辅助证据。",
       "expected_path": ["CasCast未来60分钟预测", "目标时刻后SEVIR实况", "局地误差解释"],
       "acceptance_focus": "使用后续局地观测验证CasCast，并把结论限制在选中的局地事件。"
     },
@@ -395,7 +395,7 @@
       "group": "区域发现—局地追踪",
       "payload_kind": "sequence_environment",
       "depends_on": [33, 34, 35, 36, 37, 38, 39, 40, 41],
-      "prompt": "请按时间顺序总结这次完整Study Case，并用普通居民能够理解的话说明最终发现、可信部分和仍不能确定的风险。",
+      "prompt": "请按时间顺序总结这次完整Study Case，串联Aurora环境场、SEVIR的VIL/VIS/IR069/IR107/LGHT观测、CasCast局地VIL预测和后续验证，并用普通居民能够理解的话说明最终发现、可信部分和仍不能确定的风险；明确系统没有输出四灾种校准概率或官方预警。",
       "expected_path": ["03:00 UTC Aurora起报", "约09:00 UTC局地目标", "区域发现到局地追踪", "分别验证", "居民结论"],
       "acceptance_focus": "时间因果正确、端到端闭环完整、通俗可理解；不要求罗列全部指标。"
     }

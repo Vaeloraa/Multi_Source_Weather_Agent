@@ -982,9 +982,9 @@ def geolocate_sevir_event(
 
     Examples
     --------
-    Resolve the centre of a known event::
+    Resolve the centre of the event bound to the current request::
 
-        result = geolocate_sevir_event("R19062708588472")
+        result = geolocate_sevir_event(event_id)
     """
     record = _catalog_vil_event(event_id)
     if (row is None) != (column is None):

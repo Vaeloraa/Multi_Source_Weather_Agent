@@ -92,11 +92,11 @@ def load_sevir_channel_event(
     --------
     Load IR107 cloud-top temperature for an event::
 
-        cube = load_sevir_channel_event("R19062708588472", "ir107", 0, 12)
+        cube = load_sevir_channel_event(event_id, "ir107", 0, 12)
 
     Load LGHT lightning data::
 
-        lght = load_sevir_channel_event("R19062708588472", "lght", minutes_before=60, minutes_after=0)
+        lght = load_sevir_channel_event(event_id, "lght", minutes_before=60, minutes_after=0)
     """
     record = _get_channel_catalog_record(event_id, channel, file_name=file_name, file_index=file_index)
 
@@ -251,7 +251,7 @@ def load_sevir_multimodal_event(
     Load VIL + IR107 + Lightning for comprehensive analysis::
 
         data = load_sevir_multimodal_event(
-            "R19062708588472",
+            event_id,
             channels=["vil", "ir107", "lght"],
             minutes_before=60,
             minutes_after=0

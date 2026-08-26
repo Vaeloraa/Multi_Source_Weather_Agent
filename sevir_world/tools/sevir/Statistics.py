@@ -1374,9 +1374,9 @@ def compare_event_with_history(
 
     Examples
     --------
-    Compare the demonstration event at the default threshold::
+    Compare the event selected by the caller at the default threshold::
 
-        comparison = compare_event_with_history("R19062708588472")
+        comparison = compare_event_with_history(event_id)
     """
     target = str(event_id).strip().lower()
     records = _catalog_vil_records()

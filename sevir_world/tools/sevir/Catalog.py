@@ -466,9 +466,9 @@ def get_sevir_event_metadata(
 
     Examples
     --------
-    Read the metadata for the R190 demonstration event::
+    Read metadata for the event selected by the caller::
 
-        metadata = get_sevir_event_metadata("R19062708588472")
+        metadata = get_sevir_event_metadata(event_id)
     """
     record = _catalog_vil_event(event_id, file_name=file_name, file_index=file_index)
     return {
@@ -820,9 +820,9 @@ def load_sevir_vil_event(
 
     Examples
     --------
-    Load the 13 input frames preceding the reference frame::
+    Load the first 13 frames for the event selected by the caller::
 
-        cube = load_sevir_vil_event("R19062708588472", 0, 12)
+        cube = load_sevir_vil_event(event_id, 0, 12)
     """
     record = _catalog_vil_event(event_id, file_name=file_name, file_index=file_index)
     try:
