@@ -2444,7 +2444,11 @@ form.addEventListener("submit", async (event) => {
         mode: modeInput.value,
         task: taskInput.value,
         data_source: uploadedSequenceId ? "upload_sequence" : (uploadedSampleId ? "upload" : (liveContextReady ? "live" : "none")),
-        data_policy: liveContextReady ? "live" : "cached",
+        // Live is cache-first: Aurora and CasCast each reuse a compatible
+        // cached product when available, then perform online retrieval or
+        // inference on a miss. Uploading an image must not force cache-only
+        // behavior or make an uncached upload look permanently unavailable.
+        data_policy: "live",
         requested_time_utc: normalizedAnalysisTimeUtc(),
         place_name: analysisPlaceInput?.value.trim() || "",
         latitude: optionalCoordinate(analysisLatitudeInput),
