@@ -2614,7 +2614,7 @@ button#run-button {
   background: #f7fafb;
 }
 .conversation-visual-stage.is-unavailable::after {
-  content: "当前图表不可用";
+  content: "Chart unavailable";
   color: #78909a;
   font-size: 11px;
   font-weight: 700;

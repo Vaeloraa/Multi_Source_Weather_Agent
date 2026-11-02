@@ -252,7 +252,7 @@ def _catalog_all_records() -> tuple[dict[str, Any], ...]:
         Immutable container of normalized catalog records for all channels.
     """
     if not CATALOG_CSV.exists():
-        raise RuntimeError("未找到SEVIR CATALOG.csv。")
+        raise RuntimeError("SEVIR CATALOG.csv was not found.")
     records: list[dict[str, Any]] = []
     with CATALOG_CSV.open("r", encoding="utf-8", newline="") as stream:
         for row in csv.DictReader(stream):
@@ -293,7 +293,7 @@ def _catalog_all_records() -> tuple[dict[str, Any], ...]:
                 }
             )
     if not records:
-        raise RuntimeError("SEVIR CATALOG中没有找到记录。")
+        raise RuntimeError("No records were found in the SEVIR catalog.")
     return tuple(records)
 
 
@@ -2072,7 +2072,7 @@ def search_sevir_catalog(
             "full_region_coverage_proven": False,
         },
         "records": matches,
-        "interpretation_limit": "结果来自SEVIR CATALOG metadata，不代表已下载对应HDF5像素数据。",
+        "interpretation_limit": "Catalog metadata returned. Retrieve HDF5 observations separately for pixel-level analysis.",
     }
 
 
@@ -2185,8 +2185,8 @@ def search_sevir_catalog_by_region(
         "distance_method": "WGS84 geodesic distance to the nearest point of the CATALOG footprint",
         "records": matches,
         "interpretation_limit": (
-            "匹配依据是CATALOG事件包围盒到查询点的WGS84测地线最近距离，不代表事件核心位于该地点；"
-            "返回的是元数据，像素仍需按需读取HDF5。"
+            "Matched by the shortest WGS84 geodesic distance from the query point to the catalog event bounding box. "
+            "This is metadata; retrieve HDF5 observations for pixel-level analysis."
         ),
     }
 

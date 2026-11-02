@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="820" viewBox="0 0 1440 820" role="img">
+<title>Multi-Source Weather Agent architecture</title><desc>Six layers with shared conversations, tool instructions, evidence and caches.</desc>
+<rect width="100%" height="100%" fill="white" />
+<rect x="230" y="35" width="890" height="100" rx="5" fill="#F8F8F8" stroke="#D8D8D8" stroke-width="1.1" />
+<text x="200" y="85.0" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#303030" text-anchor="end" dominant-baseline="central">User interface</text>
+<rect x="250.0" y="59" width="271.3333333333333" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="385.66666666666663" y="85.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Questions</text>
+<rect x="539.3333333333333" y="59" width="271.3333333333333" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="674.9999999999999" y="85.0" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Image and sequence uploads</text>
+<rect x="828.6666666666666" y="59" width="271.3333333333333" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="964.3333333333333" y="85.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Answers and charts</text>
+<polyline points="675,139 675,161" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="675,161 679,153 671,153" fill="#787878" />
+<polygon points="675,139 671,147 679,147" fill="#787878" />
+<rect x="230" y="165" width="890" height="100" rx="5" fill="#F8F8F8" stroke="#D8D8D8" stroke-width="1.1" />
+<text x="200" y="215.0" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#303030" text-anchor="end" dominant-baseline="central">Requests and tasks</text>
+<rect x="250.0" y="189" width="271.3333333333333" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="385.66666666666663" y="215.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Input validation</text>
+<rect x="539.3333333333333" y="189" width="271.3333333333333" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="674.9999999999999" y="215.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Context assembly</text>
+<rect x="828.6666666666666" y="189" width="271.3333333333333" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="964.3333333333333" y="215.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Tasks and responses</text>
+<polyline points="675,269 675,291" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="675,291 679,283 671,283" fill="#787878" />
+<polygon points="675,269 671,277 679,277" fill="#787878" />
+<rect x="230" y="295" width="890" height="100" rx="5" fill="#F8F8F8" stroke="#D8D8D8" stroke-width="1.1" />
+<text x="200" y="345.0" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#303030" text-anchor="end" dominant-baseline="central">Agent decisions</text>
+<rect x="250.0" y="319" width="199.0" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="349.5" y="345.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Tool selection</text>
+<rect x="467.0" y="319" width="199.0" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="566.5" y="345.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Code generation</text>
+<rect x="684.0" y="319" width="199.0" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="783.5" y="345.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Review and revise</text>
+<rect x="901.0" y="319" width="199.0" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="1000.5" y="345.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Result explanation</text>
+<polyline points="675,399 675,421" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="675,421 679,413 671,413" fill="#787878" />
+<polygon points="675,399 671,407 679,407" fill="#787878" />
+<rect x="230" y="425" width="890" height="100" rx="5" fill="#F8F8F8" stroke="#D8D8D8" stroke-width="1.1" />
+<text x="200" y="475.0" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#303030" text-anchor="end" dominant-baseline="central">Python execution</text>
+<rect x="250.0" y="449" width="271.3333333333333" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="385.66666666666663" y="475.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Calculations and plots</text>
+<rect x="539.3333333333333" y="449" width="271.3333333333333" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="674.9999999999999" y="475.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Intermediate objects</text>
+<rect x="828.6666666666666" y="449" width="271.3333333333333" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="964.3333333333333" y="475.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Results and errors</text>
+<polyline points="675,529 675,551" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="675,551 679,543 671,543" fill="#787878" />
+<polygon points="675,529 671,537 679,537" fill="#787878" />
+<rect x="230" y="555" width="890" height="100" rx="5" fill="#F8F8F8" stroke="#D8D8D8" stroke-width="1.1" />
+<text x="200" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#303030" text-anchor="end" dominant-baseline="central">Domain tools</text>
+<rect x="250.0" y="579" width="131.66666666666666" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="315.8333333333333" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">SEVIR</text>
+<rect x="393.66666666666663" y="579" width="131.66666666666666" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="459.49999999999994" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">ERA5</text>
+<rect x="537.3333333333333" y="579" width="131.66666666666666" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="603.1666666666666" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Aurora</text>
+<rect x="681.0" y="579" width="131.66666666666666" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="746.8333333333334" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">CasCast</text>
+<rect x="824.6666666666666" y="579" width="131.66666666666666" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="890.5" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Geolocation</text>
+<rect x="968.3333333333333" y="579" width="131.66666666666666" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="1034.1666666666665" y="605.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Retrieval</text>
+<polyline points="675,659 675,681" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="675,681 679,673 671,673" fill="#787878" />
+<polygon points="675,659 671,667 679,667" fill="#787878" />
+<rect x="230" y="685" width="890" height="100" rx="5" fill="#F8F8F8" stroke="#D8D8D8" stroke-width="1.1" />
+<text x="200" y="735.0" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#303030" text-anchor="end" dominant-baseline="central">Data and models</text>
+<rect x="250.0" y="709" width="271.3333333333333" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="385.66666666666663" y="735.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Observations and reanalysis</text>
+<rect x="539.3333333333333" y="709" width="271.3333333333333" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="674.9999999999999" y="735.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Forecast models</text>
+<rect x="828.6666666666666" y="709" width="271.3333333333333" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="964.3333333333333" y="735.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Geography and references</text>
+<rect x="1180" y="35" width="225" height="750" rx="5" fill="#F8F8F8" stroke="#D8D8D8" stroke-width="1.1" />
+<text x="1292.5" y="76" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">State and storage</text>
+<text x="1292.5" y="111" font-family="Arial, Helvetica, sans-serif" font-size="16.5" font-weight="400" fill="#707070" text-anchor="middle" dominant-baseline="central">Shared across the workflow</text>
+<polyline points="1200,144 1385,144" fill="none" stroke="#D8D8D8" stroke-width="1" stroke-linejoin="miter" stroke-linecap="butt" />
+<text x="1202" y="220" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" fill="#303030" text-anchor="start" dominant-baseline="central">Conversations and summaries</text>
+<text x="1202" y="251" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#707070" text-anchor="start" dominant-baseline="central">Continuity and compression</text>
+<text x="1202" y="360" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" fill="#303030" text-anchor="start" dominant-baseline="central">Tool documentation</text>
+<text x="1202" y="391" font-family="Arial, Helvetica, sans-serif" font-size="14.5" font-weight="400" fill="#707070" text-anchor="start" dominant-baseline="central">Read instructions on demand</text>
+<text x="1202" y="500" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" fill="#303030" text-anchor="start" dominant-baseline="central">Evidence and citations</text>
+<text x="1202" y="531" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" fill="#707070" text-anchor="start" dominant-baseline="central">Keep results and sources</text>
+<text x="1202" y="640" font-family="Arial, Helvetica, sans-serif" font-size="17.5" font-weight="400" fill="#303030" text-anchor="start" dominant-baseline="central">Caches and persistence</text>
+<text x="1202" y="671" font-family="Arial, Helvetica, sans-serif" font-size="14.5" font-weight="400" fill="#707070" text-anchor="start" dominant-baseline="central">Reuse data and save records</text>
+<polyline points="1120,85 1180,85" fill="none" stroke="#A0A0A0" stroke-width="1" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="7 6" />
+<polyline points="1120,215 1180,215" fill="none" stroke="#A0A0A0" stroke-width="1" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="7 6" />
+<polyline points="1120,345 1180,345" fill="none" stroke="#A0A0A0" stroke-width="1" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="7 6" />
+<polyline points="1120,475 1180,475" fill="none" stroke="#A0A0A0" stroke-width="1" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="7 6" />
+<polyline points="1120,605 1180,605" fill="none" stroke="#A0A0A0" stroke-width="1" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="7 6" />
+<polyline points="1120,735 1180,735" fill="none" stroke="#A0A0A0" stroke-width="1" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="7 6" />
+</svg>

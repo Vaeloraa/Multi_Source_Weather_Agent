@@ -1,89 +1,89 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SEVIR Hazard Agent</title>
+    <title>Multi-Source Weather Agent</title>
     <link rel="stylesheet" href="/styles.css?v=20261020-execution-feedback" />
   </head>
   <body>
     <main class="shell">
       <nav class="topbar">
         <a class="brand" href="#">
-          <span class="brand-mark">S</span>
-          <span>SEVIR HAZARD AGENT</span>
+          <span class="brand-mark">W</span>
+          <span>Multi-Source Weather Agent</span>
         </a>
         <div class="conversation-actions">
-          <button id="new-chat-button" class="new-chat-button" type="button">＋ 新对话</button>
+          <button id="new-chat-button" class="new-chat-button" type="button">＋ New chat</button>
           <details class="conversation-history">
-            <summary>对话记录</summary>
+            <summary>Conversations</summary>
             <div id="conversation-list" class="conversation-list"></div>
           </details>
-          <span class="run-state" id="run-state">就绪</span>
+          <span class="run-state" id="run-state">Ready</span>
         </div>
       </nav>
 
       <header class="compact-intro">
         <div>
-          <h1>多尺度天气分析</h1>
-          <p>从单张VIL观测、连续临近预报，到历史事件与ERA5/Aurora大尺度环境，直接用自然语言发起分析。</p>
+          <h1>Weather analysis across scales</h1>
+          <p>Explore observations, local nowcasts, historical events and regional weather with a question.</p>
         </div>
       </header>
 
       <section class="lab-grid">
         <aside id="analysis-settings" class="control-panel panel">
           <div class="section-heading">
-            <h2>认识这个 Agent</h2>
-            <p>它会按问题选择数据与工具，执行计算、核查证据，并明确区分观测事实、模型预测和能力边界。</p>
+            <h2>About the agent</h2>
+            <p>The agent selects data and tools, runs calculations and explains observations and forecasts with supporting sources.</p>
           </div>
 
           <section class="context-card agent-introduction">
-            <div class="context-card-topline"><small>CAPABILITIES</small><span>多源 · 多尺度</span></div>
-            <strong>从天气图到可核查的分析结论</strong>
-            <p>不必指定工具。说明想了解的地点、时段或天气问题，Agent 会组合当前可用的数据完成分析。</p>
-            <div class="capability-list" aria-label="Agent能力">
-              <div><b>VIL</b><span><strong>当前观测</strong><small>强度、范围、空间结构与地理定位</small></span></div>
-              <div><b>NOW</b><span><strong>临近预测</strong><small>13帧演变、CasCast预测、集合分歧与真实值验证</small></span></div>
-              <div><b>HIS</b><span><strong>历史检索</strong><small>按时间、地点和半径查找并比较SEVIR事件，无需上传</small></span></div>
-              <div><b>ENV</b><span><strong>大尺度环境</strong><small>ERA5再分析、Aurora环境趋势及大尺度到局地联动</small></span></div>
+            <div class="context-card-topline"><small>CAPABILITIES</small><span>Multiple sources and scales</span></div>
+            <strong>From weather data to clear answers</strong>
+            <p>Describe the place, time and weather question. The agent chooses the relevant data and models.</p>
+            <div class="capability-list" aria-label="Agent capabilities">
+              <div><b>VIL</b><span><strong>Observations</strong><small>Intensity, coverage, structure and location</small></span></div>
+              <div><b>NOW</b><span><strong>Nowcasting</strong><small>13-frame sequences, CasCast ensembles and forecast verification</small></span></div>
+              <div><b>HIS</b><span><strong>Historical search</strong><small>Find and compare SEVIR events by time and location</small></span></div>
+              <div><b>ENV</b><span><strong>Regional weather</strong><small>ERA5 reanalysis and Aurora forecasts for regional context</small></span></div>
             </div>
-            <small class="evidence-note">回答会标注数据来源与不确定性；VIL不能单独证明道路积水或地面安全状况。</small>
+            <small class="evidence-note">Answers include sources and uncertainty. Assessing surface flooding requires additional data.</small>
           </section>
 
           <section class="context-card live-context-card" aria-labelledby="live-context-heading">
-            <div class="context-card-topline"><small>OPTIONAL CONTEXT</small><span>无需上传图片</span></div>
-            <strong id="live-context-heading">定点天气查询（可选功能）</strong>
-            <p>可补充分析地点和时间；留空即可直接提问。</p>
+            <div class="context-card-topline"><small>OPTIONAL CONTEXT</small><span>No upload required</span></div>
+            <strong id="live-context-heading">Location and time</strong>
+            <p>Add location and time, or include them in your question.</p>
             <div class="live-context-fields">
               <label class="place-field">
-                <span>地点</span>
-                <input id="analysis-place" type="text" autocomplete="off" placeholder="输入城市、州或地区名称" />
+                <span>Place</span>
+                <input id="analysis-place" type="text" autocomplete="off" placeholder="City, state or region" />
               </label>
               <label>
-                <span>UTC 时间</span>
+                <span>Time (UTC)</span>
                 <input id="analysis-time-utc" type="datetime-local" step="1" value="" />
               </label>
               <label>
-                <span>纬度（可选）</span>
-                <input id="analysis-latitude" type="number" min="-90" max="90" step="0.000001" inputmode="decimal" placeholder="-90 至 90" />
+                <span>Latitude (optional)</span>
+                <input id="analysis-latitude" type="number" min="-90" max="90" step="0.000001" inputmode="decimal" placeholder="-90 to 90" />
               </label>
               <label>
-                <span>经度（可选）</span>
-                <input id="analysis-longitude" type="number" min="-180" max="180" step="0.000001" inputmode="decimal" placeholder="-180 至 180" />
+                <span>Longitude (optional)</span>
+                <input id="analysis-longitude" type="number" min="-180" max="180" step="0.000001" inputmode="decimal" placeholder="-180 to 180" />
               </label>
             </div>
-            <small class="context-help">地点可自动解析；同名地点请补充州名或国家。</small>
+            <small class="context-help">Add a state or country to distinguish places with the same name.</small>
           </section>
 
           <div class="hidden" aria-hidden="true">
             <span id="mode-description"></span>
             <select id="mode" tabindex="-1"><option value="unified" selected>Unified Agent</option></select>
-            <select id="data-source" tabindex="-1"><option value="upload" selected>单张</option><option value="upload_sequence">13张</option></select>
-            <select id="event-id" tabindex="-1"><option value="">用户上传</option></select>
-            <select id="task" tabindex="-1"><option value="auto" selected>自动选择</option></select>
-            <select id="weather-model" tabindex="-1"><option value="cascast_live" selected>现场预测</option><option value="persistence_baseline">持续性基线</option></select>
+            <select id="data-source" tabindex="-1"><option value="upload" selected>Single image</option><option value="upload_sequence">13 images</option></select>
+            <select id="event-id" tabindex="-1"><option value="">User upload</option></select>
+            <select id="task" tabindex="-1"><option value="auto" selected>Automatic selection</option></select>
+            <select id="weather-model" tabindex="-1"><option value="cascast_live" selected>Live inference</option><option value="persistence_baseline">Persistence baseline</option></select>
             <select id="lead-minutes" tabindex="-1"><option value="60" selected>60</option><option value="120">120</option><option value="180">180</option></select>
-            <select id="threshold" tabindex="-1" aria-label="CasCast VIL阈值">
+            <select id="threshold" tabindex="-1" aria-label="CasCast VIL threshold">
               <option value="16">CasCast VIL≥16</option>
               <option value="74">CasCast VIL≥74</option>
               <option value="133" selected>CasCast VIL≥133</option>
@@ -102,8 +102,8 @@
         <section class="result-panel panel">
           <div class="result-head">
             <div class="section-heading">
-              <h2>和 SEVIR Agent 聊聊</h2>
-              <p id="conversation-status">直接提问，或补充地点、时间与VIL观测。</p>
+              <h2>Ask Multi-Source Weather Agent</h2>
+              <p id="conversation-status">Ask a question, with optional location, time or VIL observations.</p>
             </div>
           </div>
 
@@ -111,60 +111,60 @@
           <div class="conversation-column">
 
           <div id="empty-state" class="empty-state">
-            <div class="welcome-mark">S</div>
-            <small>SEVIR HAZARD AGENT</small>
-            <strong>从一个天气问题开始</strong>
-            <p>直接说明地点、时间和你想了解的风险；也可上传1张或13张VIL图片。Agent 会自动选择观测、历史检索、CasCast或Aurora。</p>
-            <div class="welcome-capabilities" aria-label="Agent能力">
-              <span><b>VIL</b>当前观测</span>
-              <span><b>NOW</b>临近预测</span>
-              <span><b>HIS</b>历史检索</span>
-              <span><b>ENV</b>大尺度环境</span>
+            <div class="welcome-mark">W</div>
+            <small>Multi-Source Weather Agent</small>
+            <strong>Start with a weather question</strong>
+            <p>Describe the place, time and conditions you want to understand. You can also upload one VIL image or a 13-frame sequence.</p>
+            <div class="welcome-capabilities" aria-label="Agent capabilities">
+              <span><b>VIL</b>Observations</span>
+              <span><b>NOW</b>Nowcasting</span>
+              <span><b>HIS</b>Historical search</span>
+              <span><b>ENV</b>Regional weather</span>
             </div>
-            <small class="welcome-example">例如：“展示这个事件的观测、CasCast预测和Aurora环境”</small>
+            <small class="welcome-example">Try: Show the observations, CasCast forecast and Aurora regional conditions for this event.</small>
           </div>
 
           <div id="chat-thread" class="chat-thread" aria-live="polite"></div>
 
           <dialog id="delete-turn-dialog" class="delete-turn-dialog">
             <form method="dialog">
-              <strong>删除这轮对话？</strong>
-              <p>问题和对应回答都会从当前会话中移除，之后的追问也不会再使用它。</p>
+              <strong>Delete this exchange?</strong>
+              <p>The question and answer will be removed from this conversation and its follow-up context.</p>
               <div class="delete-turn-actions">
-                <button value="cancel" type="submit">取消</button>
-                <button id="confirm-delete-turn" value="confirm" type="submit" class="danger-button">删除</button>
+                <button value="cancel" type="submit">Cancel</button>
+                <button id="confirm-delete-turn" value="confirm" type="submit" class="danger-button">Delete</button>
               </div>
             </form>
           </dialog>
 
           <details id="turn-details" class="turn-details hidden" aria-hidden="true">
-            <summary><span>本轮渲染模板</span><b id="turn-details-source">SEVIR</b></summary>
+            <summary><span>Response layout</span><b id="turn-details-source">SEVIR</b></summary>
           <div id="result-content" class="result-content hidden">
             <article class="answer-card">
-              <div class="answer-heading"><div><small>ANALYSIS SUMMARY</small><strong id="result-title">分析结论</strong></div><span id="result-source">SEVIR</span></div>
+              <div class="answer-heading"><div><small>ANALYSIS SUMMARY</small><strong id="result-title">Analysis summary</strong></div><span id="result-source">SEVIR</span></div>
               <div id="answer" class="answer-body" data-markdown-version="markdown-10"></div>
             </article>
 
             <details class="trace-card">
-              <summary><span>本轮做了什么</span><b id="meta-time">—</b></summary>
+              <summary><span>Analysis steps</span><b id="meta-time">—</b></summary>
               <div class="trace-content">
                 <div class="card-topline"><div><small>EXECUTION</small><strong id="tool-name">—</strong></div></div>
                 <section id="run-diagnostic" class="run-diagnostic hidden" aria-live="polite">
-                  <div class="diagnostic-heading"><strong>执行概览</strong><span id="diagnostic-status">—</span></div>
+                  <div class="diagnostic-heading"><strong>Execution overview</strong><span id="diagnostic-status">—</span></div>
                   <div id="diagnostic-grid" class="diagnostic-grid"></div>
                   <ol id="diagnostic-stages" class="diagnostic-stages"></ol>
                 </section>
                 <div id="agent-analysis" class="agent-analysis hidden">
-                  <small>逐步记录</small>
+                  <small>Step-by-step record</small>
                   <div class="agent-execution-summary">
-                    <small>当前模式</small><div id="agent-execution-mode">—</div>
-                    <small>执行流程</small><div id="agent-execution-flow">—</div>
-                    <small>会话与预算</small><div id="agent-session-budget">—</div>
+                    <small>Mode</small><div id="agent-execution-mode">—</div>
+                    <small>Workflow</small><div id="agent-execution-flow">—</div>
+                    <small>Session and budget</small><div id="agent-session-budget">—</div>
                   </div>
                   <div id="agent-trace"></div>
                 </div>
                 <div id="agent-artifacts" class="agent-artifacts hidden">
-                  <small>Agent生成图表</small>
+                  <small>Analysis chart</small>
                   <div id="artifact-list"></div>
                 </div>
               </div>
@@ -176,59 +176,59 @@
 
           <form id="agent-form" class="chat-composer">
             <div id="attachment-tray" class="attachment-tray hidden">
-              <img id="upload-preview" class="hidden" alt="准备发送的VIL图片" />
+              <img id="upload-preview" class="hidden" alt="VIL image ready to upload" />
               <div>
-                <strong id="attachment-title">正在读取图片…</strong>
-                <small id="upload-status">请选择1张或13张384×384灰度PNG。</small>
+                <strong id="attachment-title">Reading images…</strong>
+                <small id="upload-status">Select one or 13 grayscale PNG images at 384 × 384 pixels.</small>
                 <small id="sequence-upload-status" class="hidden"></small>
               </div>
-              <button id="remove-attachment" type="button" aria-label="移除上传图片">×</button>
+              <button id="remove-attachment" type="button" aria-label="Remove uploaded images">×</button>
             </div>
             <div class="composer-options">
-              <label class="visual-toggle" for="generate-visual" title="开启后，每次提交都要求生成新图，资料问答也适用；对话中的旧图不计入本轮">
+              <label class="visual-toggle" for="generate-visual" title="Generate a new chart for each request, including reference questions.">
                 <input id="generate-visual" type="checkbox" />
                 <span class="visual-toggle-track" aria-hidden="true"><i></i></span>
-                <strong>生成图片</strong>
+                <strong>Generate charts</strong>
                 <output id="generate-visual-state" for="generate-visual">OFF</output>
               </label>
             </div>
             <div class="composer-row">
-              <label class="composer-attach-button" for="vil-upload" title="上传1张或13张VIL图片">
+              <label class="composer-attach-button" for="vil-upload" title="Upload one VIL image or a 13-frame sequence">
                 <span>＋</span>
                 <input id="vil-upload" type="file" accept="image/png" multiple />
               </label>
-              <textarea id="question" rows="2" placeholder="询问系统能力，或输入地点、时间与天气问题…" required></textarea>
-              <button id="cancel-request" class="cancel-request hidden" type="button" aria-label="停止当前分析">
-                <span>停止</span>
+              <textarea id="question" rows="2" placeholder="Ask about weather, data or models. Include a place and time…" required></textarea>
+              <button id="cancel-request" class="cancel-request hidden" type="button" aria-label="Stop analysis">
+                <span>Stop</span>
               </button>
-              <button id="run-button" type="submit" aria-label="发送消息">
-                <span>发送</span>
+              <button id="run-button" type="submit" aria-label="Send message">
+                <span>Send</span>
                 <span class="button-arrow">↑</span>
               </button>
             </div>
           </form>
           </div>
 
-          <aside id="conversation-visual-pane" class="conversation-visual-pane hidden" aria-live="polite" aria-label="对话图片页框">
+          <aside id="conversation-visual-pane" class="conversation-visual-pane hidden" aria-live="polite" aria-label="Conversation charts">
             <header>
-              <div><small>GENERATED VISUALS</small><strong>对话图片</strong></div>
-              <span id="conversation-visual-count">0张</span>
+              <div><small>GENERATED VISUALS</small><strong>Conversation charts</strong></div>
+              <span id="conversation-visual-count">0 charts</span>
             </header>
-            <nav id="conversation-layer-tabs" class="conversation-layer-tabs" aria-label="已获取的结果图层"></nav>
-            <button id="conversation-visual-stage" class="conversation-visual-stage" type="button" aria-label="放大当前图片；滚轮切换图表">
-              <img id="conversation-visual-image" alt="当前对话生成的图片" />
+            <nav id="conversation-layer-tabs" class="conversation-layer-tabs" aria-label="Available chart layers"></nav>
+            <button id="conversation-visual-stage" class="conversation-visual-stage" type="button" aria-label="Enlarge chart; scroll to switch charts">
+              <img id="conversation-visual-image" alt="Chart generated in this conversation" />
             </button>
             <div class="conversation-visual-copy">
-              <strong id="conversation-visual-title">Agent生成图表</strong>
+              <strong id="conversation-visual-title">Analysis chart</strong>
               <p id="conversation-visual-description"></p>
             </div>
-            <section id="visual-timeline" class="visual-timeline" aria-label="当前图层时间轴">
-              <div class="visual-timeline-heading"><strong id="visual-timeline-title">数据时间范围</strong><span id="visual-timeline-label">根据当前图层</span></div>
+            <section id="visual-timeline" class="visual-timeline" aria-label="Selected layer timeline">
+              <div class="visual-timeline-heading"><strong id="visual-timeline-title">Data time range</strong><span id="visual-timeline-label">For the selected layer</span></div>
               <div class="visual-timeline-track"><i id="visual-timeline-now"></i><b id="visual-timeline-marker"></b></div>
-              <input id="visual-timeline-slider" class="visual-timeline-slider" type="range" min="0" max="0" value="0" step="1" aria-label="切换当前图表时刻" />
+              <input id="visual-timeline-slider" class="visual-timeline-slider" type="range" min="0" max="0" value="0" step="1" aria-label="Select chart time" />
               <div id="visual-timeline-scale" class="visual-timeline-scale"></div>
             </section>
-            <div id="conversation-visual-thumbnails" class="conversation-visual-thumbnails" role="list" aria-label="对话图片列表"></div>
+            <div id="conversation-visual-thumbnails" class="conversation-visual-thumbnails" role="list" aria-label="Chart list"></div>
           </aside>
           </div>
         </section>

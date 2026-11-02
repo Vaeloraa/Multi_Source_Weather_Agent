@@ -90,17 +90,17 @@ def execute_request(
 
     trace.append_live_step({
         "attempt": 0, "action": "request_received", "status": "ok",
-        "summary": "服务端已接收问题并创建本轮请求。", "elapsed_ms": 0,
+        "summary": "Question received. Request created.", "elapsed_ms": 0,
     }, progress=0.04)
     trace.update_activity(
-        stage="asset_binding", summary="正在校验结构化请求事实与上传资料。",
+        stage="asset_binding", summary="Validating request fields and uploaded observations.",
         progress=0.08, action="asset_binding",
     )
     session_state, inherited, request = prepare_question_payload(payload, runtime=runtime)
     session_id = str(payload["session_id"])
     trace.append_live_step({
         "attempt": 0, "action": "asset_binding", "status": "ok",
-        "summary": "请求事实已绑定，进入统一 Agent。",
+        "summary": "Inputs bound. Starting analysis.",
         "elapsed_ms": round((time.perf_counter() - started_perf_counter) * 1000, 2),
     }, progress=0.12)
 

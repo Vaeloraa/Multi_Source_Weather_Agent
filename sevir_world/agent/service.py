@@ -78,7 +78,7 @@ def _execute_unified_request_held(
             raise AgentCancelled("client disconnected before model call")
         remaining = deadline - time.monotonic()
         if remaining <= 0:
-            raise TimeoutError("统一Agent本轮总时间已达到上限")
+            raise TimeoutError("The analysis time limit has been reached")
         if summary and remaining <= 20.0:
             raise TimeoutError("time reserved for the final answer")
         started = time.perf_counter()
@@ -94,7 +94,7 @@ def _execute_unified_request_held(
             if runtime.is_cancelled():
                 raise AgentCancelled("client disconnected during model call")
             if time.monotonic() >= deadline:
-                raise TimeoutError("统一Agent模型调用超过本轮总时间上限")
+                raise TimeoutError("The model call exceeded the remaining analysis time")
             return response
         except Exception as exc:
             error = exc
@@ -149,11 +149,11 @@ def _execute_unified_request_held(
         request_trace.update_activity(
             stage=stage,
             summary={
-                "model": "正在调用语言模型，根据已有证据决定下一步。",
-                "execute": "正在执行分析程序并读取工具结果。",
-                "prepare": "正在准备 Agent。",
-                "context": "正在整理对话上下文和历史结果。",
-            }.get(action, "Agent 正在继续分析。"),
+                "model": "Using the available results to choose the next step.",
+                "execute": "Running analysis code and reading tool results.",
+                "prepare": "Preparing the agent.",
+                "context": "Preparing conversation context and previous results.",
+            }.get(action, "Analysis in progress."),
             progress=progress,
             attempt=attempt,
             action=action,
@@ -215,7 +215,7 @@ def execute_unified_request(
         if request_trace is not None:
             request_trace.update_activity(
                 stage="agent_queue",
-                summary="正在等待可用的 Agent 执行槽位。",
+                summary="Waiting for an available execution slot.",
                 progress=0.12,
                 action="queue",
             )
@@ -224,7 +224,7 @@ def execute_unified_request(
                 raise AgentCancelled("client disconnected while waiting for Agent slot")
             remaining = queue_deadline - time.monotonic()
             if remaining <= 0:
-                raise TimeoutError("Agent槽位排队超过本轮剩余时间")
+                raise TimeoutError("The execution queue exceeded the remaining request time")
             acquired = _AGENT_REQUEST_SLOTS.acquire(timeout=min(0.2, remaining))
         admitted_at = time.perf_counter()
         if request_trace is not None:
@@ -232,9 +232,9 @@ def execute_unified_request(
             request_trace.update_activity(
                 stage="unified_agent",
                 summary=(
-                    f"已获得执行槽位（等待 {queue_wait_ms / 1000:.1f} 秒），正在启动 Agent。"
+                    f"Execution slot acquired after {queue_wait_ms / 1000:.1f} s. Starting the agent."
                     if queue_wait_ms >= 1000
-                    else "已获得执行槽位，正在启动 Agent。"
+                    else "Execution slot acquired. Starting the agent."
                 ),
                 progress=0.16,
                 action="prepare",

@@ -427,7 +427,7 @@ def _execute_payload(session: WorkerSession, payload: dict[str, Any]) -> dict[st
         working_namespace = fork_namespace(namespace, session.injected_namespace_names)
         with contextlib.redirect_stdout(captured), contextlib.redirect_stderr(captured):
             phase = "code_compilation"
-            program = compile(tree, "<sevir-agent>", "exec")
+            program = compile(tree, "<multi-source-weather-agent>", "exec")
             phase = "generated_exec"
             exec(program, working_namespace)
             phase = "artifact_capture"
@@ -508,7 +508,7 @@ def _execute_payload(session: WorkerSession, payload: dict[str, Any]) -> dict[st
         generated_frame = next(
             (
                 frame for frame in reversed(traceback.extract_tb(error.__traceback__))
-                if frame.filename == "<sevir-agent>"
+                if frame.filename == "<multi-source-weather-agent>"
             ),
             None,
         )

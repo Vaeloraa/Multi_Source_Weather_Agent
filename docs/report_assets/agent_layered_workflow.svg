@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="770" viewBox="0 0 1440 770" role="img">
+<title>Multi-Source Weather Agent workflow</title><desc>Requests, execution, feedback and answers across the system layers.</desc>
+<rect width="100%" height="100%" fill="white" />
+<rect x="230" y="35" width="1175" height="100" rx="5" fill="#F8F8F8" stroke="#D8D8D8" stroke-width="1.1" />
+<text x="200" y="85.0" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#303030" text-anchor="end" dominant-baseline="central">User interface</text>
+<rect x="230" y="185" width="1175" height="100" rx="5" fill="#F8F8F8" stroke="#D8D8D8" stroke-width="1.1" />
+<text x="200" y="235.0" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#303030" text-anchor="end" dominant-baseline="central">Requests and tasks</text>
+<rect x="230" y="335" width="1175" height="100" rx="5" fill="#F8F8F8" stroke="#D8D8D8" stroke-width="1.1" />
+<text x="200" y="385.0" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#303030" text-anchor="end" dominant-baseline="central">Agent decisions</text>
+<rect x="230" y="485" width="1175" height="100" rx="5" fill="#F8F8F8" stroke="#D8D8D8" stroke-width="1.1" />
+<text x="200" y="535.0" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#303030" text-anchor="end" dominant-baseline="central">Python execution</text>
+<rect x="230" y="635" width="1175" height="100" rx="5" fill="#F8F8F8" stroke="#D8D8D8" stroke-width="1.1" />
+<text x="200" y="685.0" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#303030" text-anchor="end" dominant-baseline="central">Domain tools</text>
+<rect x="250" y="59" width="280" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="390.0" y="85.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Submit question and data</text>
+<rect x="1080" y="59" width="300" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="1230.0" y="85.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Display answer and charts</text>
+<rect x="250" y="209" width="280" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="390.0" y="235.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Bind data and load context</text>
+<rect x="250" y="359" width="280" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="390.0" y="385.0" font-family="Arial, Helvetica, sans-serif" font-size="17.5" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Select tools and read instructions</text>
+<rect x="650" y="350" width="300" height="70" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="800.0" y="373.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Analysis decisions</text>
+<text x="800.0" y="402.0" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#707070" text-anchor="middle" dominant-baseline="central">Generate code and review results</text>
+<rect x="1080" y="359" width="300" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="1230.0" y="385.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Compose and save answer</text>
+<rect x="650" y="509" width="300" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="800.0" y="535.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Run analysis code</text>
+<rect x="650" y="659" width="300" height="52" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="800.0" y="685.0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Call domain tools</text>
+<polyline points="390,111 390,209" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="390,209 394,201 386,201" fill="#787878" />
+<polyline points="390,261 390,359" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="390,359 394,351 386,351" fill="#787878" />
+<polyline points="530,385 650,385" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="650,385 642,381 642,389" fill="#787878" />
+<polyline points="800,420 800,509" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="800,509 804,501 796,501" fill="#787878" />
+<text x="821" y="463" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#707070" text-anchor="start" dominant-baseline="central">Code</text>
+<polyline points="765,561 765,659" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="765,659 769,651 761,651" fill="#787878" />
+<polyline points="835,659 835,561" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="835,561 831,569 839,569" fill="#787878" />
+<text x="744" y="608" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#707070" text-anchor="end" dominant-baseline="central">Call</text>
+<text x="856" y="608" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#707070" text-anchor="start" dominant-baseline="central">Data / source text</text>
+<polyline points="650,535 595,535 595,404 650,404" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="650,404 642,400 642,408" fill="#787878" />
+<text x="573" y="465" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#707070" text-anchor="end" dominant-baseline="central">Results and errors</text>
+<polyline points="950,385 1080,385" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="1080,385 1072,381 1072,389" fill="#787878" />
+<text x="1015" y="361" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#707070" text-anchor="middle" dominant-baseline="central">Finish analysis</text>
+<polyline points="1230,359 1230,111" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="1230,111 1226,119 1234,119" fill="#787878" />
+<text x="1251" y="235" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#707070" text-anchor="start" dominant-baseline="central">Answer</text>
+</svg>

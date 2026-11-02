@@ -146,10 +146,10 @@ class DemoHandler(SimpleHTTPRequestHandler):
     def _read_payload(self) -> dict[str, Any]:
         length = int(self.headers.get("Content-Length", "0"))
         if length > 5_000_000:
-            raise ValueError("请求过大；处理后的上传数据不得超过5MB。")
+            raise ValueError("Request too large. Processed uploads must not exceed 5 MB.")
         value = json.loads(self.rfile.read(length).decode("utf-8")) if length else {}
         if not isinstance(value, dict):
-            raise ValueError("请求体必须是JSON对象。")
+            raise ValueError("The request body must be a JSON object.")
         return value
 
     def _task_runner(self) -> TaskRunner | None:
@@ -339,7 +339,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
                     "current_stage": "task_queue",
                     "current_activity": {
                         "status": str(task["state"]),
-                        "summary": "任务已持久化，正在等待执行。",
+                        "summary": "Task saved and queued for execution.",
                     },
                     "progress": 0.02,
                     "live_steps": [],
@@ -617,8 +617,8 @@ def main() -> None:
             summarize=post_context_summary,
         )),
     )
-    print(f"SEVIR Agent: http://{host}:{port}")
-    print("按Ctrl+C停止服务。")
+    print(f"Multi-Source Weather Agent: http://{host}:{port}")
+    print("Press Ctrl+C to stop the server.")
     try:
         server.serve_forever()
     finally:

@@ -197,7 +197,7 @@ def regional_era5_fields(
         # it does not prove which revision (ERA5 or ERA5T) the source supplied.
         temporality.update(product="ERA5/ERA5T", data_class="reanalysis", availability_status="available",
                            provisional=None, classification_basis="successful_source_retrieval",
-                           label_zh="ERA5/ERA5T 再分析（数据源已返回）")
+                           label_zh="ERA5/ERA5T reanalysis returned by the data source")
 
     files = fetched.get("files") if isinstance(fetched.get("files"), dict) else {}
     base = _timestamp(str(request["era5_time_utc"]))

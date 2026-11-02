@@ -54,7 +54,7 @@ def classify_era5_valid_times(
             "availability_status": "not_yet_available",
             "provisional": None,
             "minimum_lag_days": ERA5T_MINIMUM_LAG_DAYS,
-            "label_zh": "ERA5/ERA5T 尚未到达官方发布时滞（非实时资料）",
+            "label_zh": "ERA5/ERA5T is not yet available under the release schedule",
         }
     if age < timedelta(days=ERA5_FINAL_CONSERVATIVE_LAG_DAYS):
         return {
@@ -64,7 +64,7 @@ def classify_era5_valid_times(
             "availability_status": "available_with_revision_risk",
             "provisional": True,
             "minimum_lag_days": ERA5T_MINIMUM_LAG_DAYS,
-            "label_zh": "ERA5T 初始发布再分析（约滞后5天，可能修订）",
+            "label_zh": "ERA5T initial reanalysis, approximately five days delayed and subject to revision",
         }
     return {
         **common,
@@ -73,7 +73,7 @@ def classify_era5_valid_times(
         "availability_status": "available",
         "provisional": False,
         "minimum_lag_days": ERA5_FINAL_CONSERVATIVE_LAG_DAYS,
-        "label_zh": "ERA5 最终历史再分析（非实时资料）",
+        "label_zh": "ERA5 final historical reanalysis",
     }
 
 

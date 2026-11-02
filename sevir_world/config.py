@@ -45,32 +45,32 @@ if VENDOR.exists() and os.getenv("SEVIR_USE_VENDOR", "0").lower() in {"1", "true
 def _bool_env(name: str) -> bool:
     raw = os.getenv(name)
     if raw is None:
-        raise RuntimeError(f"请在 .env 配置 {name}")
+        raise RuntimeError(f"Configure {name} in .env")
     value = raw.strip().lower()
     if value in {"1", "true", "yes", "on"}:
         return True
     if value in {"0", "false", "no", "off"}:
         return False
-    raise RuntimeError(f".env 中的 {name} 必须是布尔值")
+    raise RuntimeError(f"{name} in .env must be a boolean")
 
 
 def _float_env(name: str, minimum: float = 0.0) -> float:
     raw = str(os.getenv(name, "")).strip()
     if not raw:
-        raise RuntimeError(f"请在 .env 配置 {name}")
+        raise RuntimeError(f"Configure {name} in .env")
     try:
         value = float(raw)
         if not math.isfinite(value) or value < minimum:
             raise ValueError(name)
         return value
     except ValueError as error:
-        raise RuntimeError(f".env 中的 {name} 必须是数字") from error
+        raise RuntimeError(f"{name} in .env must be numeric") from error
 
 
 def _int_env(name: str, minimum: int = 1) -> int:
     value = _float_env(name, minimum)
     if not value.is_integer():
-        raise RuntimeError(f".env 中的 {name} 必须是整数")
+        raise RuntimeError(f"{name} in .env must be an integer")
     return int(value)
 
 

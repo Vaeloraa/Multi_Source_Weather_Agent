@@ -34,7 +34,7 @@ def isolated_copy(value, memo=None):
         return memo[id(value)]
     if isinstance(value, types.ModuleType):
         return value  # Module/service effects are outside the data transaction.
-    if isinstance(value, types.FunctionType) and value.__code__.co_filename == "<sevir-agent>":
+    if isinstance(value, types.FunctionType) and value.__code__.co_filename == "<multi-source-weather-agent>":
         namespace = memo.get(_FUNCTION_NAMESPACE)
         if namespace is None:
             raise TypeError("generated functions cannot be retained as output objects; retain their data instead")

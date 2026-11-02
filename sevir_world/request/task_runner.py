@@ -221,7 +221,7 @@ class TaskRunner:
             except Exception as error:
                 self._last_runner_error = f"{type(error).__name__}: {error}"
                 self.store.complete_task(request_id, final_state="failed",
-                    result={"status": "failed", "answer": "本轮结果保存失败，请重试。"},
+                    result={"status": "failed", "answer": "Could not save the results. Please retry."},
                     failure_class="result_commit_failed", termination_reason="result_commit_failed",
                     error={"type": type(error).__name__, "message": str(error)[:2000]},
                     owner_instance_id=self.instance_id)

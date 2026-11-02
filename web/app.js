@@ -81,10 +81,10 @@ let selectedConversationVisual = "";
 let activeConversationLayer = "all";
 let visualPaneResizeFrame = 0;
 const sessionStorageKey = "sevir-upload-chat-session-id";
-const chatStoragePrefix = "sevir-agent-chat-history:";
+const chatStoragePrefix = "multi-source-weather-agent-chat-history:";
 const activeUploadPrefix = "sevir-active-upload:";
 const activeTaskPrefix = "sevir-active-task:";
-const conversationIndexKey = "sevir-agent-conversations";
+const conversationIndexKey = "multi-source-weather-agent-conversations";
 // The UI is sometimes opened directly as web/index.html during demos.  In
 // that file:// mode relative /api URLs cannot reach the Python service, so
 // use the batch runner's default port unless the URL explicitly overrides it.
@@ -175,7 +175,7 @@ function pretty(value) {
   try {
     return JSON.stringify(compactForDisplay(value), null, 2);
   } catch (_error) {
-    return "[结果过大，已隐藏原始数组；统计摘要仍可用]";
+    return "[Large array hidden. Summary statistics remain available.]";
   }
 }
 
@@ -196,7 +196,7 @@ function renderExecutionFeedback(container, item) {
     details = document.createElement("details");
     details.className = "execution-feedback";
     const title = document.createElement("summary");
-    title.textContent = "本步返回值与数据复用";
+    title.textContent = "Step results and reusable data";
     details.appendChild(title);
     details.appendChild(document.createElement("p"));
     details.appendChild(document.createElement("pre"));
@@ -205,8 +205,8 @@ function renderExecutionFeedback(container, item) {
   const repeated = Number(feedback.repeated_call_count || 0);
   const cached = Number(feedback.repeated_cached_count || 0);
   setTextIfChanged(details.querySelector("p"),
-    `以下为程序返回值，执行成功不代表计算已验证。${repeated
-      ? `本步重复调用已成功的工具 ${repeated} 次，其中 ${cached} 次命中缓存；后续计算可复用已有变量。` : ""}`);
+    `Returned results. Review the values and method before drawing conclusions.${repeated
+      ? ` ${repeated} repeated calls, ${cached} served from cache. Existing variables can be reused.` : ""}`);
   setTextIfChanged(details.querySelector("pre"), pretty(feedback.result_preview));
 }
 
@@ -233,13 +233,13 @@ function canRunWithoutUpload() {
 function syncComposerAvailability() {
   runButton.disabled = requestInFlight || !questionInput.value.trim();
   if (!hasUploadedInput() && hasLiveContext()) {
-    questionInput.placeholder = "地点与时间已就绪，可请求开放数据、区域发现或局地追踪…";
+    questionInput.placeholder = "Location and time are set. Ask about observations or forecasts…";
   } else if (!hasUploadedInput()) {
-    questionInput.placeholder = "询问系统能力，或输入地点、时间与天气问题…";
+    questionInput.placeholder = "Ask about weather, data or models. Include a place and time…";
   } else if (uploadedSequenceId) {
-    questionInput.placeholder = "询问这13张图的历史演变或未来60分钟预测…";
+    questionInput.placeholder = "Ask about this sequence or its next-hour forecast…";
   } else {
-    questionInput.placeholder = "询问这张图的强度、面积或空间结构…";
+    questionInput.placeholder = "Ask about intensity, coverage or spatial structure…";
   }
 }
 
@@ -264,24 +264,24 @@ function normalizedAnalysisTimeUtc() {
 }
 
 const requestStageLabels = {
-  request_received: "已接收请求",
-  asset_binding: "正在校验结构化请求事实与输入资料",
-  agent_queue: "正在等待 Agent 执行槽位",
-  unified_agent: "Agent 正在执行、观察并继续分析",
-  agent_model: "语言模型正在决定下一步",
-  agent_execution: "正在执行代码并读取工具结果",
-  agent_step_completed: "已取得一步结果，正在继续分析",
-  verified_cache: "正在读取并校验已有结果",
-  completed: "分析完成",
-  failed: "本轮未完整完成",
+  request_received: "Request received",
+  asset_binding: "Validating inputs",
+  agent_queue: "Waiting for an execution slot",
+  unified_agent: "Running analysis and reviewing results",
+  agent_model: "Choosing the next step",
+  agent_execution: "Running code and reading tool results",
+  agent_step_completed: "Step complete. Continuing analysis",
+  verified_cache: "Loading and checking saved results",
+  completed: "Analysis complete",
+  failed: "Analysis incomplete",
 };
 
 function retrievalTimingText(call) {
   if (call?.cache_hit || !call?.retrieval?.timings) return "";
   const stages = call.retrieval.timings;
   const parts = [];
-  if (Number.isFinite(stages.embedding_seconds)) parts.push(`向量化 ${stages.embedding_seconds.toFixed(2)} 秒`);
-  if (Number.isFinite(stages.rerank_seconds)) parts.push(`重排 ${stages.rerank_seconds.toFixed(2)} 秒`);
+  if (Number.isFinite(stages.embedding_seconds)) parts.push(`Embedding ${stages.embedding_seconds.toFixed(2)} s`);
+  if (Number.isFinite(stages.rerank_seconds)) parts.push(`Reranking ${stages.rerank_seconds.toFixed(2)} s`);
   const runs = Object.values(call.retrieval.model_runs || {});
   if (runs.length) {
     const sum = (read) => runs.reduce((total, run) => {
@@ -292,43 +292,43 @@ function retrievalTimingText(call) {
     const load = sum((run) => run.timings?.dependency_import_seconds)
       + sum((run) => run.timings?.tokenizer_load_seconds) + sum((run) => run.timings?.model_load_seconds);
     const inference = sum((run) => run.timings?.inference_seconds);
-    parts.push(`其中 GPU 排队 ${queue.toFixed(3)} 秒，依赖与模型加载 ${load.toFixed(2)} 秒，推理 ${inference.toFixed(2)} 秒`);
+    parts.push(`GPU queue ${queue.toFixed(3)} s; model and dependency loading ${load.toFixed(2)} s; inference ${inference.toFixed(2)} s`);
   }
-  return parts.join("；");
+  return parts.join("; ");
 }
 
 const liveActionLabels = {
-  request_received: "接收请求",
-  asset_binding: "绑定数据与上下文",
-  queue: "等待执行槽位",
-  prepare: "准备 Agent",
-  model: "调用语言模型",
-  context: "整理模型上下文",
-  context_budget: "检查上下文预算",
-  select_tools: "选择工具并读取接口说明",
-  read_context: "读取历史记录与接口说明",
-  citation_repair: "补齐资料引用",
-  knowledge_reuse: "复用已有资料",
-  expand: "读取能力说明",
-  execute: "执行代码与工具",
-  cache_read: "读取验证缓存",
-  solution: "形成回答",
-  finish: "整理最终回答",
-  solution_validation: "核对证据链",
-  empty_action_repair: "修复空动作",
-  format_repair: "检查模型动作格式",
-  contract_required: "补充能力契约",
-  execution_budget: "检查执行上限",
-  stop: "停止本轮",
+  request_received: "Receive request",
+  asset_binding: "Bind data and context",
+  queue: "Wait for an execution slot",
+  prepare: "Prepare the agent",
+  model: "Call the language model",
+  context: "Prepare model context",
+  context_budget: "Check context budget",
+  select_tools: "Select tools and load instructions",
+  read_context: "Read records and tool instructions",
+  citation_repair: "Add source citations",
+  knowledge_reuse: "Reuse retrieved documents",
+  expand: "Read capability instructions",
+  execute: "Run code and tools",
+  cache_read: "Read verified cache",
+  solution: "Compose answer",
+  finish: "Finalize answer",
+  solution_validation: "Check supporting results",
+  empty_action_repair: "Retry empty action",
+  format_repair: "Check action format",
+  contract_required: "Load tool contracts",
+  execution_budget: "Check execution budget",
+  stop: "Stop analysis",
 };
 
 function executionStepNumber(steps, index) {
   const isPreparation = (item) => Number(item?.attempt) === 0
     && ["request_received", "asset_binding", "queue", "prepare", "cache_read"].includes(item?.action);
-  if (isPreparation(steps[index])) return "准备";
+  if (isPreparation(steps[index])) return "Preparation";
   // Old saved traces used model-call counts for both fields, so count events
   // here as well. Context checks can fail without making another model call.
-  return `第 ${steps.slice(0, index + 1).filter((item) => !isPreparation(item)).length} 步`;
+  return `Step ${steps.slice(0, index + 1).filter((item) => !isPreparation(item)).length}`;
 }
 
 function executionStepPresentation(steps, index) {
@@ -337,7 +337,7 @@ function executionStepPresentation(steps, index) {
     ["select_tools", "execute", "read_context", "finish"].includes(later?.action));
   return {
     status: recovered ? "recovered" : String(item?.status || "unknown").toLowerCase(),
-    summary: recovered ? "后续模型动作已通过格式检查，本次无效动作未执行。" : item?.summary || "",
+    summary: recovered ? "A valid replacement action was received. The invalid action was not executed." : item?.summary || "",
   };
 }
 
@@ -361,9 +361,9 @@ function liveElapsedText(value) {
   if (!Number.isFinite(milliseconds) || milliseconds < 0) return "";
   if (milliseconds < 1000) return `${Math.round(milliseconds)} ms`;
   const seconds = Math.round(milliseconds / 100) / 10;
-  if (seconds < 60) return `${seconds} 秒`;
+  if (seconds < 60) return `${seconds} s`;
   const minutes = Math.floor(seconds / 60);
-  return `${minutes} 分 ${(seconds % 60).toFixed(1).padStart(4, "0")} 秒`;
+  return `${minutes} min ${(seconds % 60).toFixed(1).padStart(4, "0")} s`;
 }
 
 function stepTimingText(item) {
@@ -381,10 +381,10 @@ function stepTimingText(item) {
       ? [model, execution].filter(Number.isFinite).reduce((sum, value) => sum + value, 0)
       : legacy);
   if (!Number.isFinite(total)) return "";
-  const parts = [`总计 ${liveElapsedText(total)}`];
+  const parts = [`Total ${liveElapsedText(total)}`];
   if (item?.action === "execute") {
-    if (Number.isFinite(model)) parts.push(`模型 ${liveElapsedText(model)}`);
-    if (Number.isFinite(execution)) parts.push(`执行 ${liveElapsedText(execution)}`);
+    if (Number.isFinite(model)) parts.push(`Model ${liveElapsedText(model)}`);
+    if (Number.isFinite(execution)) parts.push(`Execution ${liveElapsedText(execution)}`);
   }
   return parts.join(" · ");
 }
@@ -410,7 +410,7 @@ function syncLiveStepList(timeline, steps) {
       waiting.dataset.stepKey = "waiting";
     }
     setClassIfChanged(waiting, "live-step waiting");
-    setTextIfChanged(waiting, "正在建立本轮执行记录…");
+    setTextIfChanged(waiting, "Creating the execution record…");
     if (timeline.firstElementChild !== waiting) timeline.insertBefore(waiting, timeline.firstElementChild);
     [...timeline.children].forEach((item) => { if (item !== waiting) item.remove(); });
     return;
@@ -435,7 +435,7 @@ function syncLiveStepList(timeline, steps) {
     }
     setClassIfChanged(row, `live-step ${itemStatus}`);
     const stepNumber = executionStepNumber(steps, index);
-    const action = liveActionLabels[item?.action] || String(item?.action || "执行步骤").replaceAll("_", " ");
+    const action = liveActionLabels[item?.action] || String(item?.action || "Execution step").replaceAll("_", " ");
     const elapsedText = stepTimingText(item);
     setTextIfChanged(row.querySelector("[data-step-role='heading'] strong"), `${stepNumber} · ${action}`);
     setTextIfChanged(
@@ -446,7 +446,7 @@ function syncLiveStepList(timeline, steps) {
     setTextIfChanged(summary, presentation.summary);
     summary.classList.toggle("hidden", !presentation.summary);
     const error = row.querySelector("[data-step-role='error']");
-    setTextIfChanged(error, item?.error ? `原始错误：${executionErrorText(item.error)}` : "");
+    setTextIfChanged(error, item?.error ? `Error details: ${executionErrorText(item.error)}` : "");
     error.classList.toggle("hidden", !item?.error || itemStatus === "recovered");
     const callList = row.querySelector("[data-step-role='calls']");
     const calls = Array.isArray(item?.calls) ? item.calls : [];
@@ -457,13 +457,13 @@ function syncLiveStepList(timeline, steps) {
         callList.appendChild(callNode);
       }
       const callStatus = executionStatusLabel(call?.status);
-      const cache = call?.cache_hit ? " · 缓存命中" : "";
+      const cache = call?.cache_hit ? " · Cache hit" : "";
       const result = call?.result_summary ? ` · ${call.result_summary}` : "";
       const retrievalTiming = retrievalTimingText(call);
       const callError = call?.error ? ` · ${executionErrorText(call.error)}` : "";
       setTextIfChanged(
         callNode,
-        `${displayToolName(call)}：${callStatus}${cache}${result}${retrievalTiming ? ` · ${retrievalTiming}` : ""}${callError}`,
+        `${displayToolName(call)}: ${callStatus}${cache}${result}${retrievalTiming ? ` · ${retrievalTiming}` : ""}${callError}`,
       );
     });
     while (callList.children.length > calls.length) callList.lastElementChild.remove();
@@ -487,15 +487,15 @@ function ensureLiveExecutionPanel(message) {
   panel.setAttribute("aria-live", "polite");
   panel.innerHTML = `
     <div class="live-execution-heading">
-      <div><span class="live-pulse" aria-hidden="true"></span><strong>Agent 执行路径</strong></div>
-      <div class="live-heading-meta"><small data-live-role="task">任务尚未绑定</small><span data-live-role="elapsed">刚刚开始</span></div>
+      <div><span class="live-pulse" aria-hidden="true"></span><strong>Analysis progress</strong></div>
+      <div class="live-heading-meta"><small data-live-role="task">Waiting for task</small><span data-live-role="elapsed">Just started</span></div>
     </div>
-    <div class="live-progress-track" role="progressbar" aria-label="Agent阶段进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="1">
+    <div class="live-progress-track" role="progressbar" aria-label="Analysis progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="1">
       <i data-live-role="progress"></i>
     </div>
-    <p class="live-current-activity" data-live-role="activity">正在连接执行服务…</p>
+    <p class="live-current-activity" data-live-role="activity">Connecting to the analysis service…</p>
     <ol class="live-step-list" data-live-role="steps"></ol>
-    <p class="live-progress-note" data-live-role="note">页面会持续更新；无需重复提交问题。</p>
+    <p class="live-progress-note" data-live-role="note">Progress updates automatically.</p>
   `;
   content.appendChild(panel);
   return panel;
@@ -504,27 +504,27 @@ function ensureLiveExecutionPanel(message) {
 function renderDurableTaskState(task, requestId, pendingMessage, { resumed = false } = {}) {
   const state = String(task?.state || "unknown");
   const labels = {
-    queued: "队列等待",
-    running: "后台执行",
-    cancelling: "正在取消",
-    succeeded: "已成功",
-    failed: "未完整完成",
-    cancelled: "已取消",
-    interrupted: "服务重启中断",
+    queued: "Queued",
+    running: "Running",
+    cancelling: "Cancelling",
+    succeeded: "Succeeded",
+    failed: "Incomplete",
+    cancelled: "Cancelled",
+    interrupted: "Interrupted by service restart",
   };
   const panel = ensureLiveExecutionPanel(pendingMessage);
   if (panel) {
     panel.dataset.taskState = state;
     const taskLabel = panel.querySelector("[data-live-role='task']");
     if (taskLabel) {
-      setTextIfChanged(taskLabel, `${resumed ? "已恢复 · " : ""}${labels[state] || state} · ${String(requestId).slice(0, 12)}`);
-      taskLabel.title = `持久任务 ID：${requestId}`;
+      setTextIfChanged(taskLabel, `${resumed ? "Resumed · " : ""}${labels[state] || state} · ${String(requestId).slice(0, 12)}`);
+      taskLabel.title = `Task ID: ${requestId}`;
     }
   }
   runState.dataset.taskState = state;
   runState.setAttribute(
     "aria-label",
-    `${labels[state] || state}，持久任务 ${requestId}`,
+    `${labels[state] || state}; task ${requestId}`,
   );
 }
 
@@ -540,7 +540,7 @@ function renderLiveExecutionProgress(message, snapshot, state) {
   const percent = Number.isFinite(progressValue)
     ? Math.min(100, Math.max(1, Math.round(progressValue * 100))) : 1;
   const status = String(snapshot?.status || "running").toLowerCase();
-  const summary = String(activity.summary || requestStageLabels[stage] || "Agent 正在分析");
+  const summary = String(activity.summary || requestStageLabels[stage] || "Analyzing");
   const signature = JSON.stringify([
     stage, status, steps.length, activity.attempt, activity.action, activity.status, summary,
   ]);
@@ -555,12 +555,12 @@ function renderLiveExecutionProgress(message, snapshot, state) {
   const elapsed = Number(snapshot?.elapsed_ms);
   setTextIfChanged(panel.querySelector("[data-live-role='elapsed']"), liveElapsedText(
     Number.isFinite(elapsed) ? elapsed : now - state.startedAt,
-  ) || "正在执行");
+  ) || "Running");
   const track = panel.querySelector(".live-progress-track");
   track.setAttribute("aria-valuenow", String(percent));
   panel.querySelector("[data-live-role='progress']").style.width = `${percent}%`;
   const current = panel.querySelector("[data-live-role='activity']");
-  const attemptPrefix = Number(activity.attempt) > 0 ? `第 ${activity.attempt} 步 · ` : "";
+  const attemptPrefix = Number(activity.attempt) > 0 ? `Step ${activity.attempt} · ` : "";
   setTextIfChanged(current, `${attemptPrefix}${summary}`);
   const timeline = panel.querySelector("[data-live-role='steps']");
   syncLiveStepList(timeline, steps);
@@ -569,16 +569,16 @@ function renderLiveExecutionProgress(message, snapshot, state) {
   const stalledSeconds = Math.max(0, Math.round((now - state.lastChangeAt) / 1000));
   if (snapshot?.failure_message || snapshot?.next_action) {
     note.className = "live-progress-note error";
-    setTextIfChanged(note, `${snapshot.failure_message || "本轮未完整完成。"}${snapshot.next_action ? ` 下一步：${snapshot.next_action}` : ""}`);
+    setTextIfChanged(note, `${snapshot.failure_message || "Analysis incomplete. "}${snapshot.next_action ? ` Next: ${snapshot.next_action}` : ""}`);
   } else if (status === "cancelled") {
     note.className = "live-progress-note warning";
-    setTextIfChanged(note, "正在停止剩余工作；已经完成的步骤会保留。");
+    setTextIfChanged(note, "Stopping. Completed results will be retained.");
   } else if (stalledSeconds >= 20) {
     note.className = "live-progress-note warning";
-    setTextIfChanged(note, `当前步骤已持续 ${stalledSeconds} 秒，可能正在等待模型、下载数据或现场推理。任务仍在运行，你可以继续等待或点击“停止”。`);
+    setTextIfChanged(note, `This step has been running for ${stalledSeconds} s. Data retrieval or inference may still be in progress. Wait or select Stop.`);
   } else {
     note.className = "live-progress-note";
-    setTextIfChanged(note, "页面会持续更新；无需重复提交问题，已完成步骤会保留在本轮记录中。");
+    setTextIfChanged(note, "Progress updates automatically. Completed steps remain in the record.");
   }
 }
 
@@ -587,7 +587,7 @@ function renderProgressReconnectState(message, state) {
   if (!panel || state.pollErrors < 3) return;
   const note = panel.querySelector("[data-live-role='note']");
   note.className = "live-progress-note warning";
-  setTextIfChanged(note, "暂时无法读取实时进度，正在自动重连。这不等于任务失败；你仍可点击“停止”结束等待。");
+  setTextIfChanged(note, "Reconnecting to live progress. You can select Stop to cancel the task.");
 }
 
 async function pollRequestProgress(requestId, state, pendingMessage) {
@@ -608,12 +608,12 @@ async function pollRequestProgress(requestId, state, pendingMessage) {
         const percent = Number.isFinite(progress) && progress > 0
           ? ` · ${Math.min(100, Math.max(1, Math.round(progress * 100)))}%`
           : "";
-        const label = requestStageLabels[stage] || "Agent 正在分析";
+        const label = requestStageLabels[stage] || "Analyzing";
         setTextIfChanged(runState, `${label}${percent}`);
         const elapsedText = liveElapsedText(snapshot.elapsed_ms);
         setTextIfChanged(
           conversationStatus,
-          `${label}${percent}${elapsedText ? ` · 已运行 ${elapsedText}` : ""}；完成后会保留工具证据与执行轨迹。`,
+          `${label}${percent}${elapsedText ? ` · Elapsed ${elapsedText}` : ""}; tool results and execution records are saved on completion.`,
         );
         renderLiveExecutionProgress(pendingMessage, snapshot, state);
       } else {
@@ -702,8 +702,8 @@ function taskFallbackResult(task) {
   return {
     status: cancelled ? "cancelled" : "unknown",
     answer: cancelled
-      ? "本轮任务已取消。"
-      : "任务已结束，但结果暂未取得。",
+      ? "Task cancelled."
+      : "Task ended. Results are not yet available.",
     request_id: task?.request_id || "",
     session_id: task?.session_id || sessionId,
     termination_reason: task?.termination_reason || state,
@@ -727,18 +727,18 @@ async function waitForDurableTask(requestId, state, pendingMessage) {
           state.done = true;
           return {
             status: "failed",
-            answer: "持久任务记录在连续三次查询中都不存在；没有把它误报为分析成功。",
+            answer: "The task record was not found after three checks.",
             request_id: requestId,
             session_id: sessionId,
             termination_reason: "durable_task_record_missing",
             failure_class: "task_state_missing",
-            failure_message: "TaskStore 中没有对应记录。",
-            next_action: "确认服务端是否切换了数据目录；如记录确实已清理，再重新提交问题。",
+            failure_message: "No matching task record was found.",
+            next_action: "Check whether the server data directory changed. Resubmit if the task record was removed.",
           };
         }
-        throw new Error("持久任务暂未可见");
+        throw new Error("Task record not yet available");
       }
-      if (!response.ok) throw new Error(`任务状态接口返回 HTTP ${response.status}`);
+      if (!response.ok) throw new Error(`Task status request returned HTTP ${response.status}`);
       const body = await response.json();
       const task = body.task || {};
       networkErrors = 0;
@@ -747,22 +747,22 @@ async function waitForDurableTask(requestId, state, pendingMessage) {
       state.lastTaskState = task.state;
       if (lifecycleChanged) renderDurableTaskState(task, requestId, pendingMessage);
       const lifecycleLabels = {
-        queued: "已入队，等待执行",
-        running: "后台正在执行",
-        cancelling: "正在协作式取消",
-        succeeded: "执行完成",
-        failed: "执行未完整完成",
-        cancelled: "已取消",
-        interrupted: "服务重启时中断",
+        queued: "Queued for execution",
+        running: "Running in the background",
+        cancelling: "Stopping safely",
+        succeeded: "Execution complete",
+        failed: "Execution incomplete",
+        cancelled: "Cancelled",
+        interrupted: "Interrupted by service restart",
       };
       // The detailed request-progress poll owns the running labels. Without
       // this guard the 600 ms task poll and 700 ms progress poll alternated
       // different strings, producing the visible refresh/flicker loop.
       if (!state.lastSnapshot || task.state !== "running") {
-        setTextIfChanged(runState, lifecycleLabels[task.state] || "读取任务状态");
+        setTextIfChanged(runState, lifecycleLabels[task.state] || "Reading task status");
         setTextIfChanged(
           conversationStatus,
-          `${lifecycleLabels[task.state] || task.state} · 任务 ${String(requestId).slice(0, 12)}；刷新页面后仍可恢复。`,
+          `${lifecycleLabels[task.state] || task.state} · Task ${String(requestId).slice(0, 12)}; progress can be restored after a refresh.`,
         );
       }
       if (task.terminal) {
@@ -809,17 +809,17 @@ async function submitDurableTaskWithReconnect(requestPayload, requestId, state, 
         ? body.error?.message || body.error?.type
         : body?.error;
       if (response.status >= 400 && response.status < 500) {
-        const rejected = new Error(String(message || `任务提交被拒绝（HTTP ${response.status}）`));
+        const rejected = new Error(String(message || `Task rejected (HTTP ${response.status})`));
         rejected.durableSubmissionRejected = true;
         throw rejected;
       }
-      throw new Error(String(message || `任务提交接口返回 HTTP ${response.status}`));
+      throw new Error(String(message || `Task submission returned HTTP ${response.status}`));
     } catch (error) {
       if (error?.durableSubmissionRejected) throw error;
       state.pollErrors = Number(state.pollErrors || 0) + 1;
       renderProgressReconnectState(pendingMessage, state);
-      runState.textContent = "重新连接任务队列";
-      conversationStatus.textContent = `第 ${attempts} 次提交连接未确认；正在用同一幂等键重试，不会重复创建任务。`;
+      runState.textContent = "Reconnecting to the task queue";
+      conversationStatus.textContent = `Submission attempt ${attempts} is unconfirmed. Retrying with the same request key.`;
       await new Promise((resolve) => setTimeout(resolve, 1200));
     }
   }
@@ -847,18 +847,18 @@ async function readDurableTaskWithReconnect(requestId, state, pendingMessage) {
           if (discovered) return discovered;
         }
         if (notFoundResponses >= 4) return null;
-        conversationStatus.textContent = `正在确认持久任务 ${String(requestId).slice(0, 12)} 是否已完成首次入队。`;
+        conversationStatus.textContent = `Checking whether task ${String(requestId).slice(0, 12)} was queued.`;
         await new Promise((resolve) => setTimeout(resolve, 800));
         continue;
       }
-      if (!response.ok) throw new Error(`任务状态接口返回 HTTP ${response.status}`);
+      if (!response.ok) throw new Error(`Task status request returned HTTP ${response.status}`);
       const body = await response.json();
       return body.task || null;
     } catch (_error) {
       networkErrors += 1;
       state.pollErrors = Math.max(state.pollErrors || 0, networkErrors);
       renderProgressReconnectState(pendingMessage, state);
-      conversationStatus.textContent = `正在重新连接持久任务 ${String(requestId).slice(0, 12)}；后台状态不会因页面断线而丢失。`;
+      conversationStatus.textContent = `Reconnecting to task ${String(requestId).slice(0, 12)}. Its background state is saved.`;
       await new Promise((resolve) => setTimeout(resolve, 1200));
     }
   }
@@ -871,16 +871,16 @@ function resultPresentation(data) {
   // Never infer completion from diagnostic prose, failure_class or missing fields.
   const status = String(data?.status || "unknown").toLowerCase();
   const labels = {
-    ok: "已完成", success: "已完成", completed: "已完成", partial: "部分完成",
-    cancelled: "已取消", canceled: "已取消", interrupted: "执行中断",
-    error: "未完成", failed: "未完成", failure: "未完成", unavailable: "数据不可用",
-    blocked: "未完成", clarification_needed: "等待补充信息", unknown: "结果待确认",
+    ok: "Completed", success: "Completed", completed: "Completed", partial: "Partially completed",
+    cancelled: "Cancelled", canceled: "Cancelled", interrupted: "Interrupted",
+    error: "Incomplete", failed: "Incomplete", failure: "Incomplete", unavailable: "Data unavailable",
+    blocked: "Incomplete", clarification_needed: "More information needed", unknown: "Result pending",
   };
-  return { status, label: labels[status] || "结果待确认", incomplete: !["ok", "success", "completed"].includes(status) };
+  return { status, label: labels[status] || "Result pending", incomplete: !["ok", "success", "completed"].includes(status) };
 }
 
 async function presentDurableTaskResult(data, pendingMessage, turnId) {
-  const answer = data.answer || "本轮未返回文字结论。";
+  const answer = data.answer || "No text answer was returned.";
   const incompleteResult = resultPresentation(data).incomplete;
   const meta = compactTurnMeta(data);
   completePendingMessage(pendingMessage, answer, meta, incompleteResult);
@@ -903,12 +903,12 @@ async function presentDurableTaskResult(data, pendingMessage, turnId) {
     await renderConversationList();
     renderResult(data, pendingMessage);
     conversationStatus.textContent = incompleteResult
-      ? `${resultPresentation(data).label}。${data.failure_message || ""}${data.next_action ? ` 下一步：${data.next_action}` : ""}`
-      : `当前对话 · ${data.session_turn_count ?? Math.ceil(chatHistory.length / 2)}轮 · 可继续追问`;
+      ? `${resultPresentation(data).label}. ${data.failure_message || ""}${data.next_action ? ` Next: ${data.next_action}` : ""}`
+      : `Current conversation · ${data.session_turn_count ?? Math.ceil(chatHistory.length / 2)} exchanges · Ask a follow-up`;
   } catch (displayError) {
-    console.error("Agent回答已返回，但页面展示失败：", displayError);
-    renderError(`Agent回答已成功返回，但部分页面展示失败：${displayError.message}`);
-    conversationStatus.textContent = "Agent回答已返回；部分执行记录或图表未能显示。";
+    console.error("The answer was returned, but display failed: ", displayError);
+    renderError(`The answer was returned, but part of the display failed: ${displayError.message}`);
+    conversationStatus.textContent = "Answer received. Some records or charts could not be displayed.";
   }
   return { answer, incompleteResult };
 }
@@ -923,7 +923,7 @@ async function resumeActiveTaskIfPresent() {
   if (!chatHistory.some((item) => item.role === "user" && item.turnId === turnId)) {
     const restoredUser = {
       role: "user",
-      text: active.question || "恢复中的持久任务",
+      text: active.question || "Restoring saved task",
       timestamp: active.submittedAt || Date.now(),
       turnId,
     };
@@ -959,14 +959,14 @@ async function resumeActiveTaskIfPresent() {
   activeRequestTransport = "task";
   activeRequestController = new AbortController();
   syncComposerAvailability();
-  runButton.firstElementChild.textContent = "恢复中";
-  runState.textContent = "正在恢复";
+  runButton.firstElementChild.textContent = "Restoring";
+  runState.textContent = "Restoring";
   runState.className = "run-state running";
-  conversationStatus.textContent = `正在接回持久任务 ${String(active.requestId).slice(0, 12)}。`;
+  conversationStatus.textContent = `Reconnecting to task ${String(active.requestId).slice(0, 12)}.`;
   if (cancelRequestButton) {
     cancelRequestButton.classList.remove("hidden");
     cancelRequestButton.disabled = false;
-    cancelRequestButton.querySelector("span").textContent = "停止";
+    cancelRequestButton.querySelector("span").textContent = "Stop";
   }
 
   try {
@@ -976,13 +976,13 @@ async function resumeActiveTaskIfPresent() {
     if (!task) {
       const missing = {
         status: "failed",
-        answer: "浏览器保存了任务编号，但服务端已找不到对应的持久任务记录。没有把它误报为分析成功。",
+        answer: "The saved task ID has no matching record on the server.",
         request_id: active.requestId,
         session_id: active.sessionId || sessionId,
         termination_reason: "durable_task_record_missing",
         failure_class: "task_state_missing",
-        failure_message: "TaskStore 中没有对应记录。",
-        next_action: "确认是否切换了数据目录；如记录确实已清理，再重新提交问题。",
+        failure_message: "No matching task record was found.",
+        next_action: "Check the server data directory. Resubmit if the task record was removed.",
       };
       durableTaskSettled = true;
       await presentDurableTaskResult(missing, pendingMessage, turnId);
@@ -990,7 +990,7 @@ async function resumeActiveTaskIfPresent() {
     }
     renderDurableTaskState(task, active.requestId, pendingMessage, { resumed: true });
     activeRequestPhase = "execution";
-    if (cancelRequestButton) cancelRequestButton.querySelector("span").textContent = "停止";
+    if (cancelRequestButton) cancelRequestButton.querySelector("span").textContent = "Stop";
     ensureLiveExecutionPanel(pendingMessage);
     progressPromise = pollRequestProgress(
       active.requestId, progressState, pendingMessage,
@@ -1003,8 +1003,8 @@ async function resumeActiveTaskIfPresent() {
   } catch (error) {
     // Keep the active task pointer: a browser-side exception is not evidence
     // that the durable background task failed.
-    renderError(`任务恢复界面发生错误：${error.message}`);
-    conversationStatus.textContent = "后台任务编号仍已保留；刷新页面可继续恢复。";
+    renderError(`Could not restore the task display: ${error.message}`);
+    conversationStatus.textContent = "The task ID is saved. Refresh to reconnect.";
   } finally {
     progressState.done = true;
     progressState.pollController?.abort();
@@ -1018,10 +1018,10 @@ async function resumeActiveTaskIfPresent() {
     if (cancelRequestButton) {
       cancelRequestButton.classList.add("hidden");
       cancelRequestButton.disabled = false;
-      cancelRequestButton.querySelector("span").textContent = "停止";
+      cancelRequestButton.querySelector("span").textContent = "Stop";
     }
     syncComposerAvailability();
-    runButton.firstElementChild.textContent = "发送";
+    runButton.firstElementChild.textContent = "Send";
   }
 }
 
@@ -1054,8 +1054,8 @@ function clearUploadedInput({ forget = true } = {}) {
   sequenceUploadStatus.classList.add("hidden");
   sequenceUploadStatus.textContent = "";
   attachmentTray.classList.add("hidden");
-  attachmentTitle.textContent = "正在读取图片…";
-  uploadStatus.textContent = "请选择1张或13张384×384灰度PNG。";
+  attachmentTitle.textContent = "Reading images…";
+  uploadStatus.textContent = "Select one or 13 grayscale PNG images at 384 × 384 pixels.";
   dataSourceInput.value = "upload";
   predictionControls.classList.add("hidden");
   if (forget) {
@@ -1072,13 +1072,13 @@ function restoreActiveUpload() {
     uploadedSequenceId = saved.sequenceUploadId || "";
     dataSourceInput.value = uploadedSequenceId ? "upload_sequence" : "upload";
     pendingAttachmentPreview = saved.preview || "";
-    attachmentTitle.textContent = saved.title || (uploadedSequenceId ? "已恢复13帧图片" : "已恢复图片");
+    attachmentTitle.textContent = saved.title || (uploadedSequenceId ? "13-frame sequence restored" : "Image restored");
     if (pendingAttachmentPreview) {
       uploadPreview.src = pendingAttachmentPreview;
       uploadPreview.classList.remove("hidden");
     }
     attachmentTray.classList.remove("hidden");
-    uploadStatus.textContent = "已恢复上一轮图片；继续提问即可，上传新图片后会切换分析对象。";
+    uploadStatus.textContent = "Previous images restored. Ask a follow-up or upload new observations.";
     syncDataSource();
     syncComposerAvailability();
   } catch (_error) {
@@ -1186,7 +1186,7 @@ function artifactReferencesFromText(text) {
       url: match[2],
       image_url: match[2],
       mime_type: "image/png",
-      title: match[1] || "Agent生成图表",
+      title: match[1] || "Analysis chart",
       verified: true,
     });
   }
@@ -1210,12 +1210,12 @@ function visualArtifactsFromResult(result, answer = "") {
 }
 
 const conversationLayerMeta = {
-  all: { label: "全部", kind: "综合研判" },
-  observation: { label: "观测", kind: "观测证据" },
-  environment: { label: "环境", kind: "环境证据" },
-  forecast: { label: "预测", kind: "预测证据" },
-  verification: { label: "后续验证", kind: "实况检验" },
-  analysis: { label: "分析图表", kind: "派生分析" },
+  all: { label: "All", kind: "Combined analysis" },
+  observation: { label: "Observations", kind: "Observations" },
+  environment: { label: "Environment", kind: "Regional conditions" },
+  forecast: { label: "Forecast", kind: "Forecasts" },
+  verification: { label: "Verification", kind: "Verification" },
+  analysis: { label: "Analysis chart", kind: "Derived analysis" },
 };
 
 function conversationArtifactLayer(artifact = {}) {
@@ -1228,33 +1228,33 @@ function updateConversationTimeline(selected) {
   const layer = selected?.layer || "analysis";
   const timelines = {
     observation: {
-      title: "观测时间",
-      label: "5分钟一帧 · 历史至当前",
-      marks: ["−60 min", "−30 min", "当前"],
+      title: "Observation time",
+      label: "5-minute frames · Past to present",
+      marks: ["−60 min", "−30 min", "Now"],
       position: 2,
     },
     forecast: {
-      title: "预测时效",
-      label: "5分钟一帧 · 当前至未来",
-      marks: ["当前", "+60 min", "+120 min", "+180 min"],
+      title: "Forecast lead time",
+      label: "5-minute frames · Present to future",
+      marks: ["Now", "+60 min", "+120 min", "+180 min"],
       position: 0,
     },
     verification: {
-      title: "预测与实况验证",
-      label: "同一有效时间对照",
-      marks: ["当前", "+60 min", "+120 min", "+180 min"],
+      title: "Forecast verification",
+      label: "Matched valid times",
+      marks: ["Now", "+60 min", "+120 min", "+180 min"],
       position: 0,
     },
     environment: {
-      title: "环境数据时间",
-      label: "小时级 · 大尺度背景",
-      marks: ["−24 h", "−6 h", "当前", "+6 h", "+12 h", "+24 h"],
+      title: "Regional data time",
+      label: "Hourly · Regional context",
+      marks: ["−24 h", "−6 h", "Now", "+6 h", "+12 h", "+24 h"],
       position: 2,
     },
     analysis: {
-      title: "分析图表时间范围",
-      label: "由当前图表实际数据决定",
-      marks: ["历史", "当前", "未来"],
+      title: "Chart time range",
+      label: "Based on the chart data",
+      marks: ["Past", "Now", "Future"],
       position: 1,
     },
   };
@@ -1288,17 +1288,17 @@ function updateConversationTimeline(selected) {
   visualTimelineScale.replaceChildren();
   frameMarks.forEach((index) => {
     const span = document.createElement("span");
-    span.textContent = frames[index]?.title || `第${index + 1}帧`;
+    span.textContent = frames[index]?.title || `Frame ${index + 1}`;
     visualTimelineScale.appendChild(span);
   });
   const frameRatio = (selectedIndex / (frames.length - 1)) * 100;
   visualTimelineMarker.style.left = `calc(${frameRatio}% - 5px)`;
-  visualTimelineLabel.textContent = `${frames[selectedIndex]?.title || `第${selectedIndex + 1}帧`} · ${selectedIndex + 1}/${frames.length}`;
+  visualTimelineLabel.textContent = `${frames[selectedIndex]?.title || `Frame ${selectedIndex + 1}`} · ${selectedIndex + 1}/${frames.length}`;
   if (visualTimelineSlider) {
     visualTimelineSlider.max = String(frames.length - 1);
     visualTimelineSlider.value = String(selectedIndex);
     visualTimelineSlider.disabled = false;
-    visualTimelineSlider.setAttribute("aria-valuetext", frames[selectedIndex]?.title || selected?.title || "当前时刻");
+    visualTimelineSlider.setAttribute("aria-valuetext", frames[selectedIndex]?.title || selected?.title || "Current time");
   }
 }
 
@@ -1340,7 +1340,7 @@ function renderConversationThumbnails() {
     button.type = "button";
     button.dataset.artifactIdentity = artifact.identity;
     button.setAttribute("role", "listitem");
-    button.setAttribute("aria-label", `查看${conversationLayerMeta[artifact.layer].label}图片${index + 1}：${artifact.title}`);
+    button.setAttribute("aria-label", `View ${conversationLayerMeta[artifact.layer].label} chart ${index + 1}: ${artifact.title}`);
     const image = document.createElement("img");
     image.src = assetUrl(artifact.thumbnail);
     image.alt = "";
@@ -1372,18 +1372,18 @@ function updateConversationVisualContext(result = {}) {
     || result?.presentation?.place
     || result?.tool_result?.place
     || result?.place
-    || "当前事件";
+    || "Current event";
   const initializedAt = analysisTimeInput?.value
     || result?.presentation?.initialization_time_utc
     || result?.initialization_time_utc
-    || "最新可用";
+    || "Latest available";
   const runs = Array.isArray(result?.tool_runs) ? result.tool_runs : [];
   const cacheHit = runs.some((run) => run?.cache_hit === true || /cache_hit|cached/.test(String(run?.route_mode || "")));
   const liveRun = runs.some((run) => /live/.test(String(run?.route_mode || run?.data_policy || "")));
   if (visualContextPlace) visualContextPlace.textContent = place;
-  if (visualContextTime) visualContextTime.textContent = initializedAt === "最新可用" ? initializedAt : String(initializedAt).replace("T", " ").replace(/Z$/, " UTC");
-  if (visualContextStatus) visualContextStatus.textContent = cacheHit ? "缓存已命中" : (liveRun ? "实时计算完成" : "证据已就绪");
-  if (visualEvidenceLabel) visualEvidenceLabel.textContent = `${conversationVisualArtifacts.length} 个可追溯视图`;
+  if (visualContextTime) visualContextTime.textContent = initializedAt === "Latest available" ? initializedAt : String(initializedAt).replace("T", " ").replace(/Z$/, " UTC");
+  if (visualContextStatus) visualContextStatus.textContent = cacheHit ? "Loaded from cache" : (liveRun ? "Live analysis complete" : "Results ready");
+  if (visualEvidenceLabel) visualEvidenceLabel.textContent = `${conversationVisualArtifacts.length} traceable views`;
 }
 
 function selectConversationVisual(identity) {
@@ -1407,12 +1407,12 @@ function selectConversationVisual(identity) {
   if (conversationVisualKind) conversationVisualKind.textContent = meta.kind;
   if (visualTimelineLabel) {
     visualTimelineLabel.textContent = selected.layer === "observation"
-      ? "历史至当前"
+      ? "Past to present"
       : selected.layer === "forecast"
-        ? "当前至未来60分钟"
+        ? "Next 60 minutes"
         : selected.layer === "verification"
-          ? "预测与实况对照"
-          : "事件有效时段";
+          ? "Forecast and observations"
+          : "Event time range";
   }
   updateConversationTimeline(selected);
   conversationVisualThumbnails.querySelectorAll("button").forEach((button) => {
@@ -1433,7 +1433,7 @@ conversationVisualImage?.addEventListener("error", () => {
   conversationVisualStage?.classList.add("is-unavailable");
   conversationVisualImage?.classList.add("hidden");
   if (conversationVisualDescription) {
-    conversationVisualDescription.textContent = "图表文件已失效或尚未生成，已从当前视图隐藏。";
+    conversationVisualDescription.textContent = "Chart unavailable. It has been hidden from this view.";
     conversationVisualDescription.classList.remove("hidden");
   }
 });
@@ -1461,7 +1461,7 @@ function renderConversationVisualPane(extraResult = null) {
       identity,
       source,
       thumbnail: artifact.thumbnail?.url || source,
-      title: artifact.title || artifact.chart_type || "Agent生成图表",
+      title: artifact.title || artifact.chart_type || "Analysis chart",
       description: artifact.description || "",
       layer: conversationArtifactLayer(artifact),
       chartType: artifact.chart_type || "",
@@ -1477,7 +1477,7 @@ function renderConversationVisualPane(extraResult = null) {
   conversationVisualPane.classList.toggle("hidden", conversationVisualArtifacts.length === 0);
   conversationContentLayout?.classList.toggle("has-visuals", conversationVisualArtifacts.length > 0);
   fitConversationVisualPane();
-  conversationVisualCount.textContent = `${conversationVisualArtifacts.length}张`;
+  conversationVisualCount.textContent = `${conversationVisualArtifacts.length} charts`;
   updateConversationVisualContext(extraResult || {});
   if (!conversationVisualArtifacts.length) {
     selectedConversationVisual = "";
@@ -1593,7 +1593,7 @@ async function requestDeleteTurn(turnId) {
     deleteTurnDialog.showModal();
     return;
   }
-  if (window.confirm("删除这轮问题和回答？")) {
+  if (window.confirm("Delete this question and answer?")) {
     try {
       await deleteConversationTurn(turnId);
     } catch (error) {
@@ -1614,7 +1614,7 @@ async function deleteConversationTurn(turnId) {
     body: JSON.stringify({ session_id: sessionId, turn_id: turnId, question, answer }),
   });
   const result = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(result.error || "删除对话失败");
+  if (!response.ok) throw new Error(result.error || "Could not delete the exchange");
 
   chatHistory = chatHistory.filter((item) => item.turnId !== turnId);
   persistChatHistory();
@@ -1628,8 +1628,8 @@ async function deleteConversationTurn(turnId) {
   turnDetails.open = false;
   resultContent.classList.add("hidden");
   conversationStatus.textContent = chatHistory.length
-    ? `已删除一轮对话 · 当前 ${Math.ceil(chatHistory.length / 2)} 轮`
-    : "当前对话已清空，可以重新提问。";
+    ? `Exchange deleted · ${Math.ceil(chatHistory.length / 2)} exchanges remaining`
+    : "Conversation cleared. Ask a new question.";
   renderConversationList();
 }
 
@@ -1700,7 +1700,7 @@ async function renderConversationList() {
       const staleTitle = !local.title || local.title === "Saved conversation" || local.title === "New conversation";
       let title = (!staleTitle ? local.title : "") || (firstQuestion
         ? firstQuestion.replace(/\s+/g, " ").slice(0, 34)
-        : "未命名对话");
+        : "Untitled conversation");
       return {
         id,
         title,
@@ -1743,7 +1743,7 @@ async function renderConversationList() {
       button.appendChild(title);
       if (showTime) {
         const time = document.createElement("small");
-        time.textContent = item.createdAt ? new Date(item.createdAt).toLocaleString("zh-CN", {
+        time.textContent = item.createdAt ? new Date(item.createdAt).toLocaleString("en-US", {
           month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit",
         }) : "";
         button.appendChild(time);
@@ -1754,7 +1754,7 @@ async function renderConversationList() {
     target.scrollTop = previousScrollTop;
   };
 
-  renderItems(list, entries, "暂无已保存对话");
+  renderItems(list, entries, "No saved conversations");
 }
 
 function resetConversationView() {
@@ -1765,7 +1765,7 @@ function resetConversationView() {
   turnDetails.classList.add("hidden");
   turnDetails.open = false;
   errorBox.classList.add("hidden");
-  runState.textContent = "就绪";
+  runState.textContent = "Ready";
   runState.className = "run-state";
   questionInput.value = "";
   clearUploadedInput({ forget: false });
@@ -1777,7 +1777,7 @@ async function switchConversation(nextSessionId) {
   sessionId = nextSessionId;
   writePersistentSessionId(sessionId);
   resetConversationView();
-  conversationStatus.textContent = "正在恢复对话…";
+  conversationStatus.textContent = "Restoring conversation…";
   document.querySelectorAll(".conversation-item[data-session-id]").forEach((button) => {
     button.classList.toggle("active", button.dataset.sessionId === sessionId);
   });
@@ -1824,58 +1824,58 @@ function displayToolName(name) {
   if (registered?.display_name) return registered.display_name;
   if (capability?.display_name) return capability.display_name;
   const labels = {
-    unified_agent: "统一 Agent",
-    sevir: "SEVIR 观测资料",
-    geolocator: "地点与区域定位",
-    cascast: "CasCast 局地短临",
-    era5: "ERA5/ERA5T 再分析（非实时）",
-    aurora: "Aurora 区域环境预测",
-    "sevir.event": "读取 SEVIR 事件元数据",
-    "sevir.search": "检索 SEVIR 事件目录",
-    "sevir.nearby": "按位置检索 SEVIR 事件",
-    "sevir.observations": "读取连续 SEVIR 观测",
-    "sevir.frame_histograms": "读取 SEVIR 帧直方图",
-    "sevir.similar_events": "检索历史候选事件",
-    "sevir.historical_observations": "读取历史事件观测",
-    "sevir.match_upload": "匹配上传资料与事件",
-    "geolocator.event": "读取事件地理范围",
-    "geolocator.pixel": "转换像素坐标",
-    "geolocator.place": "解析地点",
-    "geolocator.administrative_area": "查询州县范围",
-    "geolocator.region": "定位分析区域",
-    "cascast.forecast": "运行或读取局地集合预测",
-    "aurora.case": "读取缓存的 ERA5/Aurora 案例",
-    "aurora.forecast": "运行或读取 Aurora 区域预测",
-    "aurora.regional_fields": "读取 ERA5/Aurora 区域场",
+    unified_agent: "Unified agent",
+    sevir: "SEVIR observations",
+    geolocator: "Places and regions",
+    cascast: "CasCast local nowcasts",
+    era5: "ERA5/ERA5T reanalysis",
+    aurora: "Aurora regional forecasts",
+    "sevir.event": "Read SEVIR event metadata",
+    "sevir.search": "Search the SEVIR catalog",
+    "sevir.nearby": "Find SEVIR events by location",
+    "sevir.observations": "Read SEVIR observation sequence",
+    "sevir.frame_histograms": "Read SEVIR frame histograms",
+    "sevir.similar_events": "Find historical events",
+    "sevir.historical_observations": "Read historical observations",
+    "sevir.match_upload": "Match uploads to events",
+    "geolocator.event": "Read event bounds",
+    "geolocator.pixel": "Convert pixel coordinates",
+    "geolocator.place": "Resolve place",
+    "geolocator.administrative_area": "Look up state or county bounds",
+    "geolocator.region": "Locate analysis region",
+    "cascast.forecast": "Run or read local ensemble forecasts",
+    "aurora.case": "Read cached ERA5/Aurora results",
+    "aurora.forecast": "Run or read Aurora regional forecasts",
+    "aurora.regional_fields": "Read ERA5/Aurora regional fields",
     // Legacy trace labels remain so old saved conversations still render.
-    "data.load_hdf5": "读取连续 SEVIR 观测",
-    "data.match_uploaded_event": "匹配观测事件",
-    "foundation.fetch_era5": "按需读取 ERA5/ERA5T 再分析",
-    "foundation.era5_snapshot": "读取 ERA5/ERA5T 再分析快照",
-    "foundation.forecast_aurora": "读取 Aurora 区域预测",
-    "foundation.region_fields": "提取区域环境场",
-    "forecaster.uploaded_sequence": "读取 CasCast 局地短临",
-    "forecaster.rolling_raw": "读取 CasCast 滚动预测",
-    "metrics.uploaded_raw_pair": "对齐预测与后续观测",
-    "uncertainty.uploaded_raw": "分析 CasCast 成员分歧",
-    "visualizer.plan_spec": "生成分析图表",
+    "data.load_hdf5": "Read SEVIR observation sequence",
+    "data.match_uploaded_event": "Match observation event",
+    "foundation.fetch_era5": "Retrieve ERA5/ERA5T reanalysis",
+    "foundation.era5_snapshot": "Read ERA5/ERA5T reanalysis snapshot",
+    "foundation.forecast_aurora": "Read Aurora regional forecasts",
+    "foundation.region_fields": "Extract regional fields",
+    "forecaster.uploaded_sequence": "Read CasCast nowcasts",
+    "forecaster.rolling_raw": "Read CasCast rolling forecast",
+    "metrics.uploaded_raw_pair": "Align forecasts and observations",
+    "uncertainty.uploaded_raw": "Analyze CasCast ensemble spread",
+    "visualizer.plan_spec": "Generate analysis charts",
   };
   if (labels[name]) return labels[name];
   const prefixLabels = {
-    "sevir.": "SEVIR 资料能力",
-    "cascast.": "CasCast 短临能力",
-    "aurora.": "Aurora 环境能力",
-    "data.": "观测数据工具",
-    "foundation.": "大尺度环境工具",
-    "forecaster.": "CasCast 短临工具",
-    "metrics.": "预报验证工具",
-    "statistics.": "统计分析工具",
-    "uncertainty.": "集合不确定性工具",
-    "geolocator.": "地点定位工具",
-    "visualizer.": "图表工具",
+    "sevir.": "SEVIR data",
+    "cascast.": "CasCast nowcasting",
+    "aurora.": "Aurora regional forecasting",
+    "data.": "Observation tools",
+    "foundation.": "Regional weather tools",
+    "forecaster.": "CasCast nowcasting tools",
+    "metrics.": "Forecast verification",
+    "statistics.": "Statistical analysis",
+    "uncertainty.": "Ensemble uncertainty",
+    "geolocator.": "Geolocation",
+    "visualizer.": "Chart tools",
   };
   const prefix = Object.keys(prefixLabels).find((item) => String(name || "").startsWith(item));
-  return prefix ? prefixLabels[prefix] : "执行分析";
+  return prefix ? prefixLabels[prefix] : "Run analysis";
 }
 
 function appendChatMessage(role, text, {
@@ -1895,25 +1895,25 @@ function appendChatMessage(role, text, {
 
   const avatar = document.createElement("div");
   avatar.className = "chat-avatar";
-  avatar.textContent = role === "user" ? "你" : "S";
+  avatar.textContent = role === "user" ? "You" : "W";
 
   const body = document.createElement("div");
   body.className = "chat-message-body";
   const heading = document.createElement("div");
   heading.className = "chat-message-heading";
   const author = document.createElement("strong");
-  author.textContent = role === "user" ? "你" : "SEVIR Agent";
+  author.textContent = role === "user" ? "You" : "Multi-Source Weather Agent";
   const time = document.createElement("time");
   time.dateTime = new Date(timestamp).toISOString();
-  time.textContent = new Date(timestamp).toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
+  time.textContent = new Date(timestamp).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
   heading.append(author, time);
   if (role === "user" && turnId) {
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
     deleteButton.className = "delete-turn-button";
-    deleteButton.setAttribute("aria-label", "删除这轮对话");
-    deleteButton.title = "删除问题和回答";
-    deleteButton.textContent = "删除";
+    deleteButton.setAttribute("aria-label", "Delete this exchange");
+    deleteButton.title = "Delete question and answer";
+    deleteButton.textContent = "Delete";
     deleteButton.addEventListener("click", () => requestDeleteTurn(turnId));
     heading.appendChild(deleteButton);
   }
@@ -1926,7 +1926,7 @@ function appendChatMessage(role, text, {
     if (attachment.preview) {
       const image = document.createElement("img");
       image.src = assetUrl(attachment.preview);
-      image.alt = attachment.title || "上传的VIL图片";
+      image.alt = attachment.title || "Uploaded VIL image";
       if (attachment.fallback) {
         image.addEventListener("error", () => {
           if (image.dataset.fallbackTried) return;
@@ -1939,8 +1939,8 @@ function appendChatMessage(role, text, {
     const label = document.createElement("div");
     const title = document.createElement("strong");
     const kind = document.createElement("small");
-    title.textContent = attachment.title || "VIL图片";
-    kind.textContent = attachment.kind === "sequence" ? "13帧VIL序列" : "单帧VIL图片";
+    title.textContent = attachment.title || "VIL image";
+    kind.textContent = attachment.kind === "sequence" ? "13-frame VIL sequence" : "Single VIL image";
     label.append(title, kind);
     card.appendChild(label);
     content.appendChild(card);
@@ -2111,20 +2111,20 @@ async function restoreChatHistory() {
   emptyState.classList.toggle("hidden", chatHistory.length > 0);
   renderConversationVisualPane();
   conversationStatus.textContent = chatHistory.length
-    ? `已恢复当前对话 · ${Math.ceil(chatHistory.length / 2)}轮`
-    : "同一对话中的追问会继承已验证的分析上下文。";
+    ? `Conversation restored · ${Math.ceil(chatHistory.length / 2)} exchanges`
+    : "Follow-up questions use the existing analysis context.";
 }
 
 
 function selectedModelLabel() {
-  if (weatherModelInput.value === "cascast_live") return "本地现场CasCast";
+  if (weatherModelInput.value === "cascast_live") return "Local CasCast inference";
   return weatherModelInput.value === "cascast" ? "CasCast" : "persistence_baseline";
 }
 
 function syncWeatherModelNote() {
   const notes = {
-    cascast_live: "根据用户上传的13张历史图，现场运行EarthFormer、CasCast扩散和VAE解码。",
-    persistence_baseline: "把上传序列最后一张图复制到未来12个时效，仅作为基线。",
+    cascast_live: "Run EarthFormer, CasCast diffusion and VAE decoding on the uploaded 13-frame sequence.",
+    persistence_baseline: "Repeat the last observed frame for 12 forecast steps as a persistence baseline.",
   };
   weatherModelNote.textContent = notes[weatherModelInput.value] || "";
 }
@@ -2137,12 +2137,12 @@ function syncEventOptions() {
   eventInput.innerHTML = "";
   const unboundOption = document.createElement("option");
   unboundOption.value = "";
-  unboundOption.textContent = "不指定事件（由当前请求或 Agent 发现）";
+  unboundOption.textContent = "No event selected; use the request or search for one";
   eventInput.appendChild(unboundOption);
   eventIds.forEach((eventId, index) => {
     const option = document.createElement("option");
     option.value = eventId;
-    option.textContent = `事件 ${index + 1} · ${eventId}`;
+    option.textContent = `Event ${index + 1} · ${eventId}`;
     eventInput.appendChild(option);
   });
   if (eventIds.includes(currentEvent)) eventInput.value = currentEvent;
@@ -2150,7 +2150,7 @@ function syncEventOptions() {
 }
 
 function syncMode() {
-  modeDescription.textContent = "Unified Agent：一次能够完成就停止；只有真实信息不足或执行失败时才继续。";
+  modeDescription.textContent = "The agent continues only when more data or another execution step is needed.";
 }
 
 function syncTaskControls() {
@@ -2167,8 +2167,8 @@ function syncTaskControls() {
 
 function syncDataSource() {
   const notes = {
-    upload: "分析一张VIL图的当前强回波信号，不能预测未来演变或持续时间。",
-    upload_sequence: "上传13帧连续VIL后，现场运行EarthFormer、CasCast扩散和VAE解码，生成未来12帧。",
+    upload: "Analyze intensity and spatial structure in a single VIL observation.",
+    upload_sequence: "Use 13 consecutive VIL frames to generate 12 future frames with local CasCast inference.",
   };
   dataSourceNote.textContent = notes[dataSourceInput.value];
   if (dataSourceInput.value === "upload_sequence") weatherModelInput.value = "cascast_live";
@@ -2200,7 +2200,7 @@ async function uploadVilImage(file) {
     }),
   });
   const result = await response.json();
-  if (!response.ok) throw new Error(result.error || "图片上传失败");
+  if (!response.ok) throw new Error(result.error || "Image upload failed");
   uploadedSampleId = result.upload_id;
   uploadedSequenceId = "";
   attachmentPendingForMessage = true;
@@ -2211,12 +2211,12 @@ async function uploadVilImage(file) {
   attachmentTitle.textContent = file.name;
   const match = result.event_match || {};
   const matchText = match.status === "matched"
-    ? `已识别事件 ${match.event_id}；可据此查找对应ERA5/Aurora case`
-    : "未从文件名/元数据识别事件；仍可分析VIL，但ERA5/Aurora与位置问题必须补充SEVIR event ID";
+    ? `Matched event ${match.event_id}; regional ERA5/Aurora data can be linked`
+    : "No event matched. Provide a SEVIR event ID to link regional data and location.";
   uploadStatus.textContent = `${grayscaleSource
-    ? `已载入${file.name}；原始灰度值可用于VIL阈值分析`
-    : `已载入${file.name}；彩色图已转灰度，只能作为图像强度分析`}`;
-  uploadStatus.textContent += `。${matchText}`;
+    ? `Loaded ${file.name} with original grayscale values for VIL analysis`
+    : `Loaded ${file.name}; color converted to grayscale for image-intensity analysis`}`;
+  uploadStatus.textContent += `. ${matchText}`;
   dataSourceInput.value = "upload";
   taskInput.value = "auto";
   syncDataSource();
@@ -2230,7 +2230,7 @@ async function imageFileToGray(file) {
   const imageHeight = bitmap.height;
   if (imageWidth !== 384 || imageHeight !== 384) {
     bitmap.close();
-    throw new Error(`图片尺寸为${imageWidth}×${imageHeight}；第一版要求384×384。`);
+    throw new Error(`Image size is ${imageWidth} × ${imageHeight}; 384 × 384 is required.`);
   }
   const canvas = document.createElement("canvas");
   canvas.width = 384;
@@ -2254,12 +2254,12 @@ async function imageFileToGray(file) {
 }
 
 async function uploadVilSequence(files) {
-  if (files.length < 2) throw new Error("连续序列至少需要2张图片；13张才可用于CasCast。 ");
+  if (files.length < 2) throw new Error("A sequence needs at least two images; CasCast requires 13. ");
   const sortedFiles = [...files].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
   const frames = [];
   const previewCanvases = [];
   for (let index = 0; index < sortedFiles.length; index += 1) {
-    sequenceUploadStatus.textContent = `正在读取第${index + 1}/13张：${sortedFiles[index].name}`;
+    sequenceUploadStatus.textContent = `Reading image ${index + 1}/13: ${sortedFiles[index].name}`;
     const converted = await imageFileToGray(sortedFiles[index]);
     previewCanvases.push(converted.canvas);
     frames.push({
@@ -2276,7 +2276,7 @@ async function uploadVilSequence(files) {
     body: JSON.stringify({ frames }),
   });
   const result = await response.json();
-  if (!response.ok) throw new Error(result.error || "序列上传失败");
+  if (!response.ok) throw new Error(result.error || "Sequence upload failed");
   uploadedSequenceId = result.upload_id;
   uploadedSampleId = "";
   attachmentPendingForMessage = true;
@@ -2284,9 +2284,9 @@ async function uploadVilSequence(files) {
     dataSourceInput.value = "upload_sequence";
     taskInput.value = "auto";
     weatherModelInput.value = "persistence_baseline";
-    attachmentTitle.textContent = `${files.length}张图片 · 序列检查未通过`;
-    uploadStatus.textContent = `已保留上传诊断：${result.reason || "序列结构不完整"}。可以继续询问具体缺帧或顺序问题。`;
-    sequenceUploadStatus.textContent = "该序列不能用于CasCast；系统会先解释结构问题。";
+    attachmentTitle.textContent = `${files.length} images · Sequence validation failed`;
+    uploadStatus.textContent = `Upload diagnostics saved: ${result.reason || "Incomplete sequence"}. Ask about missing frames or ordering.`;
+    sequenceUploadStatus.textContent = "Sequence validation is required before CasCast inference.";
     sequenceUploadStatus.classList.remove("hidden");
     syncDataSource();
     persistActiveUpload();
@@ -2313,13 +2313,13 @@ async function uploadVilSequence(files) {
   attachmentTray.classList.remove("hidden");
   uploadPreview.src = pendingAttachmentPreview;
   uploadPreview.classList.remove("hidden");
-  attachmentTitle.textContent = `13张VIL图片 · ${sortedFiles[0].name} → ${sortedFiles[12].name}`;
+  attachmentTitle.textContent = `13 VIL images · ${sortedFiles[0].name} → ${sortedFiles[12].name}`;
   const match = result.event_match || {};
   const matchText = match.status === "matched"
-    ? `已识别事件 ${match.event_id}；可据此查找对应ERA5/Aurora case`
-    : "未识别事件；VIL仍可分析，但ERA5/Aurora问题必须补充event ID";
-  uploadStatus.textContent = `13帧序列已载入；文件已按名称进行自然排序。${matchText}。`;
-  sequenceUploadStatus.textContent = "如询问未来趋势，将现场执行本地CasCast；没有未来Ground Truth。";
+    ? `Matched event ${match.event_id}; regional ERA5/Aurora data can be linked`
+    : "No event matched. Provide an event ID to link ERA5/Aurora data.";
+  uploadStatus.textContent = `13-frame sequence loaded in natural filename order. ${matchText}. `;
+  sequenceUploadStatus.textContent = "Forecast questions run local CasCast inference. Future observations are not included.";
   sequenceUploadStatus.classList.remove("hidden");
   syncDataSource();
   persistActiveUpload();
@@ -2331,14 +2331,14 @@ uploadInput.addEventListener("change", async () => {
   if (!files.length) return;
   if (files.length > 1 && files.length < 13) {
     attachmentTray.classList.remove("hidden");
-    attachmentTitle.textContent = `选择了${files.length}张图片`;
-    uploadStatus.textContent = "当前序列数量不足13张，仍将上传以生成缺帧诊断。";
+    attachmentTitle.textContent = `Selected ${files.length} images`;
+    uploadStatus.textContent = "The sequence has fewer than 13 frames. Uploading it for missing-frame diagnostics.";
   }
   uploadedSampleId = "";
   uploadedSequenceId = "";
   attachmentTray.classList.remove("hidden");
-  attachmentTitle.textContent = "正在读取图片…";
-  uploadStatus.textContent = "正在读取并检查图片…";
+  attachmentTitle.textContent = "Reading images…";
+  uploadStatus.textContent = "Reading and checking images…";
   try {
     if (files.length === 1) await uploadVilImage(files[0]);
     else await uploadVilSequence(files);
@@ -2365,7 +2365,7 @@ async function loadConfig() {
 
 function formatCoordinate(region) {
   const coordinate = region.approx_centroid_latlon;
-  if (!Array.isArray(coordinate) || coordinate.length < 2) return "坐标未知";
+  if (!Array.isArray(coordinate) || coordinate.length < 2) return "Unknown coordinates";
   const [latitude, longitude] = coordinate.map(Number);
   const latitudeText = `${Math.abs(latitude).toFixed(4)}°${latitude >= 0 ? "N" : "S"}`;
   const longitudeText = `${Math.abs(longitude).toFixed(4)}°${longitude >= 0 ? "E" : "W"}`;
@@ -2384,12 +2384,12 @@ function formatLongitude(value) {
 
 function executionStatusLabel(status) {
   const labels = {
-    ok: "完成", completed: "完成", running: "进行中", queued: "等待中",
-    partial: "部分完成", error: "失败", failed: "失败", unavailable: "不可用",
-    blocked: "已阻止", incomplete: "未完成", cancelled: "已取消",
-    cache_hit: "使用缓存", recovered: "已恢复", unknown: "状态未知",
+    ok: "Complete", completed: "Complete", running: "Running", queued: "Waiting",
+    partial: "Partially completed", error: "Failed", failed: "Failed", unavailable: "Unavailable",
+    blocked: "Blocked", incomplete: "Incomplete", cancelled: "Cancelled",
+    cache_hit: "Using cache", recovered: "Restored", unknown: "Unknown status",
   };
-  return labels[String(status || "unknown").toLowerCase()] || String(status || "状态未知");
+  return labels[String(status || "unknown").toLowerCase()] || String(status || "Unknown status");
 }
 
 function executionStageLabel(name) {
@@ -2399,65 +2399,65 @@ function executionStageLabel(name) {
   }
   const value = String(name || "").toLowerCase();
   const stages = {
-    data: "读取数据", discovery: "查询可用资料", prediction: "运行预测", analysis: "分析数据",
-    context: "整理模型上下文", agent_context: "整理模型上下文",
-    context_budget: "检查上下文预算", context_budget_exceeded: "检查上下文预算",
-    model: "调用语言模型", execute: "执行代码与工具", finish: "整理最终回答",
-    select_tools: "选择工具并读取接口说明", format_repair: "检查模型动作格式",
-    read_context: "读取历史记录与接口说明", citation_repair: "补齐资料引用",
-    knowledge_reuse: "复用已有资料",
+    data: "Read data", discovery: "Find available data", prediction: "Run forecast", analysis: "Analyze data",
+    context: "Prepare model context", agent_context: "Prepare model context",
+    context_budget: "Check context budget", context_budget_exceeded: "Check context budget",
+    model: "Call the language model", execute: "Run code and tools", finish: "Finalize answer",
+    select_tools: "Select tools and load instructions", format_repair: "Check action format",
+    read_context: "Read records and tool instructions", citation_repair: "Add source citations",
+    knowledge_reuse: "Reuse retrieved documents",
   };
   if (stages[value]) return stages[value];
-  if (value.includes("asset") || value.includes("context") || value.includes("request")) return "绑定地点、时间和案例数据";
-  if (value.includes("model_api") || value.includes("llm") || value.includes("agent_model")) return "调用语言模型决定下一步";
-  if (value.includes("queue")) return "等待 Agent 执行槽位";
-  if (value.includes("agent_execution")) return "执行代码并读取工具结果";
-  if (value.includes("unified")) return "执行代码、读取观察并继续分析";
-  if (value.includes("foundation") || value.includes("aurora")) return "分析区域环境资料";
-  if (value.includes("cascast") || value.includes("forecast")) return "运行预测并分析结果";
-  if (value.includes("render") || value.includes("visual")) return "整理图表";
-  if (value.includes("answer") || value.includes("synth")) return "整理居民可读结论";
-  return "执行分析步骤";
+  if (value.includes("asset") || value.includes("context") || value.includes("request")) return "Bind location, time and event data";
+  if (value.includes("model_api") || value.includes("llm") || value.includes("agent_model")) return "Choose the next step with the language model";
+  if (value.includes("queue")) return "Wait for an execution slot";
+  if (value.includes("agent_execution")) return "Run code and read tool results";
+  if (value.includes("unified")) return "Run code, review results and continue analysis";
+  if (value.includes("foundation") || value.includes("aurora")) return "Analyze regional weather";
+  if (value.includes("cascast") || value.includes("forecast")) return "Run and analyze forecasts";
+  if (value.includes("render") || value.includes("visual")) return "Prepare charts";
+  if (value.includes("answer") || value.includes("synth")) return "Prepare a clear answer";
+  return "Run analysis step";
 }
 
 function routeDisplayLabel(route) {
   const value = String(route || "").toLowerCase();
-  if (value.includes("unified") || value.includes("completed")) return "统一 Agent";
-  return route ? "Agent 执行" : "—";
+  if (value.includes("unified") || value.includes("completed")) return "Unified agent";
+  return route ? "Agent execution" : "—";
 }
 
 function toolDisplaySentence(run) {
   const name = displayToolName(run);
   const status = executionStatusLabel(run?.status);
   const elapsed = run?.elapsed_ms == null ? NaN : Number(run.elapsed_ms);
-  const cache = run?.cache_hit === true ? "，复用缓存" : "";
+  const cache = run?.cache_hit === true ? "; cached result" : "";
   const argumentsText = readableToolArguments(run?.arguments);
   const resultText = String(run?.result_summary || "").trim();
   const errorText = executionErrorText(run?.error);
-  return `${name}${argumentsText ? `（${argumentsText}）` : ""}：${status}${cache}${Number.isFinite(elapsed) ? `，耗时 ${(elapsed / 1000).toFixed(elapsed >= 1000 ? 1 : 2)} 秒` : ""}${resultText ? `；${resultText}` : ""}${errorText ? `；${errorText}` : ""}`;
+  return `${name}${argumentsText ? `(${argumentsText})` : ""}: ${status}${cache}${Number.isFinite(elapsed) ? `; elapsed ${(elapsed / 1000).toFixed(elapsed >= 1000 ? 1 : 2)} s` : ""}${resultText ? `; ${resultText}` : ""}${errorText ? `; ${errorText}` : ""}`;
 }
 
 function readableToolArguments(argumentsValue) {
   if (!argumentsValue || typeof argumentsValue !== "object" || Array.isArray(argumentsValue)) return "";
   const labels = {
-    subject_key: "精确数据", event_id: "事件", upload_id: "上传资料", threshold: "阈值",
-    lead_minutes: "预报时效", minutes_before: "往前观测", minutes_after: "往后观测",
-    horizon_hours: "预报时长", ensemble_members: "集合成员",
-    place: "地点", latitude: "纬度", longitude: "经度",
-    name: "名称", level: "层级", query: "检索词", limit: "上限",
-    year: "年份", month: "月份", event_type: "事件类型",
-    start_time_utc: "开始时间（UTC）", end_time_utc: "结束时间（UTC）",
-    observation_time_utc: "观测时间（UTC）", time_match: "时间匹配",
+    subject_key: "Data identity", event_id: "Event", upload_id: "Upload", threshold: "Threshold",
+    lead_minutes: "Lead time", minutes_before: "History window", minutes_after: "Future window",
+    horizon_hours: "Forecast horizon", ensemble_members: "Ensemble members",
+    place: "Place", latitude: "Latitude", longitude: "Longitude",
+    name: "Name", level: "Level", query: "Query", limit: "Limit",
+    year: "Year", month: "Month", event_type: "Event type",
+    start_time_utc: "Start time (UTC)", end_time_utc: "End time (UTC)",
+    observation_time_utc: "Observation time (UTC)", time_match: "Time matching",
   };
   const parts = [];
   Object.entries(argumentsValue)
     .filter(([, value]) => value != null && value !== "" && typeof value !== "object")
     .slice(0, 5).forEach(([key, value]) => {
       const suffix = ["lead_minutes", "minutes_before", "minutes_after"].includes(key)
-        ? "分钟" : key === "horizon_hours" ? "小时" : "";
+        ? " min" : key === "horizon_hours" ? " h" : "";
       parts.push(`${labels[key] || key.replaceAll("_", " ")} ${value}${suffix}`);
     });
-  return parts.join("，");
+  return parts.join(", ");
 }
 
 function renderRunDiagnostic(data = {}) {
@@ -2485,19 +2485,19 @@ function renderRunDiagnostic(data = {}) {
   statusNode.dataset.status = status;
   grid.replaceChildren();
   const rows = [
-    ["执行路径", routeDisplayLabel(data.route_mode || data.termination_reason)],
-    ["状态", executionStatusLabel(status)],
-    ["Agent 模型调用", `${data.model_calls ?? requestTrace?.model_calls ?? 0} 次`],
-    ...(contextSummaryCallCount(data) ? [["上下文摘要调用", `${contextSummaryCallCount(data)} 次`]] : []),
-    ["工具调用", `${data.tool_calls ?? requestTrace?.tool_calls ?? runs.length} 次`],
-    ["缓存命中", `${data.cache_hits ?? requestTrace?.cache_hits ?? 0} 次`],
-    ["失败阶段", failurePhase ? executionStageLabel(failurePhase) : "—"],
-    ["事件绑定", eventResolution
-      ? `${eventResolution.source || "unknown"} · ${eventResolution.event_id || "未匹配"}`
+    ["Execution path", routeDisplayLabel(data.route_mode || data.termination_reason)],
+    ["Status", executionStatusLabel(status)],
+    ["Model calls", `${data.model_calls ?? requestTrace?.model_calls ?? 0}`],
+    ...(contextSummaryCallCount(data) ? [["Summary calls", `${contextSummaryCallCount(data)}`]] : []),
+    ["Tool calls", `${data.tool_calls ?? requestTrace?.tool_calls ?? runs.length}`],
+    ["Cache hit", `${data.cache_hits ?? requestTrace?.cache_hits ?? 0}`],
+    ["Failure stage", failurePhase ? executionStageLabel(failurePhase) : "—"],
+    ["Event binding", eventResolution
+      ? `${eventResolution.source || "unknown"} · ${eventResolution.event_id || "No match"}`
       : "—"],
-    ["总耗时", data.elapsed_ms != null ? `${(Number(data.elapsed_ms) / 1000).toFixed(2)} 秒` : (requestTrace?.elapsed_ms != null ? `${(Number(requestTrace.elapsed_ms) / 1000).toFixed(2)} 秒` : "—")],
-    ...(failureMessage ? [["失败原因", failureMessage]] : []),
-    ...(nextAction ? [["建议操作", nextAction]] : []),
+    ["Total time", data.elapsed_ms != null ? `${(Number(data.elapsed_ms) / 1000).toFixed(2)} s` : (requestTrace?.elapsed_ms != null ? `${(Number(requestTrace.elapsed_ms) / 1000).toFixed(2)} s` : "—")],
+    ...(failureMessage ? [["Failure reason", failureMessage]] : []),
+    ...(nextAction ? [["Suggested action", nextAction]] : []),
   ];
   rows.forEach(([label, value]) => {
     const item = document.createElement("div");
@@ -2517,9 +2517,9 @@ function renderRunDiagnostic(data = {}) {
       item.className = `diagnostic-stage ${stage.status || "unknown"}`;
       const elapsed = Number(stage.elapsed_ms);
       const modelText = stage.model
-        ? `，使用 ${stage.provider ? `${stage.provider} / ` : ""}${stage.model}`
+        ? `; model ${stage.provider ? `${stage.provider} / ` : ""}${stage.model}`
         : "";
-      item.textContent = `${executionStageLabel(stage)}：${executionStatusLabel(stage.status)}${Number.isFinite(elapsed) ? `，耗时 ${(elapsed / 1000).toFixed(elapsed >= 1000 ? 1 : 2)} 秒` : ""}${stage.route_mode ? `，选择 ${stage.route_mode} 模式` : ""}${modelText}`;
+      item.textContent = `${executionStageLabel(stage)}: ${executionStatusLabel(stage.status)}${Number.isFinite(elapsed) ? `; elapsed ${(elapsed / 1000).toFixed(elapsed >= 1000 ? 1 : 2)} s` : ""}${stage.route_mode ? `; mode ${stage.route_mode}` : ""}${modelText}`;
       stagesNode.appendChild(item);
     });
   } else if (runs.length) {
@@ -2532,7 +2532,7 @@ function renderRunDiagnostic(data = {}) {
   } else {
     const item = document.createElement("li");
     item.className = "diagnostic-stage unknown";
-    item.textContent = diagnostic?.next_action || "没有进入代码或外部工具阶段；请先检查输入和事件绑定。";
+    item.textContent = diagnostic?.next_action || "No code or external tool was run. Check the inputs and event binding.";
     stagesNode.appendChild(item);
   }
 }
@@ -2557,18 +2557,18 @@ function renderResult(data, anchorMessage = null) {
   const runs = Array.isArray(data.tool_runs) ? data.tool_runs : [];
   const displayResult = combinedDisplayResult(data, runs);
   // Build the right-side artifact index before rendering Markdown so image
-  // references in the answer become stable labels such as 分析图表02.
+  // references in the answer become stable labels such as Analysis chart02.
   renderConversationVisualPane(data);
-  renderAnswer(data.answer || "未返回文字结论");
-  document.querySelector("#result-title").textContent = "分析结论";
+  renderAnswer(data.answer || "No text answer returned");
+  document.querySelector("#result-title").textContent = "Analysis summary";
   document.querySelector("#result-source").textContent = "UNIFIED AGENT";
   turnDetailsSource.textContent = "UNIFIED AGENT";
   document.querySelector("#tool-name").textContent = runs.length > 1
     ? runs.map((run) => displayToolName(run)).join(" → ")
-    : runs.length ? displayToolName(runs[0]) : "未调用外部工具";
+    : runs.length ? displayToolName(runs[0]) : "No external tools used";
   document.querySelector("#meta-time").textContent = data.elapsed_ms != null
     ? `${data.elapsed_ms} ms`
-    : (data.request_trace?.elapsed_ms != null ? `${data.request_trace.elapsed_ms} ms` : "未记录");
+    : (data.request_trace?.elapsed_ms != null ? `${data.request_trace.elapsed_ms} ms` : "Not recorded");
   renderRunDiagnostic(data);
   renderAgentTrace(data);
   renderArtifacts({
@@ -2619,7 +2619,7 @@ function attachTurnPresentation(anchorMessage, data, runs) {
     if (summaryLabel) {
       const modelCalls = Number.isFinite(Number(data.model_calls)) ? Number(data.model_calls) : 0;
       const codeRuns = Number.isFinite(Number(data.code_execution_count)) ? Number(data.code_execution_count) : 0;
-      summaryLabel.textContent = `本轮执行记录 · 模型 ${modelCalls} 次 · 代码 ${codeRuns} 次 · 工具 ${runs.length} 次`;
+      summaryLabel.textContent = `Execution record · ${modelCalls} model calls · ${codeRuns} code runs · ${runs.length} tool calls`;
     }
     const content = technical.querySelector(".trace-content");
     const agentAnalysis = technical.querySelector("#agent-analysis, .agent-analysis");
@@ -2655,19 +2655,19 @@ function renderAgentTrace(data) {
   trace.innerHTML = "";
   const attempts = Array.isArray(data.agent_trace) ? data.agent_trace : [];
   container.classList.toggle("hidden", attempts.length === 0);
-  if (executionMode) executionMode.textContent = "统一 Agent";
+  if (executionMode) executionMode.textContent = "Unified agent";
   if (executionFlow) {
-    const defaultExecutionFlow = "理解问题 → 按需读取数据 → 计算/绘图 → 根据证据回答";
-    const path = ["绑定数据与上下文"];
+    const defaultExecutionFlow = "Understand the question → Retrieve data → Calculate and plot → Explain the results";
+    const path = ["Bind data and context"];
     attempts.forEach((item) => {
-      const label = liveActionLabels[item?.action] || String(item?.action || "继续分析").replaceAll("_", " ");
+      const label = liveActionLabels[item?.action] || String(item?.action || "Continue analysis").replaceAll("_", " ");
       if (path[path.length - 1] !== label) path.push(label);
     });
     executionFlow.textContent = attempts.length ? path.join(" → ") : defaultExecutionFlow;
   }
   if (sessionBudget) {
     const summaryCalls = contextSummaryCallCount(data);
-    sessionBudget.textContent = `${data.session_id || sessionId} · ${routeDisplayLabel(data.route_mode)} · 模型 ${data.model_calls ?? "—"} 次${summaryCalls ? ` · 摘要 ${summaryCalls} 次` : ""} · 执行 ${data.code_execution_count ?? "—"} 次`;
+    sessionBudget.textContent = `${data.session_id || sessionId} · ${routeDisplayLabel(data.route_mode)} · Model calls ${data.model_calls ?? "—"}${summaryCalls ? ` · Summary calls ${summaryCalls}` : ""} · Code runs ${data.code_execution_count ?? "—"}`;
   }
   attempts.forEach((item, index) => {
     const presentation = executionStepPresentation(attempts, index);
@@ -2677,7 +2677,7 @@ function renderAgentTrace(data) {
     const timingText = stepTimingText(item);
     const elapsedText = timingText ? ` · ${timingText}` : "";
     const stepNumber = executionStepNumber(attempts, index);
-    summary.textContent = `${stepNumber}：${liveActionLabels[item.action] || "执行步骤"} · ${executionStatusLabel(presentation.status)}${elapsedText}`;
+    summary.textContent = `${stepNumber}: ${liveActionLabels[item.action] || "Execution step"} · ${executionStatusLabel(presentation.status)}${elapsedText}`;
     block.appendChild(summary);
     if (presentation.status !== "recovered" && (["error", "failed", "partial", "blocked", "incomplete"].includes(presentation.status) || item.error)) {
       block.open = true;
@@ -2697,7 +2697,7 @@ function renderAgentTrace(data) {
     if (item.error) {
       const error = document.createElement("p");
       error.className = "agent-error";
-      error.textContent = `原始错误：${executionErrorText(item.error)}`;
+      error.textContent = `Error details: ${executionErrorText(item.error)}`;
       block.appendChild(error);
     }
     const stepCalls = Array.isArray(item.calls) ? item.calls : (Array.isArray(item.tools) ? item.tools : []);
@@ -2734,15 +2734,15 @@ function renderArtifacts(data) {
     figure.className = "agent-artifact";
     const image = document.createElement("img");
     image.src = assetUrl(artifact.thumbnail?.url || artifact.url || artifact.image_url);
-    image.alt = artifact.title || artifact.chart_type || "Agent生成图表";
+    image.alt = artifact.title || artifact.chart_type || "Analysis chart";
     image.loading = "lazy";
     const caption = document.createElement("figcaption");
     caption.textContent = artifact.description
       ? `${artifact.title || artifact.chart_type} — ${artifact.description}`
-      : (artifact.title || artifact.chart_type || "Agent生成图表");
+      : (artifact.title || artifact.chart_type || "Analysis chart");
     image.addEventListener("error", () => {
       figure.classList.add("artifact-load-error");
-      caption.textContent = `图片加载失败：${artifact.title || artifact.chart_type || artifact.artifact_id}`;
+      caption.textContent = `Chart could not be loaded: ${artifact.title || artifact.chart_type || artifact.artifact_id}`;
     });
     const link = document.createElement("a");
     link.href = assetUrl(artifact.url || artifact.image_url);
@@ -2769,7 +2769,7 @@ function renderMarkdown(container, text) {
       const index = knownIndex >= 0 ? knownIndex + 1 : artifactLabels.size + 1;
       artifactLabels.set(url, index);
       const identity = knownIndex >= 0 ? conversationVisualArtifacts[knownIndex].identity : url;
-      return `[分析图表${String(index).padStart(2, "0")}](#artifact:${encodeURIComponent(identity)})`;
+      return `[Analysis chart${String(index).padStart(2, "0")}](#artifact:${encodeURIComponent(identity)})`;
     },
   );
   const rawLines = normalizedText.replace(/\r/g, "").split("\n");
@@ -2966,7 +2966,7 @@ function renderError(message) {
   emptyState.classList.add("hidden");
   errorBox.textContent = message;
   errorBox.classList.remove("hidden");
-  runState.textContent = "出错";
+  runState.textContent = "Error";
   runState.className = "run-state";
 }
 
@@ -2986,20 +2986,20 @@ cancelRequestButton?.addEventListener("click", async () => {
   const controller = activeRequestController;
   const requestId = activeRequestId;
   cancelRequestButton.disabled = true;
-  cancelRequestButton.querySelector("span").textContent = "停止中";
-  runState.textContent = "正在停止";
-  conversationStatus.textContent = "正在停止剩余执行；已完成的步骤会保留。";
+  cancelRequestButton.querySelector("span").textContent = "Stopping";
+  runState.textContent = "Stopping";
+  conversationStatus.textContent = "Stopping execution. Completed results will be retained.";
   try {
     const cancellation = await requestTaskCancellation(requestId);
     if (!cancellation) {
       cancelRequestButton.disabled = false;
-      cancelRequestButton.querySelector("span").textContent = "重试停止";
-      runState.textContent = "停止尚未确认";
-      conversationStatus.textContent = "停止请求尚未得到服务端确认；任务仍以后台状态为准，可再次点击停止。";
+      cancelRequestButton.querySelector("span").textContent = "Retry stop";
+      runState.textContent = "Stop unconfirmed";
+      conversationStatus.textContent = "The server has not confirmed the stop request. Check task status or select Stop again.";
     }
   } catch (_error) {
     cancelRequestButton.disabled = false;
-    cancelRequestButton.querySelector("span").textContent = "重试停止";
+    cancelRequestButton.querySelector("span").textContent = "Retry stop";
   } finally {
     if (activeRequestTransport !== "task") controller.abort();
   }
@@ -3061,11 +3061,11 @@ form.addEventListener("submit", async (event) => {
 
   requestInFlight = true;
   syncComposerAvailability();
-  runButton.firstElementChild.textContent = "分析中";
-  runState.textContent = "分析中";
+  runButton.firstElementChild.textContent = "Analyzing";
+  runState.textContent = "Analyzing";
   runState.className = "run-state running";
   errorBox.classList.add("hidden");
-  conversationStatus.textContent = "Agent 正在结合当前对话与工具观察分析…";
+  conversationStatus.textContent = "Analyzing the conversation and tool results…";
   const progressState = {
     done: false,
     startedAt: Date.now(),
@@ -3084,7 +3084,7 @@ form.addEventListener("submit", async (event) => {
   if (cancelRequestButton) {
     cancelRequestButton.classList.remove("hidden");
     cancelRequestButton.disabled = false;
-    cancelRequestButton.querySelector("span").textContent = "停止";
+    cancelRequestButton.querySelector("span").textContent = "Stop";
   }
   // Live requests may download data and run local inference. Do not impose
   // the old 90-second browser abort; the server/model pipeline owns its
@@ -3096,25 +3096,25 @@ form.addEventListener("submit", async (event) => {
   const requestTimeout = null;
 
   try {
-    runState.textContent = "正在提交";
-    conversationStatus.textContent = "正在绑定请求事实并启动统一 Agent。";
+    runState.textContent = "Submitting";
+    conversationStatus.textContent = "Binding inputs and starting the agent.";
     activeRequestTransport = "task";
     persistActiveTask({ requestId, sessionId, turnId, question, submittedAt: timestamp });
     if (cancelRequestButton) {
       cancelRequestButton.disabled = true;
-      cancelRequestButton.querySelector("span").textContent = "提交中";
+      cancelRequestButton.querySelector("span").textContent = "Submitting";
     }
     const submitted = await submitDurableTaskWithReconnect(
       requestPayload, requestId, progressState, pendingMessage,
     );
     if (cancelRequestButton) {
       cancelRequestButton.disabled = false;
-      cancelRequestButton.querySelector("span").textContent = "停止";
+      cancelRequestButton.querySelector("span").textContent = "Stop";
     }
     activeRequestPhase = "execution";
-    runState.textContent = "准备执行";
-    conversationStatus.textContent = "统一 Agent 正在直接处理，并持续更新进度。";
-    if (cancelRequestButton) cancelRequestButton.querySelector("span").textContent = "停止";
+    runState.textContent = "Preparing execution";
+    conversationStatus.textContent = "Analysis is running. Progress updates automatically.";
+    if (cancelRequestButton) cancelRequestButton.querySelector("span").textContent = "Stop";
     ensureLiveExecutionPanel(pendingMessage);
     renderLiveExecutionProgress(pendingMessage, {
       status: "running",
@@ -3124,7 +3124,7 @@ form.addEventListener("submit", async (event) => {
       current_activity: {
         action: "agent_started",
         status: "ok",
-        summary: "已启动统一 Agent，等待执行槽位。",
+        summary: "Agent started. Waiting for an execution slot.",
       },
       live_steps: [],
     }, progressState);
@@ -3139,16 +3139,16 @@ form.addEventListener("submit", async (event) => {
     const lastSnapshot = await fetchRequestSnapshotOnce(requestId);
     const rejected = Boolean(error?.durableSubmissionRejected);
     const answer = rejected
-      ? `任务未能提交：${error.message}`
-      : "连接已中断，后台任务状态尚未确认。恢复连接后可继续查看任务结果。";
+      ? `Task could not be submitted: ${error.message}`
+      : "Connection lost. Reconnect to check the task status and results.";
     const failureData = {
       status: rejected ? "failed" : "unknown",
       answer,
       route_mode: "request_failed",
       termination_reason: rejected ? "submission_rejected" : "client_connection_lost",
       failure_class: rejected ? "" : "transport_reset",
-      failure_message: rejected ? "服务端未接受本轮任务。" : "连接中断，任务状态待确认。",
-      next_action: rejected ? "请检查输入后重新提交。" : "恢复连接后继续查看本轮任务。",
+      failure_message: rejected ? "The server did not accept the task." : "Connection lost. Task status is unconfirmed.",
+      next_action: rejected ? "Check the inputs and submit again." : "Reconnect to check this task.",
       request_trace: lastSnapshot,
       agent_trace: Array.isArray(lastSnapshot?.live_steps) ? lastSnapshot.live_steps : [],
       model_calls: lastSnapshot?.model_calls ?? 0,
@@ -3169,7 +3169,7 @@ form.addEventListener("submit", async (event) => {
     persistChatHistory();
     try { renderResult(failureData, pendingMessage); } catch (displayError) { console.error(displayError); }
     renderError(answer);
-    conversationStatus.textContent = rejected ? "任务未提交。" : "连接中断，任务状态待确认。";
+    conversationStatus.textContent = rejected ? "Task not submitted." : "Connection lost. Task status is unconfirmed.";
   } finally {
     window.clearTimeout(requestTimeout);
     progressState.done = true;
@@ -3183,11 +3183,11 @@ form.addEventListener("submit", async (event) => {
     if (cancelRequestButton) {
       cancelRequestButton.classList.add("hidden");
       cancelRequestButton.disabled = false;
-      cancelRequestButton.querySelector("span").textContent = "停止";
+      cancelRequestButton.querySelector("span").textContent = "Stop";
     }
     requestInFlight = false;
     syncComposerAvailability();
-    runButton.firstElementChild.textContent = "发送";
+    runButton.firstElementChild.textContent = "Send";
     questionInput.focus();
   }
 });
@@ -3225,9 +3225,9 @@ newChatButton.addEventListener("click", () => {
   turnDetails.classList.add("hidden");
   turnDetails.open = false;
   errorBox.classList.add("hidden");
-  runState.textContent = "就绪";
+  runState.textContent = "Ready";
   runState.className = "run-state";
-  conversationStatus.textContent = "新对话已建立；后续追问会在这个会话中保留上下文。";
+  conversationStatus.textContent = "New conversation started. Follow-up questions will use this context.";
   questionInput.value = "";
   clearUploadedInput();
   renderConversationList();
@@ -3244,7 +3244,7 @@ syncMode();
 // legacy turn must never hide the saved-session menu.
 void renderConversationList();
 void restoreChatHistory()
-  .catch((error) => console.warn("会话恢复失败，保留会话列表：", error))
+  .catch((error) => console.warn("Could not restore the conversation. The conversation list was retained: ", error))
   .finally(async () => {
     try { persistConversationIndex(); } catch (_error) {}
     void renderConversationList();

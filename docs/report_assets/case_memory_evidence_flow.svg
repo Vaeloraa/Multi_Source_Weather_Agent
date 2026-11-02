@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="854" viewBox="0 0 1440 854" role="img">
+<title>Analysis continuity and evidence storage</title><desc>Load analysis context, bind inputs, run the agent and save new exchanges and evidence.</desc>
+<rect width="100%" height="100%" fill="white" />
+<rect x="520" y="25" width="400" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="720.0" y="57.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Current question and data</text>
+<polyline points="720,89 720,145" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="720,145 724,137 716,137" fill="#787878" />
+<rect x="520" y="145" width="400" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="720.0" y="177.0" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Continue an existing analysis?</text>
+<polyline points="520,177 360,177 360,270" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="360,270 364,262 356,262" fill="#787878" />
+<text x="430" y="154" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#707070" text-anchor="start" dominant-baseline="central">Yes</text>
+<polyline points="920,177 1080,177 1080,270" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="1080,270 1084,262 1076,262" fill="#787878" />
+<text x="1005" y="154" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#707070" text-anchor="start" dominant-baseline="central">No</text>
+<rect x="140" y="270" width="440" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="360.0" y="302.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Load analysis history</text>
+<rect x="860" y="270" width="440" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="1080.0" y="302.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Create new analysis context</text>
+<polyline points="360,334 360,390 720,390 720,425" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="720,425 724,417 716,417" fill="#787878" />
+<polyline points="1080,334 1080,390 720,390" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<rect x="520" y="425" width="400" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="720.0" y="457.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Validate and bind current inputs</text>
+<polyline points="720,489 720,535" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="720,535 724,527 716,527" fill="#787878" />
+<rect x="520" y="535" width="400" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="720.0" y="567.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Prepare model input</text>
+<polyline points="720,599 720,645" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="720,645 724,637 716,637" fill="#787878" />
+<rect x="520" y="645" width="400" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="720.0" y="677.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Agent runs analysis</text>
+<polyline points="720,709 720,755" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="720,755 724,747 716,747" fill="#787878" />
+<rect x="520" y="755" width="400" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="720.0" y="787.0" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Save exchanges and execution evidence</text>
+<rect x="60" y="755" width="300" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="210.0" y="787.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Analysis records</text>
+<polyline points="520,787 360,787" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="360,787 368,791 368,783" fill="#787878" />
+<polyline points="210,755 210,334" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="210,334 206,342 214,342" fill="#787878" />
+<text x="231" y="490" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#707070" text-anchor="start" dominant-baseline="central">Read on a follow-up request</text>
+</svg>

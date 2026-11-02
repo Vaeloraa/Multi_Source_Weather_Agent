@@ -30,7 +30,7 @@ def normalize_session_id(value: Any) -> str:
     if not raw:
         return uuid.uuid4().hex
     if len(raw) > 80 or not all(char.isalnum() or char in "-_" for char in raw):
-        raise ValueError("session_id只能包含字母、数字、连字符和下划线")
+        raise ValueError("session_id may contain only letters, digits, hyphens and underscores")
     return raw
 
 
@@ -138,7 +138,7 @@ def merge_sessions(source_ids: list[str], target: str | None) -> dict[str, Any]:
     source_ids = [normalize_session_id(item) for item in source_ids]
     target = normalize_session_id(target)
     if len(source_ids) < 2 or target in source_ids:
-        raise ValueError("合并至少需要两个不同的源对话。")
+        raise ValueError("Select at least two different conversations to merge.")
     turns = [
         (source, turn)
         for source in source_ids

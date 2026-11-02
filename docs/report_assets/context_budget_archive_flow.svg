@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="714" viewBox="0 0 1440 714" role="img">
+<title>Context preparation and budget control</title><desc>Keep recent exchanges, summarize older history and archive long results within the input budget.</desc>
+<rect width="100%" height="100%" fill="white" />
+<rect x="60" y="40" width="380" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="250.0" y="72.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Recent exchanges</text>
+<polyline points="250,104 250,170" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="250,170 254,162 246,162" fill="#787878" />
+<rect x="60" y="170" width="380" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="250.0" y="202.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Keep original text</text>
+<polyline points="250,234 250,285" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<rect x="530" y="40" width="380" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="720.0" y="72.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Older exchanges</text>
+<polyline points="720,104 720,170" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="720,170 724,162 716,162" fill="#787878" />
+<rect x="530" y="170" width="380" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="720.0" y="202.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Summarize or excerpt</text>
+<polyline points="720,234 720,285" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<rect x="1000" y="40" width="380" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="1190.0" y="72.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Long code and results</text>
+<polyline points="1190,104 1190,170" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="1190,170 1194,162 1186,162" fill="#787878" />
+<rect x="1000" y="170" width="380" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="1190.0" y="202.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Archive originals; keep summaries</text>
+<polyline points="1190,234 1190,285" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polyline points="250,285 1190,285" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polyline points="720,285 720,330" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="720,330 724,322 716,322" fill="#787878" />
+<rect x="500" y="330" width="440" height="72" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="720.0" y="366.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Prepare and check model input</text>
+<polyline points="720,402 720,450" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="720,450 724,442 716,442" fill="#787878" />
+<rect x="500" y="450" width="440" height="72" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="720.0" y="486.0" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Within the input budget?</text>
+<polyline points="500,486 340,486 340,610" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="340,610 344,602 336,602" fill="#787878" />
+<text x="412" y="463" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#707070" text-anchor="start" dominant-baseline="central">Yes</text>
+<polyline points="940,486 1100,486 1100,610" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="1100,610 1104,602 1096,602" fill="#787878" />
+<text x="1028" y="463" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#707070" text-anchor="start" dominant-baseline="central">No</text>
+<rect x="160" y="610" width="360" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="340.0" y="642.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Call model and continue analysis</text>
+<rect x="920" y="610" width="360" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="1100.0" y="642.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Stop and retain existing records</text>
+</svg>

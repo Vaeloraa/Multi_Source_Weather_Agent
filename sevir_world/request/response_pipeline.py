@@ -38,7 +38,7 @@ def _attach_registered_artifacts(answer: str, artifacts: list[dict[str, Any]]) -
         url = artifact["url"]
         if url in existing:
             continue
-        title = str(artifact.get("title") or artifact.get("artifact_id") or "分析图")
+        title = str(artifact.get("title") or artifact.get("artifact_id") or "Analysis chart")
         links.append(f"![{title}]({url})")
         existing.add(url)
     if links:
@@ -51,23 +51,23 @@ def agent_step_summary(step: dict[str, Any]) -> str:
     if step.get("summary"):
         return str(step["summary"])
     if step.get("status") == "cancelled":
-        return "请求已取消。"
+        return "Request cancelled."
     action = step.get("action")
     if action == "execute":
-        return {"ok": "程序运行成功；本步返回值可展开查看，计算正确性需结合结果核对。", "partial": "代码执行完成，部分工具未取得结果。"}.get(
-            step.get("status"), "代码执行失败，错误已记录。",
+        return {"ok": "Execution completed. Expand to inspect the returned results.", "partial": "Code completed, but some tools returned no results."}.get(
+            step.get("status"), "Execution failed. Error details were recorded.",
         )
     return {
-        "model": "模型调用未完成。",
-        "select_tools": "已选择本轮所需工具并读取接口说明。",
-        "read_context": "已读取当前案例的历史记录。",
-        "context_budget": "当前问题和必要说明超过上下文预算。",
-        "format_repair": "本次模型动作格式无效，已请求重新生成；本次动作未执行。",
-        "citation_repair": "正在补齐资料引用并核对原文。",
-        "knowledge_reuse": "相同检索已成功，复用已有资料并读取缺少的原文。",
-        "finish": "已整理现有证据并完成回答。" if step.get("status") == "ok" else "已整理现有证据，分析尚未全部完成。",
-        "stop": "本轮已停止，已有结果已保留。",
-    }.get(action, "Agent 正在分析。")
+        "model": "Model request incomplete.",
+        "select_tools": "Tools selected and interface instructions loaded.",
+        "read_context": "Previous analysis records loaded.",
+        "context_budget": "The question and required instructions exceed the context budget.",
+        "format_repair": "Invalid action format. A corrected action was requested.",
+        "citation_repair": "Adding citations and checking source passages.",
+        "knowledge_reuse": "Reusing retrieved documents and reading the remaining passages.",
+        "finish": "Answer completed from the available results." if step.get("status") == "ok" else "Available results summarized. Analysis remains incomplete.",
+        "stop": "Analysis stopped. Completed results were retained.",
+    }.get(action, "Analyzing.")
 
 
 def _public_step(item: dict[str, Any]) -> dict[str, Any]:
@@ -117,13 +117,13 @@ def result_outcome(status: Any) -> dict[str, Any]:
     """One public projection of analytical status, independent of transport state."""
     normalized = str(status or "unknown").strip().lower()
     labels = {
-        "ok": "已完成", "success": "已完成", "completed": "已完成",
-        "partial": "部分完成", "cancelled": "已取消", "canceled": "已取消",
-        "interrupted": "执行中断", "error": "未完成", "failed": "未完成",
-        "failure": "未完成", "unavailable": "数据不可用", "blocked": "未完成",
-        "clarification_needed": "等待补充信息", "unknown": "结果待确认",
+        "ok": "Completed", "success": "Completed", "completed": "Completed",
+        "partial": "Partially completed", "cancelled": "Cancelled", "canceled": "Cancelled",
+        "interrupted": "Interrupted", "error": "Incomplete", "failed": "Incomplete",
+        "failure": "Incomplete", "unavailable": "Data unavailable", "blocked": "Incomplete",
+        "clarification_needed": "More information needed", "unknown": "Result pending",
     }
-    return {"status": normalized, "label": labels.get(normalized, "结果待确认"),
+    return {"status": normalized, "label": labels.get(normalized, "Result pending"),
             "incomplete": normalized not in {"ok", "success", "completed"}}
 
 

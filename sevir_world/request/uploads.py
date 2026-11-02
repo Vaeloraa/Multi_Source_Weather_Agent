@@ -44,7 +44,7 @@ def event_match_from_metadata(
             "candidates": [],
             "confidence": None,
             "method": None,
-            "note": "上传内容没有提供SEVIR event_id，未根据像素外观猜测事件。",
+            "note": "No SEVIR event_id was provided. The upload remains unlinked to a catalog event.",
         }
     try:
         record = catalog_vil_event(candidate)
@@ -56,7 +56,7 @@ def event_match_from_metadata(
             "candidates": [],
             "confidence": 0.0,
             "method": "explicit_metadata" if explicit_id else "filename",
-            "note": f"提供的event_id不在本地SEVIR VIL目录中：{candidate}。",
+            "note": f"The event_id is not in the local SEVIR VIL catalog: {candidate}.",
             "error": str(error),
         }
     method = "explicit_metadata" if explicit_id else "filename"
@@ -73,7 +73,7 @@ def event_match_from_metadata(
         "confidence": 1.0,
         "method": method,
         "metadata_source": "SEVIR CATALOG",
-        "note": "仅依据明确的event_id或文件名匹配；不是基于图像像素反推位置。",
+        "note": "Matched using an explicit event_id or filename.",
     }
 
 
@@ -110,7 +110,7 @@ def uploaded_event_match(upload_id: str) -> dict[str, Any]:
     elif metadata_path.is_file():
         metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
     if metadata is None:
-        raise ValueError("没有找到这次上传，无法读取事件绑定信息。")
+        raise ValueError("Upload not found. Event binding is unavailable.")
     if metadata.get("status") == "invalid":
         return {"status": "invalid", "upload_id": normalized,
                 "event_match": {}, "diagnostic": dict(metadata)}
@@ -163,7 +163,7 @@ def load_uploaded_data(
         cached = UPLOADED_VIL.get(upload_id) or UPLOADED_VIL_SEQUENCES.get(upload_id)
         if cached is None:
             if not array_path.is_file() or not metadata_path.is_file():
-                raise ValueError("没有找到这次上传的SEVIR资料，请重新上传。")
+                raise ValueError("The uploaded SEVIR data could not be found. Upload it again.")
             metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
         else:
             metadata = cached[1]
@@ -220,13 +220,13 @@ def _decode_frame(
     pixels_base64: str,
 ) -> np.ndarray:
     if (width, height) != (384, 384):
-        raise ValueError("第一版仅支持384×384的SEVIR VIL图片。")
+        raise ValueError("Upload a 384 x 384 SEVIR VIL image.")
     try:
         raw = base64.b64decode(pixels_base64, validate=True)
     except (binascii.Error, ValueError) as error:
-        raise ValueError("上传图片的像素数据无法解析。") from error
+        raise ValueError("Could not decode the image pixels.") from error
     if len(raw) != width * height:
-        raise ValueError("上传图片的像素数量与384×384尺寸不一致。")
+        raise ValueError("The pixel count does not match a 384 x 384 image.")
     return np.frombuffer(raw, dtype=np.uint8).reshape(height, width).copy()
 
 
@@ -258,9 +258,9 @@ def register_uploaded_vil(
         "status": "ok",
         **metadata,
         "note": (
-            "已按原始灰度值读取。"
+            "Loaded with the original grayscale values."
             if grayscale_source
-            else "上传文件为彩色图，已转换为灰度强度；结果只能作为图像强度分析。"
+            else "Color image converted to grayscale for image-intensity analysis."
         ),
     }
 
@@ -294,7 +294,7 @@ def register_uploaded_vil_sequence(
         return diagnostic
 
     if len(frames) != 13:
-        return invalid("连续序列必须恰好包含13张384×384的SEVIR VIL灰度图。")
+        return invalid("A sequence requires exactly 13 grayscale SEVIR VIL images at 384 x 384 pixels.")
     decoded: list[np.ndarray] = []
     filenames: list[str] = []
     grayscale_flags: list[bool] = []
@@ -305,7 +305,7 @@ def register_uploaded_vil_sequence(
                 item.get("pixels_base64", ""),
             ))
         except (TypeError, ValueError) as error:
-            return invalid(f"第{index + 1}张图：{error}", index)
+            return invalid(f"Image {index + 1}: {error}", index)
         filenames.append(Path(str(item.get("filename", f"frame_{index + 1:02d}.png"))).name)
         grayscale_flags.append(bool(item.get("grayscale_source", False)))
     sequence = np.stack(decoded, axis=0)
@@ -335,7 +335,7 @@ def register_uploaded_vil_sequence(
         **metadata,
         "frame_count": 13,
         "note": (
-            "已按文件名排序读取13帧；原始灰度序列可用于本地EarthFormer、CasCast和VAE现场推理。"
+            "Loaded 13 frames in filename order for local EarthFormer, CasCast and VAE inference."
         ),
     }
 

@@ -60,7 +60,7 @@ def fetch(source: dict, destination: Path) -> dict:
     errors = []
     for candidate in attempts:
         try:
-            request = urllib.request.Request(candidate["url"], headers={"User-Agent": "SEVIR-Tool-Knowledge-Research/1.0"})
+            request = urllib.request.Request(candidate["url"], headers={"User-Agent": "MultiSourceWeatherAgent/1.0"})
             with urllib.request.urlopen(request, timeout=45) as response:
                 payload = response.read(MAX_DOWNLOAD_BYTES + 1)
                 resolved_url = response.url

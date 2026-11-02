@@ -146,7 +146,7 @@ def _run_session(
             status = "partial"
         return {
             "status": status,
-            "answer": answer or "本轮未能完成完整分析，已保留取得的结果；缺失部分尚无可靠结论。",
+            "answer": answer or "Analysis incomplete. Available results have been retained.",
             "route_mode": "unified_agent",
             "termination_reason": reason,
             "available_tools": list(available_tools),
@@ -183,7 +183,7 @@ def _run_session(
     for step in range(1, max_steps + 1):
         if runtime.is_cancelled():
             record("stop", "cancelled")
-            return finish("cancelled", "client_cancelled", "请求已取消。")
+            return finish("cancelled", "client_cancelled", "Request cancelled.")
         remaining = runtime.remaining_seconds()
         if remaining is not None and remaining <= 0:
             record("stop", "partial")
@@ -216,17 +216,17 @@ def _run_session(
             checks = context.report().get("checks", [])
             budget = checks[-1] if checks else {}
             summary = (
-                f"上下文压缩后估算输入仍为 {budget['after_estimated_tokens']:,} tokens，"
-                f"超过本轮输入预算 {budget['input_limit']:,} tokens，未发起下一次模型调用。"
+                f"The compressed input is approximately {budget['after_estimated_tokens']:,} tokens, "
+                f"exceeding the {budget['input_limit']:,}-token budget. No further model call was made."
                 if "after_estimated_tokens" in budget and "input_limit" in budget
-                else "上下文超过输入预算，未发起下一次模型调用。"
+                else "The context exceeds the input budget. No further model call was made."
             )
             record("context_budget", "partial", error=str(error), summary=summary,
                    elapsed_ms=round((time.perf_counter() - started) * 1000, 2))
-            return finish("partial", "context_budget_exceeded", "本轮上下文暂时无法在预算内继续，已保留取得的记录；尚未形成完整结论。")
+            return finish("partial", "context_budget_exceeded", "The context budget prevents further analysis. Existing records have been retained.")
         except AgentCancelled:
             record("model", "cancelled", elapsed_ms=round((time.perf_counter() - started) * 1000, 2))
-            return finish("cancelled", "client_cancelled", "请求已取消。")
+            return finish("cancelled", "client_cancelled", "Request cancelled.")
         except Exception as error:
             record("model", "error", error_type=type(error).__name__, error=str(error),
                    elapsed_ms=round((time.perf_counter() - started) * 1000, 2))
@@ -236,16 +236,16 @@ def _run_session(
                 failure_class = "model_transport_failure"
             message, next_action = failure_guidance(failure_class)
             if details.get("code") == "AllocationQuota.FreeTierOnly":
-                message = "当前模型的免费额度已用尽，服务商的“仅使用免费额度”设置拒绝了请求。"
-                next_action = "请检查模型服务控制台中的额度及“仅使用免费额度”设置后重试。"
-            answer = message + (" 本轮已有执行记录已保留，但尚未生成完整回答。" if observations
-                                else " 尚未取得模型回答。")
+                message = "The model free quota is exhausted and the provider rejected the request under its free-tier-only setting."
+                next_action = "Check the provider quota and free-tier-only setting, then retry."
+            answer = message + (" Existing execution records were retained; the answer is incomplete." if observations
+                                else " No model response was received.")
             return finish("partial", "model_transport_failure", answer, error=details,
                           failure_class=failure_class, failure_message=message, next_action=next_action)
         model_elapsed_ms = round((time.perf_counter() - started) * 1000, 2)
         if runtime.is_cancelled():
             record("stop", "cancelled")
-            return finish("cancelled", "client_cancelled", "请求已取消。")
+            return finish("cancelled", "client_cancelled", "Request cancelled.")
         try:
             message = choice["message"]
             action, body = parse_action(message.get("content") or "",
@@ -340,7 +340,7 @@ def _run_session(
                 )},
             ])
             record("select_tools", "ok", selected_tools=list(active_tools), elapsed_ms=model_elapsed_ms,
-                   summary="已选择分析所需工具：" + "、".join(active_tools) + "。")
+                   summary="Selected tools: " + ", ".join(active_tools) + ".")
             continue
 
         if not selection_made:
@@ -367,7 +367,7 @@ def _run_session(
                 + json.dumps(sources, ensure_ascii=False) + "\n</knowledge_reuse>"})
             record("knowledge_reuse", "ok", execution_started=False,
                    arguments=prior_search.get("arguments"), elapsed_ms=model_elapsed_ms,
-                   summary="相同检索已经成功，已提供原文摘录和归档入口，未重复执行。")
+                   summary="Reusing the successful retrieval. Source excerpts and archive links are available.")
             if knowledge_rejections >= 2:
                 finalization_reason = "analysis_incomplete"
                 messages.append({"role": "user", "content":
@@ -401,7 +401,7 @@ def _run_session(
         )
         if observation.get("error_type") == "ExecutionCancelled" or runtime.is_cancelled():
             record("stop", "cancelled")
-            return finish("cancelled", "client_cancelled", "请求已取消。")
+            return finish("cancelled", "client_cancelled", "Request cancelled.")
         if consecutive_errors >= max_error_retries:
             finalization_reason = "analysis_incomplete"
             messages.append({"role": "user", "content": (

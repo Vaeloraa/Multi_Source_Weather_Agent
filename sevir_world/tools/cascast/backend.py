@@ -770,5 +770,5 @@ def live_cascast_source(metadata: dict[str, Any]) -> dict[str, Any]:
         "hdf5_row": metadata["hdf5_row"],
         "prediction_file": metadata["cache_file"],
         "validation_manifest": metadata.get("validation_manifest"),
-        "note": "本机从官方SEVIR HDF5读取13帧历史，现场运行EarthFormer、CasCast和VAE解码。",
+        "note": "Read 13 historical frames from official SEVIR HDF5 files and ran local EarthFormer, CasCast and VAE decoding.",
     }

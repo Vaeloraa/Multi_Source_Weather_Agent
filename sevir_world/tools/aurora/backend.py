@@ -223,7 +223,7 @@ def run_aurora_live(
             "output": str(output),
             "completed_leads_hours": completed,
             "pending_leads_hours": [],
-            "interpretation_limit": "Aurora给出大尺度环境预测；缓存命中时不重复运行模型。",
+            "interpretation_limit": "Aurora provides large-scale forecasts. Matching cached products are reused.",
         }
     if cache_only or os.getenv("SEVIR_CACHE_ONLY", "").strip().lower() in {"1", "true", "yes", "on"}:
         raise RuntimeError(
@@ -275,7 +275,7 @@ def run_aurora_live(
                 "output": str(cached_output),
                 "completed_leads_hours": completed_leads,
                 "pending_leads_hours": [],
-                "interpretation_limit": "Aurora给出大尺度环境预测；缓存命中时不重复运行模型。",
+                "interpretation_limit": "Aurora provides large-scale forecasts. Matching cached products are reused.",
             }
         stage, staged = _ascii_stage(surface, pressure, static)
         staged_output = stage / output.name
@@ -377,5 +377,5 @@ def run_aurora_live(
         "output": str(output),
         "completed_leads_hours": completed_leads,
         "pending_leads_hours": [lead for lead in leads if lead not in completed_leads],
-        "interpretation_limit": "Aurora给出大尺度环境预测；未完成的时效不能被当作已有结果，也不能替代局地VIL预报。",
+        "interpretation_limit": "Aurora provides large-scale forecasts. Only completed lead times are available; local VIL forecasts are a separate product.",
     }

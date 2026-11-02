@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="704" viewBox="0 0 1440 704" role="img">
+<title>Agent actions and feedback</title><desc>Tool selection, execution, record retrieval and answers, with feedback to the agent.</desc>
+<rect width="100%" height="100%" fill="white" />
+<rect x="500" y="25" width="440" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="720.0" y="57.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Question and available data</text>
+<rect x="500" y="130" width="440" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="720.0" y="162.0" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Agent chooses the next step</text>
+<polyline points="720,89 720,130" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="720,130 724,122 716,122" fill="#787878" />
+<polyline points="720,194 720,240" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polyline points="180,240 1260,240" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polyline points="180,240 180,285" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="180,285 184,277 176,277" fill="#787878" />
+<rect x="40" y="285" width="280" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="180.0" y="305.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Select tools</text>
+<text x="180.0" y="334.0" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#707070" text-anchor="middle" dominant-baseline="central">select_tools</text>
+<polyline points="180,349 180,410" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="180,410 184,402 176,402" fill="#787878" />
+<rect x="40" y="410" width="280" height="72" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="180.0" y="446.0" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Load tool instructions</text>
+<polyline points="540,240 540,285" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="540,285 544,277 536,277" fill="#787878" />
+<rect x="400" y="285" width="280" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="540.0" y="305.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Execute code</text>
+<text x="540.0" y="334.0" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#707070" text-anchor="middle" dominant-baseline="central">execute</text>
+<polyline points="540,349 540,410" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="540,410 544,402 536,402" fill="#787878" />
+<rect x="400" y="410" width="280" height="72" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="540.0" y="446.0" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Run analysis code</text>
+<polyline points="900,240 900,285" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="900,285 904,277 896,277" fill="#787878" />
+<rect x="760" y="285" width="280" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="900.0" y="305.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Read records</text>
+<text x="900.0" y="334.0" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#707070" text-anchor="middle" dominant-baseline="central">read_context</text>
+<polyline points="900,349 900,410" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="900,410 904,402 896,402" fill="#787878" />
+<rect x="760" y="410" width="280" height="72" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="900.0" y="446.0" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Retrieve required content</text>
+<polyline points="1260,240 1260,285" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="1260,285 1264,277 1256,277" fill="#787878" />
+<rect x="1120" y="285" width="280" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="1260.0" y="305.0" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Compose answer</text>
+<text x="1260.0" y="334.0" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#707070" text-anchor="middle" dominant-baseline="central">solution</text>
+<polyline points="1260,349 1260,410" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="1260,410 1264,402 1256,402" fill="#787878" />
+<rect x="1120" y="410" width="280" height="72" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="1260.0" y="446.0" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Check, return and save</text>
+<rect x="400" y="540" width="280" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="540.0" y="560.0" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Results or errors</text>
+<text x="540.0" y="589.0" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#707070" text-anchor="middle" dominant-baseline="central">observation</text>
+<polyline points="540,482 540,540" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="540,540 544,532 536,532" fill="#787878" />
+<rect x="1120" y="540" width="280" height="64" rx="3" fill="white" stroke="#A0A0A0" stroke-width="1.1" />
+<text x="1260.0" y="572.0" font-family="Arial, Helvetica, sans-serif" font-size="22.5" font-weight="400" fill="#303030" text-anchor="middle" dominant-baseline="central">Return answer and charts</text>
+<polyline points="1260,482 1260,540" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="1260,540 1264,532 1256,532" fill="#787878" />
+<polyline points="180,482 180,640" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polyline points="540,604 540,640" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polyline points="900,482 900,640 16,640 16,162 500,162" fill="none" stroke="#787878" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="butt" />
+<polygon points="500,162 492,158 492,166" fill="#787878" />
+<text x="470" y="674" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#707070" text-anchor="middle" dominant-baseline="central">Feedback guides the next decision</text>
+</svg>

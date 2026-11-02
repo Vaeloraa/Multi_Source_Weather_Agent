@@ -413,7 +413,7 @@ class TaskStore:
                 result.update(status="cancelled", task_state="cancelled")
                 termination_reason = "cancel_requested"
                 # Cancelled executions cannot publish decisions or an old successful answer.
-                result["answer"] = "本轮分析已停止。"
+                result["answer"] = "Analysis stopped."
                 turn_commit = None
             if turn_commit is not None:
                 if any(str(turn_commit.get(key) or "") != str(row[key])

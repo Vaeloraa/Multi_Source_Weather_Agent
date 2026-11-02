@@ -52,11 +52,11 @@ def fixed_model_selection(
     ]
     if missing:
         raise RuntimeError(
-            "请在 .env 配置固定输出模型：" + ", ".join(missing)
+            "Configure the fixed model in .env: " + ", ".join(missing)
         )
     if FIXED_PROVIDER_NAME not in registry:
         raise RuntimeError(
-            f"固定模型提供方未配置：{FIXED_PROVIDER_NAME}/{FIXED_MODEL_NAME}"
+            f"Fixed model provider is not configured: {FIXED_PROVIDER_NAME}/{FIXED_MODEL_NAME}"
         )
     return FIXED_PROVIDER_NAME, FIXED_MODEL_NAME
 
@@ -67,9 +67,9 @@ def judge_model_selection() -> tuple[str, str]:
     provider = str(os.getenv("SEVIR_JUDGE_PROVIDER", "")).strip()
     model = str(os.getenv("SEVIR_JUDGE_MODEL", "")).strip()
     if not provider or not model:
-        raise RuntimeError("请在 .env 配置 SEVIR_JUDGE_PROVIDER / SEVIR_JUDGE_MODEL")
+        raise RuntimeError("Configure SEVIR_JUDGE_PROVIDER and SEVIR_JUDGE_MODEL in .env")
     if provider not in PROVIDERS:
-        raise RuntimeError(f"Judge 模型提供方未配置：{provider}/{model}")
+        raise RuntimeError(f"Judge model provider is not configured: {provider}/{model}")
     return provider, model
 
 
@@ -107,9 +107,9 @@ def _call_once(
 ) -> dict[str, Any]:
     provider = dict(provider_value)
     if not provider.get("api_key"):
-        raise RuntimeError(f"{provider.get('label', provider_name)} API key未配置")
+        raise RuntimeError(f"{provider.get('label', provider_name)} API key is not configured")
     if not provider.get("base_url"):
-        raise RuntimeError(f"{provider.get('label', provider_name)} BASE URL未配置")
+        raise RuntimeError(f"{provider.get('label', provider_name)} base URL is not configured")
     lowered = model.lower()
     generation = model_generation_settings()
     payload: dict[str, Any] = {

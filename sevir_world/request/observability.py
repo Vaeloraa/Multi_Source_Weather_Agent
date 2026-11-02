@@ -54,7 +54,7 @@ class RequestTrace:
             "current_stage": "request_received",
             "current_activity": {
                 "status": "running",
-                "summary": "请求已进入服务，正在准备上下文。",
+                "summary": "Request received. Preparing context.",
             },
             "progress": 0.01,
             "live_steps": [],
@@ -148,8 +148,8 @@ class RequestTrace:
         self._record["progress"] = 1.0
         self._record["current_activity"] = {
             "status": "ok" if final_ok else str(status),
-            "summary": "分析已完成。" if final_ok else (
-                self._record.get("failure_message") or "本轮未能完整完成，请查看失败步骤。"
+            "summary": "Analysis complete." if final_ok else (
+                self._record.get("failure_message") or "Analysis incomplete. See the failed step for details."
             ),
         }
         self._record["updated_at"] = datetime.now(timezone.utc).isoformat()
