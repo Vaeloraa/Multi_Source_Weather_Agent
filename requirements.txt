@@ -1,0 +1,25 @@
+# Python dependencies for the Agent service, data access and local RAG indexing.
+numpy>=2.0,<3
+pandas
+scipy
+xarray
+dask[array]
+matplotlib
+Pillow
+h5py
+h5netcdf>=1.6
+netCDF4
+pyproj
+fsspec
+s3fs
+psutil
+scikit-image
+requests>=2.31,<3
+cdsapi>=0.7.7
+tokenizers>=0.15,<1
+pypdf>=6,<7
+beautifulsoup4>=4.12,<5
+
+# Native GRIB decoding: add cfgrib and ecCodes when that format is used.
+# GPU workers use their model environments: CasCast, microsoft-aurora and local BGE.
+# The existing BGE worker uses torch 2.7/CUDA 12.8 and transformers 4.38.2.

@@ -1,0 +1,20 @@
+.env
+.env.*
+!.env.example
+.cdsapirc
+__pycache__/
+*.pyc
+
+# Local runtime output
+*.log
+/data/
+/output/
+/tmp/
+
+# Reproducible dependencies and generated workspace artifacts
+vendor/
+sevir_world/tools/knowledge/models/
+sevir_world/tools/knowledge/originals/
+sevir_world/tools/knowledge/extracted/
+sevir_world/tools/knowledge/index.sqlite3*
+sevir_world/tools/knowledge/source_validation.json
