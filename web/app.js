@@ -80,12 +80,12 @@ let conversationVisualArtifacts = [];
 let selectedConversationVisual = "";
 let activeConversationLayer = "all";
 let visualPaneResizeFrame = 0;
-const sessionStorageKey = "sevir-upload-chat-session-id";
-const chatStoragePrefix = "multi-source-weather-agent-chat-history:";
-const activeUploadPrefix = "sevir-active-upload:";
-const activeTaskPrefix = "sevir-active-task:";
-const conversationIndexKey = "multi-source-weather-agent-conversations";
-// The UI is sometimes opened directly as web/index.html during demos.  In
+const sessionStorageKey = "weather-agent-session-id";
+const chatStoragePrefix = "weather-agent-chat-history:";
+const activeUploadPrefix = "weather-agent-active-upload:";
+const activeTaskPrefix = "weather-agent-active-task:";
+const conversationIndexKey = "weather-agent-conversations";
+// The interface can also be opened directly as web/index.html.  In
 // that file:// mode relative /api URLs cannot reach the Python service, so
 // use the batch runner's default port unless the URL explicitly overrides it.
 const apiBase = (() => {
@@ -1792,7 +1792,7 @@ function compactTurnMeta(data) {
     ? data.agent_trace
     : Array.isArray(data?.progress_steps) ? data.progress_steps : [];
   return {
-    source: "UNIFIED AGENT",
+    source: "Multi-Source Weather Agent",
     // ``tool_name`` is the selected Agent route, not an external tool call.
     // Only actual tool_runs belong in the external-tool row.
     toolNames: runs.map((run) => displayToolName(run)).filter(Boolean),
@@ -1824,55 +1824,50 @@ function displayToolName(name) {
   if (registered?.display_name) return registered.display_name;
   if (capability?.display_name) return capability.display_name;
   const labels = {
-    unified_agent: "Unified agent",
+    unified_agent: "Multi-Source Weather Agent",
+    knowledge: "Reference documents",
     sevir: "SEVIR observations",
-    geolocator: "Places and regions",
+    geospatial: "Places and regions",
     cascast: "CasCast local nowcasts",
     era5: "ERA5/ERA5T reanalysis",
     aurora: "Aurora regional forecasts",
+    "knowledge.search": "Search source documents",
+    "knowledge.read": "Read source passage",
+    "knowledge.describe": "Inspect document index",
     "sevir.event": "Read SEVIR event metadata",
     "sevir.search": "Search the SEVIR catalog",
-    "sevir.nearby": "Find SEVIR events by location",
     "sevir.observations": "Read SEVIR observation sequence",
-    "sevir.frame_histograms": "Read SEVIR frame histograms",
-    "sevir.similar_events": "Find historical events",
-    "sevir.historical_observations": "Read historical observations",
+    "sevir.channel_observations": "Read channel observations",
+    "sevir.multimodal_observations": "Read multi-channel observations",
+    "sevir.observation_batch": "Read observations for multiple events",
+    "sevir.find_analogues": "Find similar historical events",
     "sevir.match_upload": "Match uploads to events",
-    "geolocator.event": "Read event bounds",
-    "geolocator.pixel": "Convert pixel coordinates",
-    "geolocator.place": "Resolve place",
-    "geolocator.administrative_area": "Look up state or county bounds",
-    "geolocator.region": "Locate analysis region",
+    "geospatial.resolve_place": "Resolve place",
+    "geospatial.point_to_location": "Locate geographic coordinates",
+    "geospatial.boundary": "Read administrative boundary",
+    "geospatial.region_bounds": "Read region bounds",
+    "geospatial.pixel_to_latlon": "Convert image coordinates to location",
+    "geospatial.latlon_to_pixel": "Convert location to image coordinates",
+    "geospatial.mask": "Build region mask",
+    "geospatial.select_region": "Select regional data",
+    "cascast.available_forecasts": "Check forecast availability",
     "cascast.forecast": "Run or read local ensemble forecasts",
-    "aurora.case": "Read cached ERA5/Aurora results",
-    "aurora.forecast": "Run or read Aurora regional forecasts",
+    "era5.datasets": "Find CDS datasets",
+    "era5.describe": "Read dataset parameters",
+    "era5.retrieve": "Download ERA5 data",
+    "era5.fields": "Read ERA5 fields",
+    "era5.regional_fields": "Read regional ERA5 fields",
     "aurora.regional_fields": "Read ERA5/Aurora regional fields",
-    // Legacy trace labels remain so old saved conversations still render.
-    "data.load_hdf5": "Read SEVIR observation sequence",
-    "data.match_uploaded_event": "Match observation event",
-    "foundation.fetch_era5": "Retrieve ERA5/ERA5T reanalysis",
-    "foundation.era5_snapshot": "Read ERA5/ERA5T reanalysis snapshot",
-    "foundation.forecast_aurora": "Read Aurora regional forecasts",
-    "foundation.region_fields": "Extract regional fields",
-    "forecaster.uploaded_sequence": "Read CasCast nowcasts",
-    "forecaster.rolling_raw": "Read CasCast rolling forecast",
-    "metrics.uploaded_raw_pair": "Align forecasts and observations",
-    "uncertainty.uploaded_raw": "Analyze CasCast ensemble spread",
-    "visualizer.plan_spec": "Generate analysis charts",
   };
   if (labels[name]) return labels[name];
   const prefixLabels = {
-    "sevir.": "SEVIR data",
+    "knowledge.": "Reference documents",
+    "sevir.": "SEVIR observations",
+    "geospatial.": "Geolocation",
     "cascast.": "CasCast nowcasting",
+    "era5.": "ERA5 reanalysis",
     "aurora.": "Aurora regional forecasting",
-    "data.": "Observation tools",
-    "foundation.": "Regional weather tools",
-    "forecaster.": "CasCast nowcasting tools",
-    "metrics.": "Forecast verification",
-    "statistics.": "Statistical analysis",
-    "uncertainty.": "Ensemble uncertainty",
-    "geolocator.": "Geolocation",
-    "visualizer.": "Chart tools",
+    "analytics.": "Weather analysis",
   };
   const prefix = Object.keys(prefixLabels).find((item) => String(name || "").startsWith(item));
   return prefix ? prefixLabels[prefix] : "Run analysis";
@@ -2422,7 +2417,7 @@ function executionStageLabel(name) {
 
 function routeDisplayLabel(route) {
   const value = String(route || "").toLowerCase();
-  if (value.includes("unified") || value.includes("completed")) return "Unified agent";
+  if (value.includes("unified") || value.includes("completed")) return "Multi-Source Weather Agent";
   return route ? "Agent execution" : "—";
 }
 
@@ -2561,8 +2556,8 @@ function renderResult(data, anchorMessage = null) {
   renderConversationVisualPane(data);
   renderAnswer(data.answer || "No text answer returned");
   document.querySelector("#result-title").textContent = "Analysis summary";
-  document.querySelector("#result-source").textContent = "UNIFIED AGENT";
-  turnDetailsSource.textContent = "UNIFIED AGENT";
+  document.querySelector("#result-source").textContent = "Multi-Source Weather Agent";
+  turnDetailsSource.textContent = "Multi-Source Weather Agent";
   document.querySelector("#tool-name").textContent = runs.length > 1
     ? runs.map((run) => displayToolName(run)).join(" → ")
     : runs.length ? displayToolName(runs[0]) : "No external tools used";
@@ -2655,7 +2650,7 @@ function renderAgentTrace(data) {
   trace.innerHTML = "";
   const attempts = Array.isArray(data.agent_trace) ? data.agent_trace : [];
   container.classList.toggle("hidden", attempts.length === 0);
-  if (executionMode) executionMode.textContent = "Unified agent";
+  if (executionMode) executionMode.textContent = "Multi-Source Weather Agent";
   if (executionFlow) {
     const defaultExecutionFlow = "Understand the question → Retrieve data → Calculate and plot → Explain the results";
     const path = ["Bind data and context"];

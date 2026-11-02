@@ -13,8 +13,8 @@ __pycache__/
 
 # Reproducible dependencies and generated workspace artifacts
 vendor/
-sevir_world/tools/knowledge/models/
-sevir_world/tools/knowledge/originals/
-sevir_world/tools/knowledge/extracted/
-sevir_world/tools/knowledge/index.sqlite3*
-sevir_world/tools/knowledge/source_validation.json
+weather_agent/tools/knowledge/models/
+weather_agent/tools/knowledge/originals/
+weather_agent/tools/knowledge/extracted/
+weather_agent/tools/knowledge/index.sqlite3*
+weather_agent/tools/knowledge/source_validation.json

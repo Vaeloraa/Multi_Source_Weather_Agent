@@ -1866,7 +1866,7 @@ body {
   font: 500 10px/1.2 ui-sans-serif, system-ui, sans-serif;
 }
 .live-context-fields input:focus { border-color: #51a8b8; box-shadow: 0 0 0 3px rgba(32, 139, 158, .1); }
-.demo-preset-button {
+.context-preset-button {
   display: flex;
   width: 100%;
   min-height: 38px;
@@ -1882,8 +1882,8 @@ body {
   font-size: 10px;
   font-weight: 750;
 }
-.demo-preset-button:hover { border-color: #90c8d2; background: #e4f4f7; transform: none; filter: none; }
-.demo-preset-button b { color: #64818c; font: 600 8px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.context-preset-button:hover { border-color: #90c8d2; background: #e4f4f7; transform: none; filter: none; }
+.context-preset-button b { color: #64818c; font: 600 8px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace; }
 .context-help { color: #7b9099; font-size: 8px; line-height: 1.5; }
 
 .result-head {

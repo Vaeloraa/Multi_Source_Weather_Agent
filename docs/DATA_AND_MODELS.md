@@ -1,6 +1,6 @@
 # Data and Model Setup
 
-Set the LLM API credentials and `CASCAST_ROOT`, `CASCAST_PYTHON`, `AURORA_PYTHON` and `SEVIR_RAG_PYTHON` in `.env`. Model environments require CUDA-enabled PyTorch. CasCast also uses einops and timm; RAG uses Transformers 4.38.2 and safetensors.
+Set the LLM API credentials and `CASCAST_ROOT`, `CASCAST_PYTHON`, `AURORA_PYTHON` and `WEATHER_AGENT_RAG_PYTHON` in `.env`. Model environments require CUDA-enabled PyTorch. CasCast also uses einops and timm; RAG uses Transformers 4.38.2 and safetensors.
 
 ## 1. Observations and reanalysis
 
@@ -44,20 +44,20 @@ ERA5 inputs cover the initialization time and six hours earlier: surface variabl
 
 ## 4. RAG
 
-Prepare [BGE-M3](https://huggingface.co/BAAI/bge-m3), [bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) and the documents listed in `sevir_world/tools/knowledge/sources.json`. The downloader pins model revisions.
+Prepare [BGE-M3](https://huggingface.co/BAAI/bge-m3), [bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) and the documents listed in `weather_agent/tools/knowledge/sources.json`. The downloader pins model revisions.
 
 From the project root, run:
 
 ```powershell
-python -m sevir_world.tools.knowledge.prepare_sources --download
-python -m sevir_world.tools.knowledge.download_models
-# Windows/WSL only: configure SEVIR_RAG_PYTHON and SEVIR_RAG_WSL_DISTRO first
-python -m sevir_world.tools.knowledge.prepare_runtime
-python -m sevir_world.tools.knowledge.cli ingest
-python -m sevir_world.tools.knowledge.cli describe
+python -m weather_agent.tools.knowledge.prepare_sources --download
+python -m weather_agent.tools.knowledge.download_models
+# Windows/WSL only: configure WEATHER_AGENT_RAG_PYTHON and WEATHER_AGENT_RAG_WSL_DISTRO first
+python -m weather_agent.tools.knowledge.prepare_runtime
+python -m weather_agent.tools.knowledge.cli ingest
+python -m weather_agent.tools.knowledge.cli describe
 ```
 
-Documents, models and the index are stored under `sevir_world/tools/knowledge/` as `originals/`, `models/` and `index.sqlite3`. The WSL preparation command creates an inference copy and writes its path to `SEVIR_RAG_INFERENCE_MODEL_DIR` in `.env`.
+Documents, models and the index are stored under `weather_agent/tools/knowledge/` as `originals/`, `models/` and `index.sqlite3`. The WSL preparation command creates an inference copy and writes its path to `WEATHER_AGENT_RAG_INFERENCE_MODEL_DIR` in `.env`.
 
 ## 5. Administrative boundaries
 

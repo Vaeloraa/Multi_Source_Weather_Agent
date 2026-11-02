@@ -1,0 +1,325 @@
+{
+  "schema_version": "tool-rag-sources-v1",
+  "prepared_at": "2026-10-19",
+  "scope": [
+    "sevir",
+    "cascast",
+    "era5",
+    "aurora"
+  ],
+  "purpose": "Approved primary-source allow-list for local RAG ingestion and evaluation. Runtime index status belongs to knowledge.describe().",
+  "sources": [
+    {
+      "doc_id": "sevir-paper",
+      "title": "SEVIR: A Storm Event Imagery Dataset for Deep Learning Applications in Radar and Satellite Meteorology",
+      "tools": [
+        "sevir",
+        "cascast"
+      ],
+      "kind": "paper",
+      "format": "pdf",
+      "version": "NeurIPS 2020",
+      "source_url": "https://papers.nips.cc/paper_files/paper/2020/hash/fa78a16157fed00d7a80515818432169-Abstract.html",
+      "download_url": "https://papers.nips.cc/paper_files/paper/2020/file/fa78a16157fed00d7a80515818432169-Paper.pdf",
+      "description": "Data modalities, event structure, benchmark tasks and evaluation methods.",
+      "downloaded_from": "https://papers.nips.cc/paper_files/paper/2020/file/fa78a16157fed00d7a80515818432169-Paper.pdf",
+      "downloaded_version": "NeurIPS 2020",
+      "content_type": "application/pdf",
+      "download_errors": [],
+      "local_file": "weather_agent/tools/knowledge/originals/sevir-paper/1/source.pdf",
+      "revision": 1,
+      "sha256": "d15b0dcfd9136d300b18a19785258c5d84c6ece90ed76f7028e1ef5669699f5e",
+      "bytes": 2973081,
+      "acquisition_status": "downloaded_and_text_checked"
+    },
+    {
+      "doc_id": "sevir-tutorial",
+      "title": "SEVIR Tutorial",
+      "tools": [
+        "sevir",
+        "cascast"
+      ],
+      "kind": "tutorial",
+      "format": "ipynb",
+      "version": "author repository snapshot",
+      "source_url": "https://github.com/MIT-AI-Accelerator/eie-sevir/blob/master/examples/SEVIR_Tutorial.ipynb",
+      "download_url": "https://raw.githubusercontent.com/MIT-AI-Accelerator/eie-sevir/master/examples/SEVIR_Tutorial.ipynb",
+      "description": "Author tutorial covering the five modalities, catalog, HDF5 layout, lightning tables, encodings and geolocation. Notebook source is extracted without execution.",
+      "downloaded_from": "https://raw.githubusercontent.com/MIT-AI-Accelerator/eie-sevir/master/examples/SEVIR_Tutorial.ipynb",
+      "downloaded_version": "author repository snapshot",
+      "content_type": "text/plain; charset=utf-8",
+      "download_errors": [],
+      "local_file": "weather_agent/tools/knowledge/originals/sevir-tutorial/1/source.ipynb",
+      "revision": 1,
+      "sha256": "ad94c6f30d9ca89d53e99b50ec65a9482c3e56f6e7cafa4dcb82087c65a1edee",
+      "bytes": 864574,
+      "acquisition_status": "downloaded_and_text_checked"
+    },
+    {
+      "doc_id": "sevir-benchmarks",
+      "title": "NeurIPS 2020 SEVIR: official benchmarks README",
+      "tools": [
+        "sevir",
+        "cascast"
+      ],
+      "kind": "repository_documentation",
+      "format": "md",
+      "version": "author repository snapshot",
+      "source_url": "https://github.com/MIT-AI-Accelerator/neurips-2020-sevir",
+      "download_url": "https://raw.githubusercontent.com/MIT-AI-Accelerator/neurips-2020-sevir/master/README.md",
+      "description": "Benchmark splits, downloads and model evaluation procedures.",
+      "downloaded_from": "https://raw.githubusercontent.com/MIT-AI-Accelerator/neurips-2020-sevir/master/README.md",
+      "downloaded_version": "author repository snapshot",
+      "content_type": "text/plain; charset=utf-8",
+      "download_errors": [],
+      "local_file": "weather_agent/tools/knowledge/originals/sevir-benchmarks/1/source.md",
+      "revision": 1,
+      "sha256": "7eb32ba20b2900e45349607b8e7c4dd53e10fbd0887193643e103cabedbf25eb",
+      "bytes": 6230,
+      "acquisition_status": "downloaded_and_text_checked"
+    },
+    {
+      "doc_id": "sevir-data-registry",
+      "title": "Storm EVent ImageRy (SEVIR): AWS Open Data Registry",
+      "tools": [
+        "sevir"
+      ],
+      "kind": "dataset_documentation",
+      "format": "html",
+      "version": "2026-10-19 snapshot",
+      "source_url": "https://registry.opendata.aws/sevir/",
+      "download_url": "https://registry.opendata.aws/sevir/",
+      "description": "Data distribution, maintainers, citation information and author tutorials.",
+      "downloaded_from": "https://registry.opendata.aws/sevir/",
+      "downloaded_version": "2026-10-19 snapshot",
+      "content_type": "text/html",
+      "download_errors": [],
+      "local_file": "weather_agent/tools/knowledge/originals/sevir-data-registry/1/source.html",
+      "revision": 1,
+      "sha256": "4091c2b89b178d82282df664e844e988d21b3260279794d902d63e2fd85c86b4",
+      "bytes": 6965,
+      "acquisition_status": "downloaded_and_text_checked"
+    },
+    {
+      "doc_id": "cascast-paper",
+      "title": "CasCast: Skillful High-resolution Precipitation Nowcasting via Cascaded Modelling",
+      "tools": [
+        "cascast",
+        "sevir"
+      ],
+      "kind": "paper",
+      "format": "pdf",
+      "version": "ICML 2024 / PMLR 235",
+      "source_url": "https://proceedings.mlr.press/v235/gong24a.html",
+      "download_url": "https://raw.githubusercontent.com/mlresearch/v235/main/assets/gong24a/gong24a.pdf",
+      "description": "Deterministic and probabilistic cascades, latent diffusion, training data and verification metrics.",
+      "downloaded_from": "https://raw.githubusercontent.com/mlresearch/v235/main/assets/gong24a/gong24a.pdf",
+      "downloaded_version": "ICML 2024 / PMLR 235",
+      "content_type": "application/octet-stream",
+      "download_errors": [],
+      "local_file": "weather_agent/tools/knowledge/originals/cascast-paper/1/source.pdf",
+      "revision": 1,
+      "sha256": "9fa0bdbbc06a80ed3f9fda914ce77776bc653141f21ebd35c7883323a386ba67",
+      "bytes": 9612001,
+      "acquisition_status": "downloaded_and_text_checked"
+    },
+    {
+      "doc_id": "cascast-official-readme",
+      "title": "CasCast: official implementation README",
+      "tools": [
+        "cascast",
+        "sevir"
+      ],
+      "kind": "repository_documentation",
+      "format": "md",
+      "version": "author repository snapshot",
+      "source_url": "https://github.com/OpenEarthLab/CasCast",
+      "download_url": "https://raw.githubusercontent.com/OpenEarthLab/CasCast/master/README.md",
+      "description": "Official implementation, checkpoints, SEVIR splits and inference workflow.",
+      "downloaded_from": "https://raw.githubusercontent.com/OpenEarthLab/CasCast/master/README.md",
+      "downloaded_version": "author repository snapshot",
+      "content_type": "text/plain; charset=utf-8",
+      "download_errors": [],
+      "local_file": "weather_agent/tools/knowledge/originals/cascast-official-readme/1/source.md",
+      "revision": 1,
+      "sha256": "ca382f6b450db1a1a5907c7d822a4443276118095b4d73e8fd71196a3f643db0",
+      "bytes": 6420,
+      "acquisition_status": "downloaded_and_text_checked"
+    },
+    {
+      "doc_id": "era5-data-documentation",
+      "title": "ERA5: data documentation",
+      "tools": [
+        "era5",
+        "aurora"
+      ],
+      "kind": "dataset_documentation",
+      "format": "html",
+      "version": "2026-10-19 snapshot",
+      "source_url": "https://confluence.ecmwf.int/spaces/CKB/pages/76414402/ERA5+data+documentation",
+      "download_url": "https://confluence.ecmwf.int/spaces/CKB/pages/76414402/ERA5+data+documentation",
+      "description": "Reanalysis, ERA5T, release latency, grids, vertical levels, time and variable conventions.",
+      "downloaded_from": "https://confluence.ecmwf.int/spaces/CKB/pages/76414402/ERA5+data+documentation",
+      "downloaded_version": "2026-10-19 snapshot",
+      "content_type": "text/html;charset=UTF-8",
+      "download_errors": [],
+      "local_file": "weather_agent/tools/knowledge/originals/era5-data-documentation/1/source.html",
+      "revision": 1,
+      "sha256": "e616d5df486f96db14b263b0ab6ef777de153018167cae8f583f299b17fd4599",
+      "bytes": 424399,
+      "acquisition_status": "downloaded_and_text_checked"
+    },
+    {
+      "doc_id": "era5-single-levels",
+      "title": "ERA5 hourly data on single levels from 1940 to present",
+      "tools": [
+        "era5",
+        "aurora"
+      ],
+      "kind": "dataset_documentation",
+      "format": "html",
+      "version": "2026-10-19 snapshot",
+      "source_url": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview",
+      "download_url": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview",
+      "description": "CDS single-level product definitions, resolution, updates and citation.",
+      "downloaded_from": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview",
+      "downloaded_version": "2026-10-19 snapshot",
+      "content_type": "text/html; charset=utf-8",
+      "download_errors": [],
+      "local_file": "weather_agent/tools/knowledge/originals/era5-single-levels/1/source.html",
+      "revision": 1,
+      "sha256": "6d0908caa19fb4462a773a7421197be9eedacbd972193e6db6789f39b2f8e193",
+      "bytes": 433534,
+      "acquisition_status": "downloaded_and_text_checked"
+    },
+    {
+      "doc_id": "era5-pressure-levels",
+      "title": "ERA5 hourly data on pressure levels from 1940 to present",
+      "tools": [
+        "era5",
+        "aurora"
+      ],
+      "kind": "dataset_documentation",
+      "format": "html",
+      "version": "2026-10-19 snapshot",
+      "source_url": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels?tab=overview",
+      "download_url": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels?tab=overview",
+      "description": "CDS pressure-level products, vertical levels and grid definitions.",
+      "downloaded_from": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels?tab=overview",
+      "downloaded_version": "2026-10-19 snapshot",
+      "content_type": "text/html; charset=utf-8",
+      "download_errors": [],
+      "local_file": "weather_agent/tools/knowledge/originals/era5-pressure-levels/1/source.html",
+      "revision": 1,
+      "sha256": "7f7a72b95dc88eb6f71ef5387ddbca4e20b7c9e6dac88de879e1c00e03ef8bca",
+      "bytes": 164772,
+      "acquisition_status": "downloaded_and_text_checked"
+    },
+    {
+      "doc_id": "era5-author-overview",
+      "title": "The ERA5 Global Reanalysis: achieving a detailed record of climate and weather",
+      "tools": [
+        "era5",
+        "aurora"
+      ],
+      "kind": "author_presentation",
+      "format": "pdf",
+      "version": "EGU 2020 presentation",
+      "source_url": "https://confluence.ecmwf.int/download/attachments/50045219/ERA5_EGU2020.pdf?api=v2",
+      "download_url": "https://confluence.ecmwf.int/download/attachments/50045219/ERA5_EGU2020.pdf?api=v2",
+      "description": "Historical technical overview by Hersbach and coauthors. Current coverage and release schedules are documented by ECMWF.",
+      "downloaded_from": "https://confluence.ecmwf.int/download/attachments/50045219/ERA5_EGU2020.pdf?api=v2",
+      "downloaded_version": "EGU 2020 presentation",
+      "content_type": "application/pdf;charset=UTF-8",
+      "download_errors": [],
+      "local_file": "weather_agent/tools/knowledge/originals/era5-author-overview/1/source.pdf",
+      "revision": 1,
+      "sha256": "e1decd6d21cf81261c4b9bf03eebd2222bc11df68de8a94909d8a8062c978cdf",
+      "bytes": 2959414,
+      "acquisition_status": "downloaded_and_text_checked"
+    },
+    {
+      "doc_id": "aurora-paper",
+      "title": "A foundation model for the Earth system",
+      "tools": [
+        "aurora",
+        "era5"
+      ],
+      "kind": "paper",
+      "format": "pdf",
+      "version": "Nature 2025",
+      "source_url": "https://www.nature.com/articles/s41586-025-09005-y",
+      "download_url": "https://www.nature.com/articles/s41586-025-09005-y.pdf",
+      "fallback_downloads": [
+        {
+          "url": "https://arxiv.org/pdf/2405.13063v3",
+          "source_url": "https://arxiv.org/abs/2405.13063v3",
+          "version": "arXiv:2405.13063v3 (2024-11-21); not the Nature 2025 publisher PDF"
+        }
+      ],
+      "description": "Aurora architecture, pretraining, fine-tuning and supported tasks. Preprint and published versions are identified separately.",
+      "downloaded_from": "https://arxiv.org/pdf/2405.13063",
+      "downloaded_version": "arXiv:2405.13063v3 (2024-11-21); not the Nature 2025 publisher PDF",
+      "artifact_source_url": "https://arxiv.org/abs/2405.13063v3",
+      "content_type": "application/pdf",
+      "download_errors": [
+        {
+          "url": "https://www.nature.com/articles/s41586-025-09005-y.pdf",
+          "error": "response is not a PDF"
+        }
+      ],
+      "local_file": "weather_agent/tools/knowledge/originals/aurora-paper/1/source.pdf",
+      "revision": 1,
+      "sha256": "9351129fa61cb978322fb2539544f7f6c3e2a6a3fac03e57edab73abc79fdf48",
+      "bytes": 11177528,
+      "acquisition_status": "downloaded_and_text_checked"
+    },
+    {
+      "doc_id": "aurora-official-readme",
+      "title": "Aurora official implementation README",
+      "tools": [
+        "aurora",
+        "era5"
+      ],
+      "kind": "repository_documentation",
+      "format": "md",
+      "version": "microsoft-aurora v2.0.1",
+      "source_url": "https://github.com/microsoft/aurora/blob/v2.0.1/README.md",
+      "download_url": "https://raw.githubusercontent.com/microsoft/aurora/v2.0.1/README.md",
+      "description": "Official setup, batch construction and examples for the package version used by this project.",
+      "downloaded_from": "https://raw.githubusercontent.com/microsoft/aurora/v2.0.1/README.md",
+      "downloaded_version": "microsoft-aurora v2.0.1",
+      "content_type": "text/plain; charset=utf-8",
+      "download_errors": [],
+      "local_file": "weather_agent/tools/knowledge/originals/aurora-official-readme/1/source.md",
+      "revision": 1,
+      "sha256": "73535361d411738555fba1054f88e97aed8a746b6174391e0feb11db08c04c92",
+      "bytes": 10979,
+      "acquisition_status": "downloaded_and_text_checked"
+    },
+    {
+      "doc_id": "aurora-models-v2-0-1",
+      "title": "Aurora available models and required inputs",
+      "tools": [
+        "aurora",
+        "era5"
+      ],
+      "kind": "model_documentation",
+      "format": "md",
+      "version": "microsoft-aurora v2.0.1",
+      "source_url": "https://github.com/microsoft/aurora/blob/v2.0.1/docs/models.md",
+      "download_url": "https://raw.githubusercontent.com/microsoft/aurora/v2.0.1/docs/models.md",
+      "description": "Model variants, input variables, pressure levels and compatible data sources for the Pretrained, Fine-Tuned and other model families.",
+      "downloaded_from": "https://raw.githubusercontent.com/microsoft/aurora/v2.0.1/docs/models.md",
+      "downloaded_version": "microsoft-aurora v2.0.1",
+      "content_type": "text/plain; charset=utf-8",
+      "download_errors": [],
+      "local_file": "weather_agent/tools/knowledge/originals/aurora-models-v2-0-1/1/source.md",
+      "revision": 1,
+      "sha256": "83c44981cdff21a8c6b98aaba8e4b8461f5474a8147ab881edc19b8f8b4286bb",
+      "bytes": 17326,
+      "acquisition_status": "downloaded_and_text_checked"
+    }
+  ],
+  "checked_at_utc": "2026-10-19T08:09:04.105965+00:00"
+}

@@ -1,6 +1,6 @@
-"""Compatibility entry point for the SEVIR HTTP application."""
+"""Start the Multi-Source Weather Agent web service."""
 
-from sevir_world.api.server import main
+from weather_agent.api.server import main
 
 
 if __name__ == "__main__":

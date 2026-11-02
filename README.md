@@ -23,7 +23,7 @@ Server dependencies are listed in `requirements.txt`. CasCast, Aurora and RAG us
 | [ERA5](https://cds.climate.copernicus.eu/how-to-api) | CDS account and token; surface, pressure-level and static fields | `~/.cdsapirc`; downloaded on demand |
 | [CasCast](https://github.com/OpenEarthLab/CasCast) | Official repository and EarthFormer, CasFormer and autoencoder checkpoints | `CASCAST_ROOT` |
 | [Aurora](https://github.com/microsoft/aurora/blob/v2.0.1/docs/models.md) | `microsoft-aurora==2.0.1` and `AuroraPretrained` weights | Model environment's Hugging Face cache |
-| RAG | BGE-M3, bge-reranker-v2-m3, source documents and a local index | `sevir_world/tools/knowledge/` |
+| RAG | BGE-M3, bge-reranker-v2-m3, source documents and a local index | `weather_agent/tools/knowledge/` |
 | [Administrative boundaries](https://www2.census.gov/geo/tiger/GENZ2025/kml/) | 2025 US state and county boundaries, extracted as `.kmz` | `data/boundaries/` |
 
 Download links, checkpoint names, paths and setup commands are in [Data and models](docs/DATA_AND_MODELS.md).
@@ -35,7 +35,9 @@ Edit `.env` with the model API endpoint, key and model name, then set the infere
 - `MODEL_FIXED_PROVIDER`, `MODEL_FIXED_NAME`: language model provider and model.
 - `CASCAST_ROOT`, `CASCAST_PYTHON`: CasCast repository and Python executable.
 - `AURORA_PYTHON`: Aurora Python executable.
-- `SEVIR_RAG_PYTHON`: RAG Python executable. For WSL, also set the distribution and inference model directory.
+- `WEATHER_AGENT_RAG_PYTHON`: RAG Python executable. For WSL, also set the distribution and inference model directory.
+
+Application settings use the `WEATHER_AGENT_` prefix, including `WEATHER_AGENT_HOST` and `WEATHER_AGENT_PORT`. `SEVIR_` settings apply only to the SEVIR dataset.
 
 ```powershell
 python server.py
@@ -46,7 +48,7 @@ Open `http://127.0.0.1:8000`.
 ## Project structure
 
 ```text
-sevir_world/       Agent, tools, execution, tasks and persistence
+weather_agent/     Agent, tools, execution, tasks and persistence
 web/               Web interface
 docs/              Data and model setup, references and diagrams
 server.py          Server entry point
@@ -54,7 +56,7 @@ requirements.txt   Python dependencies
 .env.example       Configuration template
 ```
 
-The source manifest is `sevir_world/tools/knowledge/sources.json`. Documents, retrieval models and the index live alongside it. Observations and runtime caches are created under `data/` as needed.
+The source manifest is `weather_agent/tools/knowledge/sources.json`. Documents, retrieval models and the index live alongside it. Observations and runtime caches are created under `data/` as needed.
 
 ## Documentation
 
